@@ -1,8 +1,6 @@
 // Variables globales
 let allArticles = []; // Tous les articles récupérés
-let currentArticles = []; // Articles actuellement affichés (après filtres ou pagination)
-let currentPage = 1; // Page actuelle
-const articlesPerPage = 5; // Nombre d'articles par page
+let currentArticles = []; // Articles actuellement affichés après filtres
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log("Chargement des catégories et des articles...");
@@ -15,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log("Articles récupérés :", JSON.stringify(articles, null, 2));
     allArticles = articles; // Stocke tous les articles pour gérer les filtres
     currentArticles = allArticles; // Initialise la liste affichée avec tous les articles
-    displayPaginatedArticles(currentPage);
+    displayArticles(currentArticles);
 });
 
 // Fonction pour récupérer les articles via Contentful
@@ -102,8 +100,7 @@ async function displayCategories() {
     resetButton.textContent = "Tous les articles";
     resetButton.addEventListener('click', () => {
         console.log("Réinitialisation des filtres. Affichage de tous les articles.");
-        currentArticles = allArticles; // Réinitialise la liste d'articles
-        displayPaginatedArticles(1); // Affiche tous les articles à partir de la première page
+        displayArticles(allArticles);
     });
     categoryList.appendChild(resetButton);
 }
@@ -120,25 +117,21 @@ function filterArticlesByCategory(categoryId) {
 
     console.log(`Articles filtrés pour la catégorie ${categoryId} :`, JSON.stringify(currentArticles, null, 2));
 
-    displayPaginatedArticles(1); // Affiche les articles filtrés à partir de la première page
+    displayArticles(currentArticles);
 }
 
-// Fonction pour afficher les articles paginés
-function displayPaginatedArticles(page) {
+// Fonction pour afficher les articles dans la page
+function displayArticles(articles) {
     const contentDiv = document.getElementById('content');
     contentDiv.innerHTML = ""; // Efface les anciens articles
 
-    // Calculer les indices des articles à afficher
-    const startIndex = (page - 1) * articlesPerPage;
-    const endIndex = startIndex + articlesPerPage;
-    const articlesToShow = currentArticles.slice(startIndex, endIndex);
-
-    if (articlesToShow.length === 0) {
-        contentDiv.innerHTML = "<p>Aucun article à afficher.</p>";
+    if (articles.length === 0) {
+        console.warn("Aucun article trouvé à afficher !");
+        contentDiv.innerHTML = "<p>Aucun article correspondant à cette catégorie.</p>";
         return;
     }
 
-    articlesToShow.forEach(article => {
+    articles.forEach(article => {
         console.log("Article affiché :", JSON.stringify(article, null, 2));
 
         if (article?.fields?.title && article?.fields?.summary) {
@@ -153,39 +146,4 @@ function displayPaginatedArticles(page) {
             console.warn("Article incomplet ou mal structuré :", article);
         }
     });
-
-    displayPaginationControls(page);
-}
-
-// Fonction pour afficher les contrôles de pagination
-function displayPaginationControls(page) {
-    const paginationDiv = document.getElementById('pagination');
-    paginationDiv.innerHTML = ""; // Efface les anciens boutons
-
-    const totalPages = Math.ceil(currentArticles.length / articlesPerPage);
-
-    // Bouton "Précédent"
-    const prevButton = document.createElement('button');
-    prevButton.textContent = "Précédent";
-    prevButton.disabled = page === 1; // Désactiver si c'est la première page
-    prevButton.addEventListener('click', () => {
-        currentPage--;
-        displayPaginatedArticles(currentPage);
-    });
-    paginationDiv.appendChild(prevButton);
-
-    // Bouton "Suivant"
-    const nextButton = document.createElement('button');
-    nextButton.textContent = "Suivant";
-    nextButton.disabled = page === totalPages; // Désactiver si c'est la dernière page
-    nextButton.addEventListener('click', () => {
-        currentPage++;
-        displayPaginatedArticles(currentPage);
-    });
-    paginationDiv.appendChild(nextButton);
-
-    // Indicateur de page actuelle
-    const pageIndicator = document.createElement('span');
-    pageIndicator.textContent = `Page ${page} sur ${totalPages}`;
-    paginationDiv.appendChild(pageIndicator);
 }

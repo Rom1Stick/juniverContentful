@@ -5,6 +5,9 @@ body {
   line-height: 1.6;
   background-color: #f4f4f9;
   color: #333;
+  display: block;
+  margin: 10% auto;
+  height: 10000px;
 }
 
 header {
@@ -51,9 +54,8 @@ article img {
 
 footer {
   text-align: center;
-  padding: 10px;
   background-color: #333;
   color: white;
   position: absolute;
-  width: 100%;
+  width: 80%;
 }
