@@ -5,13 +5,23 @@ const articleId = queryParams.get('id'); // Récupère l'ID de l'article
 const SPACE_ID = '2tb1ogfq4qw9'; // ID de ton espace Contentful
 const ACCESS_TOKEN = 'WSI_A1lumv7s8y3sSzfEh19QmC-kPTu5_dACrY4qTXM'; // Clé d'accès de ton API Contentful
 
-if (!articleId) {
-    console.error("Aucun ID d'article trouvé dans l'URL.");
-    document.getElementById('article-content').innerHTML = "<p>Article introuvable ou non spécifié.</p>";
-} else {
-    console.log("Chargement des détails de l'article...");
-    fetchArticleDetails(articleId);
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const contentDiv = document.getElementById('article-content');
+    
+    // Vérifie si l'élément `#article-content` existe
+    if (!contentDiv) {
+        console.error("L'élément #article-content est introuvable dans le DOM.");
+        return;
+    }
+
+    if (!articleId) {
+        console.error("Aucun ID d'article trouvé dans l'URL.");
+        contentDiv.innerHTML = "<p>Article introuvable ou non spécifié.</p>";
+    } else {
+        console.log("Chargement des détails de l'article...");
+        fetchArticleDetails(articleId);
+    }
+});
 
 async function fetchArticleDetails(articleId) {
     const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/entries/${articleId}?access_token=${ACCESS_TOKEN}&include=2`;
@@ -55,7 +65,8 @@ async function fetchArticleDetails(articleId) {
         `;
     } catch (error) {
         console.error("Erreur lors de la récupération des détails de l'article :", error);
-        document.getElementById('article-content').innerHTML = "<p>Impossible de charger l'article. Veuillez réessayer plus tard.</p>";
+        const contentDiv = document.getElementById('article-content');
+        contentDiv.innerHTML = "<p>Impossible de charger l'article. Veuillez réessayer plus tard.</p>";
     }
 }
 

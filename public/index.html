@@ -3,14 +3,16 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Mon Blog avec Contentful</title>
-        <link rel="stylesheet" href="/css/styleBeks.css">
-        <link rel="stylesheet" href="/css/style.css">
+        <title>Juniver Santé</title>
+        <link rel="stylesheet" href="/public/css/styleBeks.css">
+        <link rel="stylesheet" href="/public/css/style.css">
     </head>
     <canvas id="neuro"></canvas>
-    <body style="width: 80%;">
+    <body>
     <header>
-        <h1>Bienvenue sur mon blog</h1>
+
+        <h1>Juniver Santé</h1>
+
         <nav>
             <ul>
                 <li><a href="index.html">Accueil</a></li>
@@ -19,13 +21,23 @@
             </ul>
         </nav>
     </header>
-
-    <aside id="filters">
-        <h3>Filtres</h3>
-        <ul id="category-list"></ul>
-    </aside>
-
+    
     <main>
+
+        <section id="presentation">
+            <h2></h2>
+            <p id="presentation-text">
+                JuniverSanté est né d'une profonde volonté d'améliorer la santé et le bien-être de nos communautés.
+                Nous croyons fermement à l'importance de valeurs telles que l'empathie, l'innovation et l'engagement.
+                Chaque étape de notre parcours a été guidée par le désir de faire une différence positive dans la vie des gens.
+            </p>
+        </section>
+        
+        <aside id="filters">
+            <h3>Filtres</h3>
+            <ul id="category-list"></ul>
+        </aside>
+
         <section id="content">
             <!-- Articles seront injectés ici -->
         </section>
@@ -35,8 +47,8 @@
         <p>© 2024 Mon Blog</p>
     </footer>
 
-    <script src="js/contentful.js"></script>
-    <script src="js/scripts.js"></script>
-    <script src="js/style/styleScript.js"></script>
+    <script src="js/main.js" type="module"></script>
+    <script src="/public/js/details.js"></script>
+    <script src="/public/js/style/styleScript.js"></script>
 </body>
 </html>

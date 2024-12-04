@@ -1,0 +1,186 @@
+/* Style global */
+body {
+  font-family: "Georgia", serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.8;
+  background-color: #fefcfb; /* Fond clair pour une lecture confortable */
+  color: #2f4f4f; /* Gris foncé pour un bon contraste */
+  width: 100%; /* Toujours 100% */
+  max-width: 100%; 
+}
+
+/* En-tête */
+header {
+  background-color: #4caf50;
+  color: white;
+  text-align: center;
+  padding: 1.5rem 0;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Ombre plus marquée */
+}
+
+header h1 {
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+header nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+header nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+header nav ul li a:hover {
+  color: #eaf7f0; /* Contraste subtil au survol */
+}
+
+/* Contenu principal */
+main {
+  padding: 2rem 5%;
+  margin-top: 1.5rem;
+}
+
+/* Article */
+#article-content {
+  background-color: white;
+  border-radius: 15px; /* Arrondi */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Effet visuel prononcé */
+  padding: 3rem;
+  max-width: 900px; /* Zone élargie */
+  margin: 0 auto;
+  text-align: left;
+  position: relative; /* Position relative pour contenir l'image en bas */
+  overflow: hidden; /* Empêche les débordements visuels */
+}
+
+#article-content h2 {
+  font-size: 2rem;
+  color: #2e8b57;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+#article-content img {
+  max-width: 100%; /* L'image prend toujours la largeur disponible */
+  width: auto; /* Garde les proportions */
+  height: auto;
+  margin: 2rem auto 0; /* Centrée horizontalement */
+  border-radius: 8px; /* Arrondi des bords */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); /* Ombre */
+  display: block; /* Bloque pour rester dans le flux */
+  position: relative; /* Pas d'effet de chevauchement */
+}
+
+
+
+#article-content p {
+  font-size: 1.3rem; /* Texte légèrement plus grand */
+  color: #333;
+  margin-bottom: 2rem;
+  line-height: 2; /* Plus d'espacement entre les lignes */
+  text-align: justify;
+}
+
+/* Bouton interactif */
+#article-content a {
+  display: inline-block;
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  background-color: #4caf50;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 10px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#article-content a:hover {
+  background-color: #2e8b57;
+  transform: translateY(-3px); /* Légère élévation au survol */
+}
+
+/* Pied de page */
+footer {
+  text-align: center;
+  background-color: #4caf50;
+  color: white;
+  padding: 1.5rem 0;
+  margin-top: 5rem; /* Ajoute de l'espace à cause de l'image */
+  font-size: 1rem;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive design */
+
+/* Tablettes */
+@media (min-width: 768px) {
+  #article-content {
+      padding: 4rem;
+      max-width: 1000px;
+  }
+
+  #article-content h2 {
+      font-size: 2.5rem;
+  }
+
+  #article-content p {
+      font-size: 1.4rem;
+  }
+
+  #article-content img {
+    max-width: 80%; 
+    margin: 3rem auto 0; 
+  }
+  
+
+  header h1 {
+      font-size: 2.2rem;
+  }
+}
+
+/* Ordinateurs */
+@media (min-width: 1024px) {
+  main {
+      padding: 3rem 10%;
+  }
+
+  #article-content {
+      padding: 5rem;
+  }
+
+  #article-content h2 {
+      font-size: 3rem;
+  }
+
+  #article-content p {
+      font-size: 1.6rem;
+  }
+
+  #article-content img {
+    max-width: 60%; 
+    margin: 4rem auto 0; 
+  }
+  
+
+  header h1 {
+      font-size: 2.5rem;
+  }
+
+  footer {
+      font-size: 1.1rem;
+  }
+}

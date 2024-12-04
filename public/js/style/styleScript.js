@@ -23,8 +23,8 @@ async function loadShaderSource(filePath) {
 
 // Initialisation des shaders avec les fichiers externes
 async function initShader() {
-    const vsSource = await loadShaderSource("/js/style/shader/vertexShader.glsl");
-    const fsSource = await loadShaderSource("/js/style/shader/fragmentShader.glsl");
+    const vsSource = await loadShaderSource("/public/js/style/shader/vertexShader.glsl");
+    const fsSource = await loadShaderSource("/public/js/style/shader/fragmentShader.glsl");
 
     const gl = canvasEl.getContext("webgl") || canvasEl.getContext("experimental-webgl");
 

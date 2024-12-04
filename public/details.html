@@ -4,23 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Détails de l'article</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/public/css/styleDetails.css">
 </head>
 <body>
     <header>
         <h1>Détails de l'article</h1>
         <nav>
             <ul>
-                <li><a href="index.html">Accueil</a></li>
+                <li><a href="index.html">Retour</a></li>
             </ul>
         </nav>
     </header>
-    <main id="article-content">
-        <!-- Les détails de l'article seront injectés ici -->
+    <!-- Contenu principal -->
+    <main>
+        <div id="article-content">  
+            <!-- Les détails de l'article seront injectés ici -->
+            <button id="view-image-button">Voir l'image en grand</button>
+        </div>
+        
+        <!-- Fenêtre modale -->
+        <!-- <div id="image-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <img id="modal-image" src="" alt="Image agrandie">
+            </div>
+        </div> -->
     </main>
+
     <footer>
         <p>© 2024 Mon Blog</p>
     </footer>
-    <script src="/js/details.js"></script>
+    <script src="js/main.js" type="module"></script>
+    <script src="/public/js/style/styleScript.js"></script>
+    <script src="/public/js/details.js"></script>
 </body>
 </html>
