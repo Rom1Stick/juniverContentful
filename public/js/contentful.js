@@ -1,5 +1,5 @@
-const SPACE_ID = '2tb1ogfq4qw9'; // Remplace par ton Space ID
-const ACCESS_TOKEN = 'WSI_A1lumv7s8y3sSzfEh19QmC-kPTu5_dACrY4qTXM'; // Remplace par ton Access Token
+export const SPACE_ID = '2tb1ogfq4qw9'; // Remplace par ton Space ID
+export const ACCESS_TOKEN = 'WSI_A1lumv7s8y3sSzfEh19QmC-kPTu5_dACrY4qTXM'; // Remplace par ton Access Token
 const BASE_URL = `https://cdn.contentful.com/spaces/${SPACE_ID}/entries`;
 
 // Fonction générique pour récupérer des entrées

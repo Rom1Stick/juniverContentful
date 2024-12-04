@@ -1,6 +1,7 @@
 import { fetchArticles, displayArticles } from './articles.js';
 import { displayCategories } from './categories.js';
 import { fetchPresentation, displayPresentation } from './presentation.js';
+import { fetchProfiles, displayProfiles, initCarousel } from './carousel.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log("Chargement des données...");
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const presentation = await fetchPresentation();
     displayPresentation(presentation);
 
-    
+    const profiles = await fetchProfiles();
+    displayProfiles(profiles);
+    initCarousel(profiles);
 });
-console.log("Main.js chargé !");
