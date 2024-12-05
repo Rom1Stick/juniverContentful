@@ -93,7 +93,7 @@ export function initCarousel(profiles) {
     };
 
     const startAutoScroll = () => {
-        autoScroll = setInterval(nextProfile, 3500);
+        autoScroll = setInterval(nextProfile, 2500);
     };
 
     const stopAutoScroll = () => {
