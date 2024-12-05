@@ -1,0 +1,250 @@
+/* Style global */
+body {
+  font-family: "Georgia", serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.8;
+  background-color: #f9f9f9; /* Fond clair pour une lisibilité optimale */
+  color: #2f4f4f; /* Gris foncé pour un bon contraste */
+}
+
+/* En-tête */
+header {
+  background-color: #4caf50;
+  color: white;
+  text-align: center;
+  padding: 1.5rem 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+header nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+header nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+header nav ul li a:hover {
+  color: #eaf7f0; /* Contraste subtil au survol */
+}
+
+/* Contenu principal */
+main {
+  padding: 2rem 5%;
+}
+
+/* Section des profils */
+#profile-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: 0 auto;
+}
+
+/* Cartes de profil */
+.profile-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden; /* Empêche tout débordement */
+}
+
+.profile-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.profile-card img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Titre */
+.profile-card h3 {
+  font-size: 1.5rem;
+  color: #2e8b57;
+  margin-bottom: 0.5rem;
+}
+
+/* Informations */
+.profile-card p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.profile-card a {
+  text-decoration: none;
+  font-weight: bold;
+  color: #4caf50;
+  transition: color 0.3s ease;
+}
+
+.profile-card a:hover {
+  color: #2e8b57;
+}
+
+/* Description */
+.profile-description {
+  position: relative;
+  text-align: left; /* Texte aligné à gauche */
+  margin-bottom: 1rem;
+  max-width: 80%; /* Limite la largeur à 80% pour une meilleure lisibilité */
+  margin-left: auto; /* Centré horizontalement */
+  margin-right: auto;
+}
+
+.short-description {
+  display: inline; /* Toujours affiché au départ */
+  word-wrap: break-word; /* Permet de gérer les mots trop longs */
+}
+
+.full-description.hidden {
+  display: none; /* Caché par défaut */
+}
+
+.toggle-description {
+  display: block;
+  margin: 1rem auto; /* Centré sous la description */
+  padding: 0.5rem 1rem;
+  background-color: #4caf50;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  max-width: 200px; /* Largeur maximale du bouton */
+  text-align: center;
+}
+
+.toggle-description:hover {
+  background-color: #2e8b57;
+}
+
+
+/* Bouton de bascule */
+.toggle-description {
+  display: inline-block;
+  margin: 0 auto;
+  padding: 0.5rem 1rem;
+  background-color: #4caf50;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-description:hover {
+  background-color: #2e8b57;
+}
+
+/* Diplômes */
+.profile-card .degrees {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.profile-card .degrees .tag {
+  display: inline-block;
+  background: #4caf50;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 5px;
+}
+
+/* Diplômes */
+.profile-card .degrees {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: right;
+}
+
+.profile-card .degrees .tag {
+  display: inline-block;
+  background: #4caf50; /* Vert naturel */
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border-radius: 15px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.profile-card .degrees .tag:hover {
+  background-color: #2e8b57;
+  transform: scale(1.1); /* Légère mise en avant au survol */
+}
+
+
+/* Pied de page */
+footer {
+  text-align: center;
+  background-color: #4caf50;
+  color: white;
+  padding: 1.5rem 0;
+  font-size: 1rem;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+
+/* Ordinateurs */
+@media (min-width: 1024px) {
+  #profile-content {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* Deux profils par ligne */
+      gap: 2rem; /* Espacement entre les profils */
+  }
+
+  .profile-card img {
+      width: 150px;
+      height: 150px;
+  }
+
+  .profile-card h3 {
+      font-size: 1.8rem;
+  }
+
+  .profile-card p {
+      font-size: 1.1rem;
+  }
+
+  .profile-card .degrees .tag {
+      font-size: 1rem;
+      padding: 0.6rem 1.2rem;
+  }
+}

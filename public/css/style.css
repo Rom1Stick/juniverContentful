@@ -69,6 +69,41 @@ main {
   perspective: 1000px; /* Ajout d'une perspective pour l'effet de profondeur */
 }
 
+/* Position des flèches à l'intérieur du conteneur */
+.carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(46, 139, 87, 0.7); /* Transparence verte */
+  color: white;
+  border: 2px solid rgba(46, 139, 87, 0.9); /* Bordure verte légèrement plus opaque */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  z-index: 10;
+  transition: background 0.3s ease, transform 0.3s ease;
+  opacity: 0.8; /* Légèrement transparent */
+}
+
+.carousel-nav:hover {
+  background: rgba(46, 139, 87, 0.9); /* Moins de transparence au survol */
+  opacity: 1; /* Plus visible */
+}
+
+#prev-profile {
+  left: 5%; /* Ajuste la flèche gauche pour rester dans le conteneur */
+}
+
+#next-profile {
+  right: 5%; /* Ajuste la flèche droite pour rester dans le conteneur */
+}
+
+/* Cartes de profil */
 .profile-card {
   position: absolute;
   transition: transform 1s ease-in-out, opacity 1s ease-in-out;
@@ -102,6 +137,7 @@ main {
   z-index: 1;
 }
 
+/* Image dans les cartes */
 .profile-card img {
   width: 100px;
   height: 100px;
@@ -110,6 +146,7 @@ main {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Texte dans les cartes */
 .profile-card h3 {
   font-size: 1.2rem;
   color: #2e8b57;
@@ -133,36 +170,7 @@ main {
   color: #2e8b57;
 }
 
-.carousel-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.5rem;
-  z-index: 10;
-  transition: background 0.3s ease;
-}
-
-.carousel-nav:hover {
-  background: rgba(0, 0, 0, 0.8);
-}
-
-#prev-profile {
-  left: 10px;
-}
-
-#next-profile {
-  right: 10px;
-}
+/* Responsive Design */
 
 /* Mobile : Un seul profil visible */
 @media (max-width: 768px) {
@@ -177,6 +185,12 @@ main {
   .profile-card {
       width: 30%;
   }
+
+  .carousel-nav {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
 }
 
 /* Ordinateurs : Trois profils visibles */
@@ -184,7 +198,22 @@ main {
   .profile-card {
       width: 25%;
   }
+
+  .carousel-nav {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+  } 
+
+  #prev-profile {
+    left: 0; /* Ajuste pour bien rester à l'extrémité gauche */
+  }
+
+  #next-profile {
+    right: 0; /* Ajuste pour bien rester à l'extrémité droite */
+  }
 }
+
 
 
 
