@@ -14,19 +14,25 @@
             <ul>
                 <li><a href="/public/index.html">Accueil</a></li>
                 <li><a href="/public/views/about.html">À propos</a></li>
-                <li><a href="/public/views/calendar.html">Calendrier</a></li>
             </ul>
         </nav>
     </header>
+
     <main>
         <div id="calendar"></div>
         <div id="event-details" class="hidden">
             <!-- Les détails des événements seront injectés ici -->
         </div>
     </main>
+
     <footer>
+        <p>
+            <a href="/public/views/privacy.html">Politique de confidentialité</a> | 
+            <a href="/public/views/legal.html">Mentions légales</a></p>
         <p>© 2024 Juniver Santé - Tous droits réservés</p>
     </footer>
+    
+
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/main.min.js"></script>
     <script type="module" src="/public/js/views/calendar.js"></script>
 </body>

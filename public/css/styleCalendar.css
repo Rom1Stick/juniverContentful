@@ -248,3 +248,58 @@ main {
     font-size: 1.5rem;
   }
 }
+
+/* Footer global */
+footer {
+  background-color: #4caf50; /* Couleur principale cohérente avec le thème */
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
+  border-top: 3px solid #2e8b57; /* Ligne de séparation subtile */
+  font-size: 1rem;
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Liens dans le footer */
+footer a {
+  color: #eaf7f0;
+  text-decoration: none;
+  font-weight: bold;
+  margin: 0 0.5rem; /* Espacement horizontal */
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+footer a:hover {
+  color: #fff; /* Survol plus clair */
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.8); /* Effet lumineux */
+}
+
+/* Contenu du footer */
+footer p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+
+/* Responsive Design */
+
+/* Tablettes */
+@media (min-width: 768px) {
+  footer {
+      padding: 1.5rem 0;
+      font-size: 1.1rem;
+  }
+
+  footer a {
+      margin: 0 1rem; /* Plus d'espacement horizontal */
+  }
+}
+
+/* Ordinateurs */
+@media (min-width: 1024px) {
+  footer {
+      padding: 2rem 0;
+      font-size: 1.2rem;
+  }
+}
+
