@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration des Articles</title>
+    <link rel="stylesheet" href="/admin/assets/css/admin_articles.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-container">
+        <h1>Gestion des Articles</h1>
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="/public/index.html" target="_blank" >Accueil</a></li>
+                <li><a href="/admin/admin.html">Tableau de bord</a></li>
+            </ul>
+        </nav>
+    </div>
+  </header>
+
+    <main>
+        <!-- Formulaire d'ajout d'article -->
+        <section id="add-article-section">
+            <h2>Ajouter un nouvel article</h2>
+              <form id="add-article-form">
+                <label for="article-title">Titre</label>
+                <input type="text" id="article-title" required>
+            
+                <label for="article-summary">Résumé</label>
+                <textarea id="article-summary" rows="4" required></textarea>
+            
+                <label for="article-content">Contenu</label>
+                <textarea id="article-content" rows="6" required></textarea>
+            
+                <label for="article-image">Image</label>
+                <input type="file" id="article-image" accept="image/*">
+            
+                <button type="submit">Ajouter l'article</button>
+            </form>
+        </section>
+
+        <!-- Formulaire pour modifier un article -->
+        <section id="update-article-section" style="display: none;">
+          <h2>Modifier l'article</h2>
+            <form id="update-article-form">
+              <label for="update-article-title">Titre</label>
+              <input type="text" id="update-article-title" required>
+          
+              <label for="update-article-summary">Résumé</label>
+              <textarea id="update-article-summary" rows="4" required></textarea>
+          
+              <label for="update-article-content">Contenu</label>
+              <textarea id="update-article-content" rows="6" required></textarea>
+          
+              <label for="update-article-image">Image</label>
+              <input type="file" id="update-article-image" accept="image/*">
+          
+              <button type="submit">Mettre à jour l'article</button>
+          </form>
+        </section>
+
+
+        <!-- Section pour afficher les articles -->
+        <section id="articles-list">
+            <h2>Liste des Articles</h2>
+            <div id="articles-container">
+                <!-- Les articles seront affichés ici -->
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>© 2024 Juniver Santé</p>
+    </footer>
+
+    <script type="module" src="/admin/assets/js/admin_articles.js"></script>
+</body>
+</html>

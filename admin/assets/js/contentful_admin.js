@@ -407,3 +407,299 @@ export async function updateAdminProfile(profileId, profileData) {
         throw error;
     }
 }
+
+
+// Articles Page 
+// Fonction pour créer un article
+export async function createArticle({ title, summary, content, imageFile }) {
+    const url = BASE_CMA_URL;
+    const headers = {
+        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
+        'Content-Type': 'application/vnd.contentful.management.v1+json',
+        'X-Contentful-Content-Type': 'article',
+    };
+
+    const data = {
+        fields: {
+            title: { 'en-US': title },
+            summary: { 'en-US': summary },
+            content: { 'en-US': content },
+        },
+    };
+
+    try {
+        // Étape 1 : Télécharger l'image si elle existe
+        if (imageFile) {
+            const imageId = await uploadProfileImage(imageFile); // Réutilisation de la fonction pour télécharger une image
+            data.fields.image = {
+                'en-US': {
+                    sys: { type: 'Link', linkType: 'Asset', id: imageId },
+                },
+            };
+        }
+
+        // Étape 2 : Créer l'article
+        const response = await fetch(url, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Erreur lors de la création de l'article :", errorData);
+            throw new Error(`Erreur HTTP : ${response.status}`);
+        }
+
+        const createdArticle = await response.json();
+
+        // Étape 3 : Publier l'article immédiatement
+        await publishArticle(createdArticle.sys.id);
+
+        return createdArticle;
+    } catch (error) {
+        console.error("Erreur lors de la création de l'article :", error.message || error);
+        throw error;
+    }
+}
+
+
+
+// Fonction pour publier un article
+async function publishArticle(articleId) {
+    const url = `${BASE_CMA_URL}/${articleId}/published`;
+    const headers = {
+        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
+        'Content-Type': 'application/vnd.contentful.management.v1+json',
+    };
+
+    try {
+        // Récupérer les métadonnées actuelles de l'article
+        const entryUrl = `${BASE_CMA_URL}/${articleId}`;
+        const entryResponse = await fetch(entryUrl, { method: 'GET', headers });
+        if (!entryResponse.ok) {
+            const errorData = await entryResponse.json();
+            console.error("Erreur lors de la récupération de l'article :", errorData);
+            throw new Error(`Erreur lors de la récupération de l'article : ${entryResponse.status}`);
+        }
+
+        const entryData = await entryResponse.json();
+        const currentVersion = entryData.sys.version; // Obtenir la version actuelle
+
+        // Publier l'article
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                ...headers,
+                'X-Contentful-Version': currentVersion, // Inclure la version correcte
+            },
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Erreur lors de la publication de l'article :", errorData);
+            throw new Error(`Erreur lors de la publication de l'article : ${response.status}`);
+        }
+
+        console.log("Article publié avec succès !");
+    } catch (error) {
+        console.error("Erreur lors de la publication de l'article :", error.message || error);
+        throw error;
+    }
+}
+
+export async function uploadImage(file) {
+    const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!allowedMimeTypes.includes(file.type)) {
+        throw new Error("Type de fichier non autorisé. Veuillez utiliser un fichier JPEG, PNG ou GIF.");
+    }
+
+    try {
+        console.log("Début de l'upload de l'image...");
+
+        // Étape 1 : Uploader le fichier brut
+        const rawFileUploadResponse = await fetch(`https://upload.contentful.com/spaces/${SPACE_ID}/uploads`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
+                'Content-Type': 'application/octet-stream',
+            },
+            body: file,
+        });
+
+        if (!rawFileUploadResponse.ok) {
+            throw new Error("Erreur lors de l'upload du fichier brut.");
+        }
+
+        const uploadData = await rawFileUploadResponse.json();
+
+        // Étape 2 : Créer un asset
+        const assetResponse = await fetch(`${BASE_UPLOAD_URL}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
+                'Content-Type': 'application/vnd.contentful.management.v1+json',
+            },
+            body: JSON.stringify({
+                fields: {
+                    title: { 'en-US': file.name },
+                    file: {
+                        'en-US': {
+                            contentType: file.type,
+                            fileName: file.name,
+                            uploadFrom: {
+                                sys: { type: 'Link', linkType: 'Upload', id: uploadData.sys.id },
+                            },
+                        },
+                    },
+                },
+            }),
+        });
+
+        if (!assetResponse.ok) {
+            throw new Error("Erreur lors de la création de l'asset.");
+        }
+
+        const assetData = await assetResponse.json();
+
+        // Étape 3 : Attendre que l'asset soit traité
+        await waitForImageProcessing(assetData.sys.id);
+
+        // Étape 4 : Publier l'asset
+        await publishAsset(assetData.sys.id);
+
+        console.log("Image uploadée et publiée avec succès !");
+        return assetData.sys.id;
+    } catch (error) {
+        console.error("Erreur lors de l'upload de l'image :", error);
+        throw error;
+    }
+}
+
+// Nouvelle fonction dédiée à l'attente du traitement de l'image
+async function waitForImageProcessing(assetId) {
+    const url = `${BASE_UPLOAD_URL}/${assetId}`;
+    const headers = {
+        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
+    };
+
+    let retries = 10;
+    while (retries > 0) {
+        const response = await fetch(url, { method: 'GET', headers });
+
+        if (!response.ok) throw new Error(`Erreur lors de la vérification de l'asset : ${response.status}`);
+
+        const assetData = await response.json();
+        const fileDetails = assetData.fields?.file?.['en-US'];
+
+        if (fileDetails && fileDetails.url && fileDetails.details?.image?.width) {
+            console.log("L'asset est prêt avec toutes les métadonnées !");
+            return;
+        }
+
+        console.log(`Asset non prêt. Réessai dans 2 secondes... (${retries} restantes)`);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        retries--;
+    }
+
+    throw new Error("L'asset n'a pas été complètement traité dans le temps imparti.");
+}
+
+
+// Fonction pour mettre à jour un article
+export async function updateArticle(articleId, updatedData) {
+    const url = `${BASE_CMA_URL}/${articleId}`;
+    const headers = {
+        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+    };
+
+    const data = {
+        fields: {
+            title: { 'en-US': updatedData.title },
+            summary: { 'en-US': updatedData.summary },
+            content: { 'en-US': updatedData.content },
+        },
+    };
+
+    if (updatedData.imageId) {
+        data.fields.image = {
+            'en-US': {
+                sys: {
+                    type: 'Link',
+                    linkType: 'Asset',
+                    id: updatedData.imageId,
+                },
+            },
+        };
+    }
+
+    const response = await fetch(url, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Erreur lors de la mise à jour de l'article :", errorData);
+        throw new Error(`Erreur HTTP : ${response.status}`);
+    }
+
+    // Publier l'article après mise à jour
+    await publishArticle(articleId);
+
+    return response.json();
+}
+
+
+// Fonction pour supprimer un article
+export async function deleteArticle(articleId) {
+    const url = `${BASE_CMA_URL}/${articleId}`;
+    const headers = {
+        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
+        'Content-Type': 'application/vnd.contentful.management.v1+json',
+    };
+
+    try {
+        const response = await fetch(url, { method: 'DELETE', headers });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => null); // Empêche une erreur supplémentaire
+            console.error("Erreur lors de la suppression de l'article :", errorData || response.statusText);
+            throw new Error(`Erreur lors de la suppression de l'article : ${response.status}`);
+        }
+
+        console.log("Article supprimé avec succès !");
+        return true; // Retourne une confirmation de succès
+    } catch (error) {
+        console.error("Erreur lors de la suppression de l'article :", error);
+        throw error;
+    }
+}
+
+
+// Fonction pour dépublier un article
+export async function unpublishArticle(articleId) {
+    const url = `${BASE_CMA_URL}/${articleId}/published`;
+    const headers = {
+        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
+        'Content-Type': 'application/vnd.contentful.management.v1+json',
+    };
+
+    try {
+        const response = await fetch(url, { method: 'DELETE', headers });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Erreur lors de la dépublication de l'article :", errorData);
+            throw new Error(`Erreur lors de la dépublication de l'article : ${response.status}`);
+        }
+
+        console.log("Article dépublié avec succès !");
+    } catch (error) {
+        console.error("Erreur lors de la dépublication de l'article :", error);
+        throw error;
+    }
+}
+
