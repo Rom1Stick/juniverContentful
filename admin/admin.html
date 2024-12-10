@@ -4,26 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administration</title>
-    <link rel="stylesheet" href="assets/css/admin.css">
+    <!-- Lien pour Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/admin/assets/css/admin.css">
 </head>
 <body>
-    <header>
+    <header class="admin-header">
         <h1>Panneau d'administration</h1>
     </header>
-    <main>
-        <!-- Zone de contenu administratif -->
-        <section id="profiles-management">
-            <h2>Gestion des profils</h2>
-            <!-- Contenu -->
-        </section>
-        <section id="events-management">
-            <h2>Gestion des événements</h2>
-            <!-- Contenu -->
+    <main class="admin-main">
+        <section class="admin-navigation">
+            <h2>Services d'administration</h2>
+            <div class="admin-services">
+                <a href="/admin/assets/views/admin_profiles.html" class="admin-service">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Gestion des profils</span>
+                </a>
+                <a href="events.html" class="admin-service">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Gestion des événements</span>
+                </a>
+                <a href="settings.html" class="admin-service">
+                    <i class="fas fa-cogs"></i>
+                    <span>Paramètres</span>
+                </a>
+                <a href="analytics.html" class="admin-service">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Statistiques</span>
+                </a>
+            </div>
         </section>
     </main>
-    <footer>
-        <p>© 2024 Juniver Santé</p>
+    <footer class="admin-footer">
+        <p>© 2024 Juniver Santé - Tous droits réservés</p>
     </footer>
-    <script type="module" src="assets/js/admin.js"></script>
+    <script src="/admin/assets/js/admin.js"></script>
 </body>
 </html>

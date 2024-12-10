@@ -1,18 +1,27 @@
-import { fetchContent, fetchProfilesWithAssets, fetchEventsWithAssets } from '../../public/js/contentful.js';
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("Panneau d'administration chargé avec succès !");
 
-// Exemple d'utilisation dans le panneau d'administration
-document.addEventListener('DOMContentLoaded', async () => {
-    console.log("Chargement de l'administration...");
-    
-    try {
-        const profiles = await fetchProfilesWithAssets();
-        console.log("Profils chargés :", profiles);
+    // Vérification de l'état des services pour afficher des notifications si nécessaire
+    const checkServiceStatus = async () => {
+        const services = [
+            { name: "Gestion des profils", url: "profiles.html" },
+            { name: "Gestion des événements", url: "events.html" },
+            { name: "Paramètres", url: "settings.html" },
+            { name: "Statistiques", url: "analytics.html" },
+        ];
 
-        const events = await fetchEventsWithAssets();
-        console.log("Événements chargés :", events);
+        for (const service of services) {
+            try {
+                const response = await fetch(service.url, { method: "HEAD" });
+                if (!response.ok) {
+                    console.warn(`${service.name} est indisponible.`);
+                }
+            } catch (error) {
+                console.error(`Erreur lors de la vérification de ${service.name} :`, error);
+            }
+        }
+    };
 
-        // Ajoutez ici vos fonctions pour afficher les données dans le panneau d'administration
-    } catch (error) {
-        console.error("Erreur lors du chargement des données :", error);
-    }
+    // Lancer la vérification des services
+    checkServiceStatus();
 });

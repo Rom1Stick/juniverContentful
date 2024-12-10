@@ -1,158 +1,102 @@
-/* Réinitialisation et styles globaux */
+/* Mobile-first design */
 body {
-  font-family: "Arial", sans-serif;
+  font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f9f9f9; /* Fond léger pour une meilleure lisibilité */
-  color: #333; /* Texte sombre pour contraste */
-  line-height: 1.6;
+  color: #333;
+  background-color: #f9f9f9;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
-  transition: color 0.3s ease;
-}
-
-a:hover {
-  color: #3b82f6; /* Bleu vif au survol */
-}
-
-/* En-tête */
-header {
-  background-color: #3b82f6; /* Couleur d'en-tête commune */
-  color: white;
+.admin-header {
+  background-color: #2c3e50;
+  color: #fff;
   text-align: center;
-  padding: 1.5rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
 }
 
-header h1 {
+.admin-header h1 {
   margin: 0;
   font-size: 1.8rem;
 }
 
-header nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0 0;
+.admin-main {
+  padding: 20px;
+}
+
+.admin-navigation h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: #2c3e50;
+}
+
+.admin-services {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 1rem;
+  gap: 20px;
 }
 
-header nav ul li a {
-  color: white;
-  font-weight: bold;
-  font-size: 1rem;
-}
-
-header nav ul li a:hover {
-  color: #bfdbfe;
-}
-
-/* Boutons */
-button {
-  border: none;
-  border-radius: 5px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  padding: 0.6rem 1.2rem;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-button:hover {
-  transform: translateY(-2px);
-}
-
-button.edit {
-  background-color: #34d399; /* Vert pour éditer */
-  color: white;
-}
-
-button.edit:hover {
-  background-color: #059669;
-}
-
-button.delete {
-  background-color: #ef4444; /* Rouge pour supprimer */
-  color: white;
-}
-
-button.delete:hover {
-  background-color: #b91c1c;
-}
-
-/* Table commune */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 2rem;
-  background: white;
+.admin-service {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #333;
+  background-color: #fff;
+  border: 1px solid #ddd;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  padding: 20px;
+  width: 130px;
+  height: 150px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+  text-align: center;
 }
 
-thead {
-  background-color: #3b82f6;
-  color: white;
+.admin-service i {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #3498db;
 }
 
-thead th {
-  padding: 1rem;
+.admin-service span {
   font-size: 1rem;
-  text-align: left;
+  font-weight: 600;
+  color: #333;
 }
 
-tbody td {
-  padding: 0.8rem;
-  border-bottom: 1px solid #e5e7eb;
+.admin-service:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  border-color: #3498db;
+  color: #3498db;
 }
 
-tbody tr:hover {
-  background-color: #f1f5f9; /* Surbrillance */
-}
-
-tbody td:last-child {
+.admin-footer {
   text-align: center;
+  padding: 15px;
+  background-color: #2c3e50;
+  color: #fff;
+  font-size: 0.85rem;
 }
 
-/* Pied de page */
-footer {
-  text-align: center;
-  background-color: #3b82f6;
-  color: white;
-  padding: 1rem;
-  font-size: 0.9rem;
-  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  body {
-      font-size: 0.9rem;
+/* Responsive design */
+@media (min-width: 768px) {
+  .admin-services {
+      gap: 30px;
   }
 
-  table {
-      font-size: 0.9rem;
+  .admin-service {
+      width: 150px;
+      height: 170px;
   }
 
-  button {
-      font-size: 0.8rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  body {
-      font-size: 1rem;
+  .admin-service i {
+      font-size: 3rem;
   }
 
-  table {
-      font-size: 1rem;
-  }
-
-  button {
-      font-size: 1rem;
+  .admin-service span {
+      font-size: 1.1rem;
   }
 }
