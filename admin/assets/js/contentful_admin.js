@@ -614,6 +614,17 @@ export async function updateArticle(articleId, updatedData) {
         'Content-Type': 'application/json',
     };
 
+    // 1. Récupérer la version actuelle de l'article
+    const versionResponse = await fetch(url, { method: 'GET', headers });
+    if (!versionResponse.ok) {
+        const errorData = await versionResponse.json();
+        console.error("Erreur lors de la récupération de la version de l'article :", errorData);
+        throw new Error(`Erreur HTTP : ${versionResponse.status}`);
+    }
+    const versionData = await versionResponse.json();
+    const currentVersion = versionData.sys.version; // La version actuelle
+
+    // Construire l'objet data avec les nouvelles valeurs
     const data = {
         fields: {
             title: { 'en-US': updatedData.title },
@@ -622,35 +633,44 @@ export async function updateArticle(articleId, updatedData) {
         },
     };
 
-    if (updatedData.imageId) {
+    if (updatedData.imageFile) {
+        // Si on met à jour l'image, il faut d'abord l'upload et obtenir un imageId
+        const imageId = await uploadProfileImage(updatedData.imageFile);
         data.fields.image = {
             'en-US': {
                 sys: {
                     type: 'Link',
                     linkType: 'Asset',
-                    id: updatedData.imageId,
+                    id: imageId,
                 },
             },
         };
     }
 
-    const response = await fetch(url, {
+    // 2. Mettre à jour l'article avec la bonne version
+    const updateResponse = await fetch(url, {
         method: 'PUT',
-        headers,
+        headers: {
+            ...headers,
+            'X-Contentful-Version': currentVersion
+        },
         body: JSON.stringify(data),
     });
 
-    if (!response.ok) {
-        const errorData = await response.json();
+    if (!updateResponse.ok) {
+        const errorData = await updateResponse.json();
         console.error("Erreur lors de la mise à jour de l'article :", errorData);
-        throw new Error(`Erreur HTTP : ${response.status}`);
+        throw new Error(`Erreur HTTP : ${updateResponse.status}`);
     }
 
-    // Publier l'article après mise à jour
+    console.log("Article mis à jour avec succès !");
+
+    // 3. Publier l'article après la mise à jour
     await publishArticle(articleId);
 
-    return response.json();
+    return updateResponse.json();
 }
+
 
 
 // Fonction pour supprimer un article
@@ -702,4 +722,3 @@ export async function unpublishArticle(articleId) {
         throw error;
     }
 }
-

@@ -104,19 +104,20 @@ async function handleEditArticle(articleId) {
 
   try {
       const article = await fetchArticleById(articleId);
-      const titleInput = document.getElementById('edit-article-title');
-      const summaryInput = document.getElementById('edit-article-summary');
-      const contentInput = document.getElementById('edit-article-content');
-      const imageInput = document.getElementById('edit-article-image');
+      const titleInput = document.getElementById('update-article-title');
+      const summaryInput = document.getElementById('update-article-summary');
+      const contentInput = document.getElementById('update-article-content');
+      const imageInput = document.getElementById('update-article-image');
 
+      // Les champs dans l'API Contentful sont stockés sous article.fields.xxx['en-US']
       titleInput.value = article.fields.title['en-US'];
       summaryInput.value = article.fields.summary['en-US'];
       contentInput.value = article.fields.content['en-US'];
 
       // Afficher le formulaire de modification
-      document.getElementById('edit-article-section').style.display = 'block';
+      document.getElementById('update-article-section').style.display = 'block';
 
-      const form = document.getElementById('edit-article-form');
+      const form = document.getElementById('update-article-form');
       form.onsubmit = async (e) => {
           e.preventDefault();
 
@@ -124,7 +125,7 @@ async function handleEditArticle(articleId) {
               title: titleInput.value,
               summary: summaryInput.value,
               content: contentInput.value,
-              imageFile: imageInput.files[0], // Inclure le fichier image sélectionné
+              imageFile: imageInput.files[0], // Inclure le fichier image sélectionné si besoin
           };
 
           try {
@@ -140,8 +141,6 @@ async function handleEditArticle(articleId) {
       console.error("Erreur lors de la récupération de l'article pour modification :", error);
   }
 }
-
-
 
 // Fonction pour gérer la suppression d'un article
 async function handleDeleteArticle(articleId) {

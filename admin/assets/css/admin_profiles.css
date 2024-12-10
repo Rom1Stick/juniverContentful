@@ -17,139 +17,179 @@ img {
   display: block;
 }
 
-/* Header */
-header {
-  background-color: #2563eb; /* Bleu vif */
+/* Variables */
+:root {
+  --primary-color: #2563eb;
+  --primary-hover: #1e40af;
+  --success-color: #10b981;
+  --success-hover: #059669;
+  --danger-color: #ef4444;
+  --danger-hover: #b91c1c;
+  --background-white: #fff;
+  --border-color: #d1d5db;
+  --gray-light: #e5e7eb;
+  --gray-lighter: #f9fafb;
+  --font-small: 0.9rem;
+  --border-radius: 5px;
+  --border-radius-large: 10px;
+}
+
+/* HEADER */
+.header {
+  background-color: var(--primary-color);
   color: white;
   padding: 1rem;
   text-align: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-header h1 {
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header h1 {
   font-size: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
-header nav ul {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
+.header nav ul {
   list-style: none;
-  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-header nav ul li a {
+.header nav ul li a {
   color: white;
   text-decoration: none;
   font-size: 1rem;
-  transition: color 0.3s;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  transition: background-color 0.3s, color 0.3s;
 }
 
-header nav ul li a:hover {
-  color: #93c5fd; /* Bleu clair */
+.header nav ul li a:hover {
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Conteneur principal */
-main {
+/* MAIN */
+.main {
   padding: 1rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* Table des profils */
-.table-container {
-  background: white;
-  border-radius: 10px;
+/* SECTION TABLEAU DE PROFILS */
+.profile-management .table-container {
+  background: var(--background-white);
+  border-radius: var(--border-radius-large);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  overflow-x: auto; /* Activer le défilement horizontal si nécessaire */
+  overflow-x: auto;
   padding: 1rem;
 }
 
-table {
+.responsive-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-size: var(--font-small);
+  min-width: 600px;
 }
 
-thead {
-  background-color: #2563eb;
+.responsive-table thead {
+  background-color: var(--primary-color);
   color: white;
 }
 
-thead th {
+.responsive-table thead th {
   text-align: left;
   padding: 0.8rem;
+  font-weight: bold;
 }
 
-tbody tr {
-  border-bottom: 1px solid #e5e7eb;
+.responsive-table tbody tr {
+  border-bottom: 1px solid var(--gray-light);
 }
 
-tbody tr:hover {
-  background-color: #f9fafb;
+.responsive-table tbody tr:hover {
+  background-color: var(--gray-lighter);
 }
 
-td {
+.responsive-table td {
   padding: 0.8rem;
+  vertical-align: middle;
 }
 
-td img.profile-img {
+.profile-img {
   width: 50px;
   height: 50px;
   border-radius: 50%;
   object-fit: cover;
 }
 
-td input[type="file"] {
+.profile-img-input.hidden {
   display: none;
 }
 
-td:last-child {
-  text-align: center;
-}
-
+/* Boutons Actions */
 button {
   padding: 0.5rem 1rem;
   border: none;
-  border-radius: 5px;
-  font-size: 0.9rem;
+  border-radius: var(--border-radius);
+  font-size: var(--font-small);
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
 }
 
-button.edit-profile-btn {
-  background-color: #10b981; /* Vert */
+.edit-profile-btn {
+  background-color: var(--success-color);
   color: white;
 }
 
-button.edit-profile-btn:hover {
-  background-color: #059669;
+.edit-profile-btn:hover {
+  background-color: var(--success-hover);
   transform: translateY(-2px);
 }
 
-button.delete-profile-btn {
-  background-color: #ef4444; /* Rouge */
+.delete-profile-btn {
+  background-color: var(--danger-color);
   color: white;
 }
 
-button.delete-profile-btn:hover {
-  background-color: #b91c1c;
+.delete-profile-btn:hover {
+  background-color: var(--danger-hover);
   transform: translateY(-2px);
 }
 
-/* Formulaire d'ajout */
+/* SECTION AJOUT DE PROFIL */
 .add-profile {
-  background: white;
-  border-radius: 10px;
+  background: var(--background-white);
+  border-radius: var(--border-radius-large);
   padding: 1rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+  /* Centrage horizontal du contenu (titre + formulaire) */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .add-profile h2 {
   font-size: 1.5rem;
-  color: #2563eb;
+  color: var(--primary-color);
   margin-bottom: 1rem;
+  text-align: center;
+  width: 100%;
+}
+
+/* Formulaire d'ajout */
+.form {
+  width: 100%;
+  max-width: 500px;
 }
 
 .form-group {
@@ -167,15 +207,16 @@ label {
 input,
 textarea {
   padding: 0.8rem;
-  border: 1px solid #d1d5db;
-  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
   font-size: 1rem;
+  font-family: inherit;
   transition: border-color 0.3s;
 }
 
 input:focus,
 textarea:focus {
-  border-color: #2563eb;
+  border-color: var(--primary-color);
   outline: none;
 }
 
@@ -184,85 +225,116 @@ textarea {
   min-height: 100px;
 }
 
-button.submit-btn {
-  background-color: #2563eb;
+/* Bouton "Ajouter" */
+.btn-primary {
+  background-color: var(--primary-color);
   color: white;
   font-size: 1rem;
   border: none;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   padding: 0.8rem 1.5rem;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
+  font-weight: bold;
+  width: 100%;
+  text-align: center;
+  margin-top: 1rem;
 }
 
-button.submit-btn:hover {
-  background-color: #1e40af;
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
 }
 
-/* Responsivité - Mobile d'abord */
+/* FOOTER */
+.footer {
+  background-color: var(--primary-color);
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  margin-top: 2rem;
+  font-size: 0.875rem;
+  box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+}
+
+.footer p {
+  margin: 0;
+}
+
+/* RESPONSIVITÉ */
+
+/* Dès 600px (tablettes) */
 @media (min-width: 600px) {
-  td img.profile-img {
-      width: 60px;
-      height: 60px;
+  .header nav ul {
+    flex-direction: row;
+  }
+
+  .profile-img {
+    width: 60px;
+    height: 60px;
   }
 
   button {
-      font-size: 1rem;
+    font-size: 1rem;
   }
 }
 
+/* Dès 768px (tablettes larges/petits laptops) */
 @media (min-width: 768px) {
   .main {
-      gap: 3rem;
+    gap: 3rem;
   }
 
   .table-container {
-      padding: 1.5rem;
+    padding: 1.5rem;
   }
 
-  td img.profile-img {
-      width: 70px;
-      height: 70px;
+  .profile-img {
+    width: 70px;
+    height: 70px;
   }
 }
 
+/* Dès 1024px (desktop) */
 @media (min-width: 1024px) {
-  header {
-      padding: 1.5rem;
+  .header {
+    padding: 1.5rem;
   }
 
-  header h1 {
-      font-size: 2rem;
+  .header h1 {
+    font-size: 2rem;
   }
 
-  table {
-      font-size: 1rem;
+  .responsive-table {
+    font-size: 1rem;
   }
 
   .add-profile {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+    padding: 2rem;
+  }
+
+  .form {
+    max-width: 600px;
   }
 
   .form-group {
-      flex-direction: row;
-      align-items: center;
-      gap: 1rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
   }
 
   label {
-      width: 30%;
-      text-align: right;
+    width: 30%;
+    text-align: right;
   }
 
   input,
   textarea {
-      width: 70%;
+    width: 70%;
   }
 
-  button.submit-btn {
-      grid-column: span 2;
-      justify-self: center;
+  .btn-primary {
+    display: inline-block;
+    padding: 0.8rem 2rem;
   }
 }
