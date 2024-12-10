@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Profils - Administration</title>
+    <link rel="stylesheet" href="/admin/assets/css/admin.css">
+    <link rel="stylesheet" href="/admin/assets/css/admin_profiles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <h1>Gestion des Profils</h1>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="/index.html">Accueil</a></li>
+                    <li><a href="admin.html">Tableau de bord</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="profile-management">
+            <div class="table-container">
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Nom</th>
+                            <th>Métier</th>
+                            <th>Email</th>
+                            <th>Téléphone</th>
+                            <th>Site Web</th>
+                            <th>Diplômes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="profiles-table-body">
+                        <tr>
+                            <td>
+                                <img src="{imageUrl}" alt="Profil" class="profile-img">
+                                <input type="file" class="profile-img-input hidden">
+                            </td>                
+                            <td class="editable">Nom</td>
+                            <td class="editable">Métier</td>
+                            <td class="editable">Email</td>
+                            <td class="editable">Téléphone</td>
+                            <td class="editable">Site Web</td>
+                            <td class="editable">Diplômes</td>
+                            <td>
+                                <button class="edit-profile-btn" data-id="ID_PROFIL">Modifier</button>
+                                <button class="delete-profile-btn" data-id="ID_PROFIL">Supprimer</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="add-profile">
+            <h2>Ajouter un Profil</h2>
+            <form id="add-profile-form" class="form">
+                <div class="form-group">
+                    <label for="profile-name">Nom :</label>
+                    <input type="text" id="profile-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="profile-job">Métier :</label>
+                    <input type="text" id="profile-job" required>
+                </div>
+                <div class="form-group">
+                    <label for="profile-email">Email :</label>
+                    <input type="email" id="profile-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="profile-phone">Téléphone :</label>
+                    <input type="tel" id="profile-phone">
+                </div>
+                <div class="form-group">
+                    <label for="profile-website">Site Web :</label>
+                    <input type="url" id="profile-website">
+                </div>
+                <div class="form-group">
+                    <label for="profile-description">Description :</label>
+                    <textarea id="profile-description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="profile-diplomas">Diplômes :</label>
+                    <input type="text" id="profile-diplomas" placeholder="Séparez par des virgules">
+                </div>
+                <div class="form-group">
+                    <label for="profile-image">Image :</label>
+                    <input type="file" id="profile-image" accept="image/*">
+                </div>
+                <button type="submit" class="btn-primary">Ajouter</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2024 Juniver Santé - Tous droits réservés</p>
+    </footer>
+    <script type="module" src="/admin/assets/js/admin_profiles.js"></script>
+</body>
+</html>

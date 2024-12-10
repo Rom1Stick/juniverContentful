@@ -1,0 +1,158 @@
+/* Réinitialisation et styles globaux */
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9; /* Fond léger pour une meilleure lisibilité */
+  color: #333; /* Texte sombre pour contraste */
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #3b82f6; /* Bleu vif au survol */
+}
+
+/* En-tête */
+header {
+  background-color: #3b82f6; /* Couleur d'en-tête commune */
+  color: white;
+  text-align: center;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+header nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+header nav ul li a {
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+header nav ul li a:hover {
+  color: #bfdbfe;
+}
+
+/* Boutons */
+button {
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.6rem 1.2rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+button.edit {
+  background-color: #34d399; /* Vert pour éditer */
+  color: white;
+}
+
+button.edit:hover {
+  background-color: #059669;
+}
+
+button.delete {
+  background-color: #ef4444; /* Rouge pour supprimer */
+  color: white;
+}
+
+button.delete:hover {
+  background-color: #b91c1c;
+}
+
+/* Table commune */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+thead {
+  background-color: #3b82f6;
+  color: white;
+}
+
+thead th {
+  padding: 1rem;
+  font-size: 1rem;
+  text-align: left;
+}
+
+tbody td {
+  padding: 0.8rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+tbody tr:hover {
+  background-color: #f1f5f9; /* Surbrillance */
+}
+
+tbody td:last-child {
+  text-align: center;
+}
+
+/* Pied de page */
+footer {
+  text-align: center;
+  background-color: #3b82f6;
+  color: white;
+  padding: 1rem;
+  font-size: 0.9rem;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  body {
+      font-size: 0.9rem;
+  }
+
+  table {
+      font-size: 0.9rem;
+  }
+
+  button {
+      font-size: 0.8rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+      font-size: 1rem;
+  }
+
+  table {
+      font-size: 1rem;
+  }
+
+  button {
+      font-size: 1rem;
+  }
+}
