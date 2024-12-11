@@ -28,11 +28,13 @@ export async function fetchProfilesWithAssets() {
         return data.items.map(item => {
             const imageRef = item.fields.image?.sys?.id;
             const imageAsset = assets.find(asset => asset.sys.id === imageRef);
-            const imageUrl = imageAsset?.fields?.file?.url ? `https:${imageAsset.fields.file.url}` : './images/default-profile.jpg';
+            const imageUrl = imageAsset?.fields?.file?.url 
+                ? `https:${imageAsset.fields.file.url}` 
+                : ''; // Pas de fallback, on renvoie une chaîne vide
 
             const diplomas = item.fields.diplomas
                 ? item.fields.diplomas.split(',').map(degree => degree.trim())
-                : []; // Si vide, renvoie un tableau vide
+                : [];
 
             return {
                 id: item.sys.id,
@@ -44,8 +46,7 @@ export async function fetchProfilesWithAssets() {
                 description: item.fields.description,
                 diplomas: diplomas,
                 imageUrl: imageUrl,
-                // Ajout pour animations
-                link: `about.html?id=${item.sys.id}` // Lien utilisé pour les animations de profils
+                link: `about.html?id=${item.sys.id}`
             };
         });
     } catch (error) {
@@ -53,6 +54,7 @@ export async function fetchProfilesWithAssets() {
         return [];
     }
 }
+
 
 // Fonction pour récupérer des événements avec leurs assets
 export async function fetchEventsWithAssets() {
