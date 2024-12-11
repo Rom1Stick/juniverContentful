@@ -48,6 +48,29 @@ main {
   padding: 2rem 5%;
 }
 
+/* Nouvelle section about-info */
+.about-info {
+  max-width: 800px;
+  margin: 0 auto 3rem auto; /* Centré et espace en bas */
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.about-info h2 {
+  font-size: 1.5rem;
+  color: #2e8b57;
+  margin-bottom: 1rem;
+}
+
+.about-info p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
 /* Section des profils */
 #profile-content {
   display: flex;
@@ -145,44 +168,6 @@ main {
   background-color: #2e8b57;
 }
 
-
-/* Bouton de bascule */
-.toggle-description {
-  display: inline-block;
-  margin: 0 auto;
-  padding: 0.5rem 1rem;
-  background-color: #4caf50;
-  color: white;
-  font-size: 0.9rem;
-  font-weight: bold;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.toggle-description:hover {
-  background-color: #2e8b57;
-}
-
-/* Diplômes */
-.profile-card .degrees {
-  margin-top: 1rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  justify-content: center;
-}
-
-.profile-card .degrees .tag {
-  display: inline-block;
-  background: #4caf50;
-  color: white;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  border-radius: 5px;
-}
-
 /* Diplômes */
 .profile-card .degrees {
   margin-top: 1rem;
@@ -208,7 +193,6 @@ main {
   background-color: #2e8b57;
   transform: scale(1.1); /* Légère mise en avant au survol */
 }
-
 
 /* Pied de page */
 footer {

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -7,12 +7,73 @@
     <!-- Lien pour Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/admin/assets/css/admin.css">
+    <style>
+        /* Styles pour le formulaire de connexion */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-box {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            max-width: 300px;
+            width: 100%;
+        }
+        .login-box h2 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        .login-box label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .login-box input[type="text"],
+        .login-box input[type="password"] {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .login-box button {
+            width: 100%;
+            padding: 0.75rem;
+            background: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .login-box button:hover {
+            background: #2e8b57;
+        }
+        .login-error {
+            color: red;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <header class="admin-header">
         <h1>Panneau d'administration</h1>
     </header>
-    <main class="admin-main">
+    <main class="admin-main" style="display:none;"> <!-- Contenu masqué tant que non identifié -->
         <section class="admin-navigation">
             <h2>Services d'administration</h2>
             <div class="admin-services">
@@ -20,13 +81,9 @@
                     <i class="fas fa-user-circle"></i>
                     <span>Gestion des profils</span>
                 </a>
-                <a href="#" class="admin-service">
+                <a href="/admin/assets/views/admin_events.html" class="admin-service">
                     <i class="fas fa-calendar-alt"></i>
                     <span>Gestion des événements</span>
-                </a>
-                <a href="#" class="admin-service">
-                    <i class="fas fa-cogs"></i>
-                    <span>Paramètres</span>
                 </a>
                 <a href="/admin/assets/views/admin_articles.html" class="admin-service">
                     <i class="fas fa-chart-line"></i>

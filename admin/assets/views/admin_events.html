@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Administration des Évènements</title>
+    <link rel="stylesheet" href="/admin/assets/css/admin_events.css">
+</head>
+<body>
+
+<header class="header">
+    <div class="header-container">
+        <h1>Gestion des Évènements</h1>
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="/public/index.html" target="_blank">Accueil</a></li>
+                <li><a href="/admin/admin.html">Tableau de bord</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <!-- Formulaire d'ajout d'évènement -->
+    <section id="add-event-section">
+        <h2>Ajouter un nouvel évènement</h2>
+        <form id="add-event-form">
+            <label for="event-title">Titre (obligatoire)</label>
+            <input type="text" id="event-title" required>
+
+            <label for="event-date">Date et heure (obligatoire, format datetime-local)</label>
+            <input type="datetime-local" id="event-date" required>
+
+            <label for="event-location">Lieu (obligatoire)</label>
+            <input type="text" id="event-location" required>
+
+            <label for="event-description">Description (optionnelle)</label>
+            <textarea id="event-description" rows="4"></textarea>
+
+            <button type="submit">Ajouter l'évènement</button>
+        </form>
+    </section>
+
+    <!-- Formulaire pour modifier un évènement -->
+    <section id="update-event-section" style="display: none;">
+        <h2>Modifier l'évènement</h2>
+        <form id="update-event-form">
+            <label for="update-event-title">Titre (obligatoire)</label>
+            <input type="text" id="update-event-title" required>
+
+            <label for="update-event-date">Date et heure (obligatoire, format datetime-local)</label>
+            <input type="datetime-local" id="update-event-date" required>
+
+            <label for="update-event-location">Lieu (obligatoire)</label>
+            <input type="text" id="update-event-location" required>
+
+            <label for="update-event-description">Description (optionnelle)</label>
+            <textarea id="update-event-description" rows="4"></textarea>
+
+            <button type="submit">Mettre à jour l'évènement</button>
+        </form>
+    </section>
+
+    <!-- Liste des évènements -->
+    <section id="events-list">
+        <h2>Liste des Évènements</h2>
+        <div id="events-container"></div>
+    </section>
+</main>
+
+<footer>
+    <p>© 2024 Juniver Santé</p>
+</footer>
+
+<script type="module" src="/admin/assets/js/admin_events.js"></script>
+</body>
+</html>

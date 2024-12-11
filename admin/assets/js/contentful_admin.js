@@ -722,3 +722,164 @@ export async function unpublishArticle(articleId) {
         throw error;
     }
 }
+
+// Page Event 
+// Évènements (Events)// Évènements (Events)
+export async function fetchEventsAdmin() {
+    const url = `${BASE_CMA_URL}?access_token=${CMA_ACCESS_TOKEN}&content_type=event&include=2`;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
+        const data = await response.json();
+        return data.items;
+    } catch (error) {
+        console.error("Erreur lors de la récupération des évènements :", error);
+        return [];
+    }
+}
+
+async function publishEvent(eventId) {
+    const url = `${BASE_CMA_URL}/${eventId}/published`;
+    const headers = {
+        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
+        'Content-Type': 'application/vnd.contentful.management.v1+json',
+    };
+
+    const entryUrl = `${BASE_CMA_URL}/${eventId}`;
+    const entryResponse = await fetch(entryUrl, { method: 'GET', headers });
+    if (!entryResponse.ok) throw new Error(`Erreur lors de la récupération de l'entrée : ${entryResponse.status}`);
+    const entryData = await entryResponse.json();
+    const currentVersion = entryData.sys.version;
+
+    const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            ...headers,
+            'X-Contentful-Version': currentVersion,
+        },
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Erreur lors de la publication de l'évènement :", errorData);
+        throw new Error(`Erreur lors de la publication : ${response.status}`);
+    }
+
+    console.log("Évènement publié avec succès !");
+}
+
+export async function createEvent({ title, date, location, description }) {
+    const headers = {
+        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
+        'Content-Type': 'application/vnd.contentful.management.v1+json',
+        'X-Contentful-Content-Type': 'event',
+    };
+
+    const data = {
+        fields: {
+            title: { 'en-US': title },
+            date: { 'en-US': date },
+            location: { 'en-US': location },
+            description: { 'en-US': description },
+        },
+    };
+
+    console.log("Données envoyées (createEvent) :", JSON.stringify(data, null, 2));
+    const response = await fetch(BASE_CMA_URL, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Erreur lors de la création de l'évènement :", errorData);
+        if (errorData.details) {
+            console.log("Détails de l'erreur (createEvent) :", JSON.stringify(errorData.details, null, 2));
+        }
+        throw new Error(`Erreur HTTP : ${response.status}`);
+    }
+
+    const createdEvent = await response.json();
+    await publishEvent(createdEvent.sys.id);
+    return createdEvent;
+}
+
+export async function updateEvent(eventId, updatedData) {
+    const entryUrl = `${BASE_CMA_URL}/${eventId}`;
+    const headers = {
+        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+    };
+
+    const versionResponse = await fetch(entryUrl, { method: 'GET', headers });
+    if (!versionResponse.ok) throw new Error(`Erreur lors de la récupération de la version : ${versionResponse.status}`);
+    const versionData = await versionResponse.json();
+    const currentVersion = versionData.sys.version;
+
+    const data = {
+        fields: {
+            title: { 'en-US': updatedData.title },
+            date: { 'en-US': updatedData.date },
+            location: { 'en-US': updatedData.location },
+            description: { 'en-US': updatedData.description },
+        },
+    };
+
+    console.log("Données envoyées (updateEvent) :", JSON.stringify(data, null, 2));
+    const response = await fetch(entryUrl, {
+        method: 'PUT',
+        headers: {
+            ...headers,
+            'X-Contentful-Version': currentVersion
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Erreur lors de la mise à jour de l'évènement :", errorData);
+        if (errorData.details) {
+            console.log("Détails de l'erreur (updateEvent) :", JSON.stringify(errorData.details, null, 2));
+        }
+        throw new Error(`Erreur HTTP : ${response.status}`);
+    }
+
+    await publishEvent(eventId);
+    console.log("Évènement mis à jour et publié avec succès !");
+}
+
+export async function deleteEvent(eventId) {
+    const url = `${BASE_CMA_URL}/${eventId}`;
+    const headers = {
+        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
+        'Content-Type': 'application/vnd.contentful.management.v1+json',
+    };
+
+    const response = await fetch(url, { method: 'DELETE', headers });
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        console.error("Erreur lors de la suppression de l'évènement :", errorData || response.statusText);
+        throw new Error(`Erreur lors de la suppression : ${response.status}`);
+    }
+
+    console.log("Évènement supprimé avec succès !");
+    return true;
+}
+
+export async function unpublishEvent(eventId) {
+    const url = `${BASE_CMA_URL}/${eventId}/published`;
+    const headers = {
+        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
+        'Content-Type': 'application/vnd.contentful.management.v1+json',
+    };
+
+    const response = await fetch(url, { method: 'DELETE', headers });
+    if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Erreur lors de la dépublication de l'évènement :", errorData);
+        throw new Error(`Erreur lors de la dépublication : ${response.status}`);
+    }
+
+    console.log("Évènement dépublié avec succès !");
+}

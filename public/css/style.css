@@ -70,7 +70,7 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  /* overflow: hidden; */
   height: 350px;
   margin: 2rem auto;
   perspective: 1000px; /* Ajout d'une perspective pour l'effet de profondeur */
@@ -92,7 +92,7 @@ main {
   justify-content: center;
   align-items: center;
   font-size: 1.5rem;
-  z-index: 10;
+  z-index: 9999 !important;
   transition: background 0.3s ease, transform 0.3s ease;
   opacity: 0.8; /* Légèrement transparent */
 }

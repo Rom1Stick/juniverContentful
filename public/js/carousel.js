@@ -42,17 +42,25 @@ export function displayProfiles(profiles) {
         return;
     }
 
-    container.innerHTML = profiles.map(profile => `
-        <div class="profile-card">
-            <img src="${profile.imageUrl || './images/default-profile.jpg'}" alt="${profile.name}">
-            <h3>${profile.name}</h3>
-            <p>${profile.job}</p>
-            <a href="/public/views/about.html" class="view-profile-btn">Voir le profil</a>
-        </div>
-    `).join('');
+    container.innerHTML = profiles.map(profile => {
+        // Générer l'HTML de l'image uniquement si une image est disponible
+        const imageHtml = profile.imageUrl 
+            ? `<img src="${profile.imageUrl}" alt="${profile.name}">` 
+            : ''; // Si pas d'image, chaîne vide (pas d'affichage d'image)
+        
+        return `
+            <div class="profile-card">
+                ${imageHtml}
+                <h3>${profile.name}</h3>
+                <p>${profile.job}</p>
+                <a href="/public/views/about.html" class="view-profile-btn">Voir le profil</a>
+            </div>
+        `;
+    }).join('');
 
     console.log("Profils affichés :", profiles);
 }
+
 
 
 export function initCarousel(profiles) {
