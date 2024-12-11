@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log("Chargement des événements...");
     try {
         const events = await fetchEvents();
+        console.log("Événements finals :", events);
         if (events && events.length > 0) {
             const currentDate = new Date();
             displayCalendar(events, currentDate);
@@ -18,37 +19,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Fonction pour récupérer les événements depuis Contentful
 async function fetchEvents() {
   try {
-      const events = await fetchContent('event');
-      console.log("Événements récupérés :", events);
+      const events = await fetchContent('event'); 
+      console.log("Événements récupérés depuis Contentful :", events);
 
-      const eventsWithLocation = await Promise.all(
-          events.map(async event => {
-              let location = 'Lieu non spécifié';
+      const eventsParsed = events.map(event => {
+          const title = event.fields.title || 'Sans titre';
+          const dateStr = event.fields.date || null;
+          const eventDate = dateStr ? new Date(dateStr) : null;
+          const location = event.fields.location || 'Lieu non spécifié';
+          const description = event.fields.description || '';
 
-              const locationField = event.fields.location;
-              if (locationField && locationField.lat && locationField.lon) {
-                  const { lat, lon } = locationField;
+          return {
+              title: title,
+              description: description,
+              date: eventDate,
+              location: location
+          };
+      });
 
-                  // Appel à l'API OpenStreetMap pour obtenir une adresse
-                  try {
-                      const address = await fetchAddressFromCoordinates(lat, lon);
-                      location = address || `Latitude: ${lat}, Longitude: ${lon}`;
-                  } catch (error) {
-                      console.warn("Impossible de récupérer l'adresse :", error);
-                      location = `Latitude: ${lat}, Longitude: ${lon}`;
-                  }
-              }
-
-              return {
-                  title: event.fields.title,
-                  description: event.fields.description,
-                  date: new Date(event.fields.date),
-                  location: location
-              };
-          })
-      );
-
-      return eventsWithLocation;
+      return eventsParsed;
   } catch (error) {
       console.error("Erreur lors de la récupération des événements :", error);
       return [];
@@ -115,14 +104,15 @@ function displayCalendar(events, date) {
         // Vérifie s'il y a des événements pour ce jour
         const dayDate = new Date(date.getFullYear(), date.getMonth(), day);
         const eventsForDay = events.filter(event =>
-            event.date.toDateString() === dayDate.toDateString()
+            event.date && event.date.toDateString() === dayDate.toDateString()
         );
 
         if (eventsForDay.length > 0) {
             dayCell.classList.add('has-event');
 
-            // Ajoute une pastille rouge au numéro du jour
+            // Ajoute une pastille (optionnelle)
             const badge = document.createElement('span');
+            badge.classList.add('event-badge');
             dayCell.appendChild(badge);
 
             // Ajoute un gestionnaire de clic pour afficher les détails des événements
@@ -155,28 +145,17 @@ function showEventDetails(eventsForDay) {
         return;
     }
 
-    detailsContainer.innerHTML = eventsForDay.map(event => `
+    detailsContainer.innerHTML = eventsForDay.map(event => {
+        const dateStr = event.date ? event.date.toLocaleDateString() : 'Date inconnue';
+        return `
         <div class="event-detail">
             <h3>${event.title}</h3>
-            <p><strong>Date :</strong> ${event.date.toLocaleDateString()}</p>
+            <p><strong>Date :</strong> ${dateStr}</p>
             <p><strong>Lieu :</strong> ${event.location}</p>
             <p>${event.description}</p>
         </div>
-    `).join('');
+        `;
+    }).join('');
 
     detailsContainer.classList.remove('hidden');
-}
-
-async function fetchAddressFromCoordinates(lat, lon) {
-  const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
-  try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
-      const data = await response.json();
-      console.log("Adresse récupérée :", data);
-      return data.display_name; // Retourne une adresse lisible
-  } catch (error) {
-      console.error("Erreur lors de la récupération de l'adresse :", error);
-      return null; // Retourne null si une erreur survient
-  }
 }
