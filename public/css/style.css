@@ -248,6 +248,68 @@ main {
   color: #556b2f;
 }
 
+/* Article Vedette */
+#featured-article {
+  background-color: #ffffff; /* Blanc pour mettre en valeur */
+  border: 1px solid #4caf50; /* Bordure verte pour démarquer */
+  border-radius: 10%; /* Coins arrondis pour une touche moderne */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Ombre pour effet de surélévation */
+  padding: 2rem 2rem;
+  margin: 3rem auto;
+  text-align: center;
+  width: 80%;
+  max-width: 800px; /* Limiter la largeur sur les écrans larges */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#featured-article:hover {
+  transform: translateY(-10px); /* Effet de survol */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Ombre plus marquée au survol */
+}
+
+#featured-article h2 {
+  font-size: 1.2rem;
+  color: #2e8b57; /* Vert foncé pour cohérence */
+  margin-bottom: 1rem;
+  text-transform: uppercase; /* Style de texte en majuscule */
+  letter-spacing: 1px; /* Espacement des lettres */
+}
+
+#featured-article p {
+  font-size: 1rem; /* Taille légèrement supérieure pour la lisibilité */
+  color: #2f4f4f; /* Gris foncé naturel */
+  line-height: 1.8; /* Meilleure lecture */
+  margin-bottom: 2rem;
+}
+
+#featured-article a {
+  display: inline-block;
+  text-decoration: none;
+  background-color: #4caf50;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 25px; /* Boutons arrondis */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#featured-article a:hover {
+  background-color: #2e8b57; /* Vert plus foncé au survol */
+  transform: translateY(-3px); /* Légère surélévation */
+}
+
+/* Image pour l'article vedette */
+#featured-article img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px; /* Coins arrondis */
+  margin-bottom: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Ombre */
+}
+
+
 /* Styles pour les filtres */
 #filters {
   background-color: #f9fafb;

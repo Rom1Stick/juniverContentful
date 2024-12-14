@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contactez-nous</title>
+    <link rel="stylesheet" href="/public/css/styleContact.css">
+</head>
+<body>
+    <header>
+        <h1>Contactez-nous</h1>
+        <nav>
+            <ul>
+                <li><a href="/public/index.html">Accueil</a></li>
+                <li><a href="/public/views/about.html">À propos</a></li>
+                <li><a href="/public/views/calendar.html">Programme formation</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Nous écrire</h2>
+            <form id="contact-form" name="contact" method="POST" data-netlify="true" action="/public/views/succes.html">
+              <div>
+                  <label for="name">Nom :</label>
+                  <input type="text" id="name" name="name" required>
+              </div>
+              <div>
+                  <label for="email">Email :</label>
+                  <input type="email" id="email" name="email" required>
+              </div>
+              <div>
+                  <label for="subject">Sujet :</label>
+                  <input type="text" id="subject" name="subject" required>
+              </div>
+              <div>
+                  <label for="message">Message :</label>
+                  <textarea id="message" name="message" rows="5" required></textarea>
+              </div>
+              <!-- Champ caché pour Netlify -->
+              <input type="hidden" name="form-name" value="contact">
+              <button type="submit">Envoyer</button>
+          </form>          
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 Juniver Santé - Tous droits réservés</p>
+    </footer>
+</body>
+</html>

@@ -8,10 +8,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Chargement des articles
     const articles = await fetchArticles();
-    displayArticles(articles);
+
+    // Identifier l'article vedette et les autres articles
+    const featuredArticleId = '6GPaVLTj72gg4kuCDFUdMU';
+    const featuredArticle = articles.find(article => article.sys.id === featuredArticleId);
+    const otherArticles = articles.filter(article => article.sys.id !== featuredArticleId);
+
+    // Afficher l'article vedette
+    displayFeaturedArticle(featuredArticle);
+
+    // Afficher les autres articles
+    displayArticles(otherArticles);
 
     // Chargement des catégories
-    displayCategories(articles);
+    displayCategories(otherArticles);
 
     // Chargement de la présentation
     const presentation = await fetchPresentation();
@@ -21,3 +31,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     displayProfiles(profiles);
     initCarousel(profiles);
 });
+
+function displayFeaturedArticle(article) {
+    const featuredArticleContainer = document.getElementById('featured-article');
+    if (!article || !article.fields) {
+        featuredArticleContainer.innerHTML = '<p>Aucun article vedette disponible.</p>';
+        return;
+    }
+
+    const { title, summary, content } = article.fields;
+    featuredArticleContainer.innerHTML = `
+        <article>
+            <h2>${title}</h2>
+            <p>${summary || content}</p>
+            <a href="details.html?id=${article.sys.id}">Lire la suite</a>
+        </article>
+    `;
+}
