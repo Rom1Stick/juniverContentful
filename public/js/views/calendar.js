@@ -1,16 +1,31 @@
 import { fetchContent } from '../../js/contentful.js';
 
+let pastEvents = [];
+let upcomingEvents = [];
+
 document.addEventListener('DOMContentLoaded', async () => {
     console.log("Chargement des événements...");
+
     try {
         const events = await fetchEvents();
-        console.log("Événements finals :", events);
-        if (events && events.length > 0) {
-            const currentDate = new Date();
-            displayCalendar(events, currentDate);
-        } else {
-            console.warn("Aucun événement trouvé.");
-        }
+        const currentDate = new Date();
+
+        // Séparer les événements passés et futurs
+        upcomingEvents = events.filter(event => event.date >= currentDate);
+        pastEvents = events.filter(event => event.date < currentDate);
+
+        // Trier les événements par date (ascendant)
+        upcomingEvents.sort((a, b) => a.date - b.date);
+        pastEvents.sort((a, b) => b.date - a.date); // Passés triés en descendant
+
+        // Afficher les événements à venir
+        displayUpcomingEvents(upcomingEvents);
+
+        // Initialiser le calendrier
+        displayCalendar(upcomingEvents, currentDate);
+
+        // Ajouter un gestionnaire pour afficher/masquer les événements passés
+        setupPastEventsButton();
     } catch (error) {
         console.error("Erreur lors du chargement des événements :", error);
     }
@@ -18,30 +33,73 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Fonction pour récupérer les événements depuis Contentful
 async function fetchEvents() {
-  try {
-      const events = await fetchContent('event'); 
-      console.log("Événements récupérés depuis Contentful :", events);
+    try {
+        const events = await fetchContent('event');
+        return events.map(event => ({
+            id: event.sys.id,
+            title: event.fields.title || 'Sans titre',
+            description: event.fields.description || '',
+            date: new Date(event.fields.date),
+            location: event.fields.location || 'Lieu non spécifié'
+        }));
+    } catch (error) {
+        console.error("Erreur lors de la récupération des événements :", error);
+        return [];
+    }
+}
 
-      const eventsParsed = events.map(event => {
-          const title = event.fields.title || 'Sans titre';
-          const dateStr = event.fields.date || null;
-          const eventDate = dateStr ? new Date(dateStr) : null;
-          const location = event.fields.location || 'Lieu non spécifié';
-          const description = event.fields.description || '';
+// Fonction pour afficher la liste des événements à venir
+function displayUpcomingEvents(events) {
+    const eventList = document.getElementById('event-list');
+    eventList.innerHTML = '';
 
-          return {
-              title: title,
-              description: description,
-              date: eventDate,
-              location: location
-          };
-      });
+    if (events.length === 0) {
+        eventList.innerHTML = '<li>Aucun événement à venir.</li>';
+        return;
+    }
 
-      return eventsParsed;
-  } catch (error) {
-      console.error("Erreur lors de la récupération des événements :", error);
-      return [];
-  }
+    events.forEach(event => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <h3>${event.title}</h3>
+            <p><strong>Date :</strong> ${event.date.toLocaleDateString()}</p>
+            <p><strong>Lieu :</strong> ${event.location}</p>
+            <p>${event.description}</p>
+        `;
+        eventList.appendChild(li);
+    });
+}
+
+// Fonction pour configurer le bouton des événements passés
+function setupPastEventsButton() {
+    const button = document.getElementById('toggle-past-events');
+    const pastEventsSection = document.getElementById('past-events-section');
+    const pastEventList = document.getElementById('past-event-list');
+
+    // Afficher le bouton uniquement si des événements passés existent
+    if (pastEvents.length > 0) {
+        button.style.display = 'block';
+
+        button.addEventListener('click', () => {
+            if (pastEventsSection.style.display === 'none') {
+                pastEventsSection.style.display = 'block';
+                button.textContent = 'Masquer les événements passés';
+
+                // Afficher les événements passés
+                pastEventList.innerHTML = pastEvents.map(event => `
+                    <li>
+                        <h3>${event.title}</h3>
+                        <p><strong>Date :</strong> ${event.date.toLocaleDateString()}</p>
+                        <p><strong>Lieu :</strong> ${event.location}</p>
+                        <p>${event.description}</p>
+                    </li>
+                `).join('');
+            } else {
+                pastEventsSection.style.display = 'none';
+                button.textContent = 'Afficher les événements passés';
+            }
+        });
+    }
 }
 
 // Fonction pour afficher le calendrier
@@ -104,7 +162,7 @@ function displayCalendar(events, date) {
         // Vérifie s'il y a des événements pour ce jour
         const dayDate = new Date(date.getFullYear(), date.getMonth(), day);
         const eventsForDay = events.filter(event =>
-            event.date && event.date.toDateString() === dayDate.toDateString()
+            event.date.toDateString() === dayDate.toDateString()
         );
 
         if (eventsForDay.length > 0) {
@@ -145,17 +203,14 @@ function showEventDetails(eventsForDay) {
         return;
     }
 
-    detailsContainer.innerHTML = eventsForDay.map(event => {
-        const dateStr = event.date ? event.date.toLocaleDateString() : 'Date inconnue';
-        return `
+    detailsContainer.innerHTML = eventsForDay.map(event => `
         <div class="event-detail">
             <h3>${event.title}</h3>
-            <p><strong>Date :</strong> ${dateStr}</p>
+            <p><strong>Date :</strong> ${event.date.toLocaleDateString()}</p>
             <p><strong>Lieu :</strong> ${event.location}</p>
             <p>${event.description}</p>
         </div>
-        `;
-    }).join('');
+    `).join('');
 
     detailsContainer.classList.remove('hidden');
 }

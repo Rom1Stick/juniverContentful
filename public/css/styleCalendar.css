@@ -44,7 +44,7 @@ header nav ul li a:hover {
 
 /* Conteneur principal */
 main {
-  padding: 2rem 1rem;
+  padding: 1rem;
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
@@ -52,14 +52,67 @@ main {
   gap: 2rem;
 }
 
+/* Section des événements */
+#upcoming-events, #past-events-section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#upcoming-events h2, #past-events-section h2 {
+  margin-bottom: 1rem;
+  color: #4caf50;
+}
+
+#event-list, #past-event-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#event-list li, #past-event-list li {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: box-shadow 0.3s ease;
+}
+
+#event-list li:hover, #past-event-list li:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#event-list h3, #past-event-list h3 {
+  font-size: 1.2rem;
+  color: #4caf50;
+  margin-bottom: 0.5rem;
+}
+
+/* Bouton pour afficher les événements passés */
+#toggle-past-events {
+  display: block;
+  margin: 0 auto;
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+#toggle-past-events:hover {
+  background: #2e8b57;
+}
+
 /* Calendrier */
 #calendar {
-  width: 100%;
-  margin: 0 auto;
   background: white;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
 }
 
 .calendar-header {
@@ -142,70 +195,10 @@ main {
   z-index: 1;
 }
 
-/* Section événements */
-#events {
-  margin: 2rem auto;
-  max-width: 100%;
-  padding: 1rem;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.event {
-  margin-bottom: 1rem;
-  padding: 1rem;
-  background: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.event h3 {
-  font-size: 1rem;
-  color: #4caf50;
-  margin-bottom: 0.5rem;
-}
-
-.event p {
-  font-size: 0.8rem;
-  margin: 0.5rem 0;
-}
-
-/* Détails des événements */
-.event-details {
-  display: none;
-  background: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 0.5rem;
-  position: absolute;
-  z-index: 10;
-  width: 100%;
-  max-width: 200px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin-top: 0.5rem;
-  text-align: left;
-}
-
-
-
-/* Affiche les détails au clic */
-.calendar-cell.has-event:hover .event-details {
-  display: block;
-}
-
-.event-details p {
-  margin: 0.5rem 0;
-}
-
 /* Responsive Design */
 
 /* Téléphones */
 @media (max-width: 480px) {
-  #calendar {
-    width: 100%;
-  }
-
   .calendar-grid {
     gap: 0.2rem;
   }
@@ -214,14 +207,15 @@ main {
     padding: 0.5rem;
     font-size: 0.8rem;
   }
+
+  #event-list li, #past-event-list li {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+  }
 }
 
 /* Tablettes */
 @media (min-width: 768px) and (max-width: 1023px) {
-  #calendar {
-    max-width: 90%;
-  }
-
   .calendar-cell {
     font-size: 1rem;
     padding: 0.8rem;
@@ -231,7 +225,7 @@ main {
 /* Ordinateurs */
 @media (min-width: 1024px) {
   #calendar {
-    max-width: 70%; /* Diminue la largeur du calendrier */
+    max-width: 70%;
     margin: 0 auto;
   }
 
@@ -244,10 +238,11 @@ main {
     font-size: 1rem;
   }
 
-  .calendar-header {
-    font-size: 1.5rem;
+  #event-list li, #past-event-list li {
+    font-size: 1rem;
   }
 }
+
 
 /* Footer global */
 footer {
@@ -258,14 +253,14 @@ footer {
   border-top: 3px solid #2e8b57; /* Ligne de séparation subtile */
   font-size: 1rem;
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 2.5rem;
 }
 
-/* Liens dans le footer */
 footer a {
-  color: #eaf7f0;
+  color: #eaf7f0; /* Couleur légère pour les liens */
   text-decoration: none;
   font-weight: bold;
-  margin: 0 0.5rem; /* Espacement horizontal */
+  margin: 0 0.5rem; /* Espacement horizontal entre les liens */
   transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
@@ -274,11 +269,11 @@ footer a:hover {
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.8); /* Effet lumineux */
 }
 
-/* Contenu du footer */
 footer p {
   margin: 0.5rem 0;
   font-size: 0.9rem;
 }
+
 
 
 /* Responsive Design */
@@ -301,5 +296,10 @@ footer p {
       padding: 2rem 0;
       font-size: 1.2rem;
   }
-}
 
+  footer .social-icons a {
+      width: 50px;
+      height: 50px;
+      font-size: 1.5rem; /* Taille augmentée pour les grands écrans */
+  }
+}

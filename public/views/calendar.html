@@ -3,26 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendrier des événements</title>
+    <title>Calendrier des Événements</title>
     <link rel="stylesheet" href="/public/css/styleCalendar.css">
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/main.min.css" rel="stylesheet">
 </head>
 <body>
     <header>
-        <h1>Calendrier des événements</h1>
-        <nav>
-            <ul>
-                <li><a href="/public/index.html">Accueil</a></li>
-                <li><a href="/public/views/about.html">À propos</a></li>
-            </ul>
-        </nav>
+        <h1>Calendrier des Événements</h1>
     </header>
 
     <main>
-        <div id="calendar"></div>
-        <div id="event-details" class="hidden">
-            <!-- Les détails des événements seront injectés ici -->
-        </div>
+        <!-- Section pour la liste des événements à venir -->
+        <section id="upcoming-events">
+            <h2>Événements à venir</h2>
+            <ul id="event-list"></ul>
+        </section>
+
+        <!-- Bouton pour afficher les événements passés -->
+        <section id="past-events-section" style="display: none;">
+            <h2>Événements Passés</h2>
+            <ul id="past-event-list"></ul>
+        </section>
+        <button id="toggle-past-events" style="display: none;">Afficher les événements passés</button>
+
+        <!-- Calendrier -->
+        <section id="calendar-container">
+            <div id="calendar"></div>
+        </section>
     </main>
 
     <footer>
@@ -31,9 +37,7 @@
             <a href="/public/views/legal.html">Mentions légales</a></p>
         <p>© 2024 Juniver Santé - Tous droits réservés</p>
     </footer>
-    
 
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/main.min.js"></script>
     <script type="module" src="/public/js/views/calendar.js"></script>
 </body>
 </html>
