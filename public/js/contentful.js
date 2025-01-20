@@ -4,12 +4,15 @@ const BASE_URL = `https://cdn.contentful.com/spaces/${SPACE_ID}/entries`;
 
 // Fonction générique pour récupérer des entrées
 export async function fetchContent(contentType) {
-    const url = `${BASE_URL}?access_token=${ACCESS_TOKEN}&content_type=${contentType}&include=2`;
+    const url = `${BASE_URL}?access_token=${ACCESS_TOKEN}&content_type=${contentType}&include=2`; // Niveau d'inclusion défini
     try {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
         const data = await response.json();
-        return data.items;
+        return data.items.map(item => ({
+            ...item,
+            includes: data.includes || {}, // Inclure les données liées
+        }));
     } catch (error) {
         console.error(`Erreur lors de la récupération du contenu (${contentType}) :`, error);
         return [];
