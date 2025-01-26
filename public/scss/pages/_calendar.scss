@@ -1,0 +1,196 @@
+@use '../abstracts/variables' as *;
+
+/* Conteneur principal */
+.calendar-main {
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  
+  /* Section des événements */
+  #upcoming-events, #past-events-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
+    
+    h2 {
+      margin-bottom: 1rem;
+      color: $primary-color;
+    }
+  }
+  
+  #event-list, #past-event-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    
+    li {
+      background: $background-color;
+      border: 1px solid hsl(0, 0%, 84%);
+      border-radius: 5px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      transition: box-shadow 0.3s ease;
+      
+      &:hover {
+        box-shadow: $box-shadow;
+      }
+      
+      h3 {
+        font-size: 1.2rem;
+        color: $primary-color;
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+  
+  /* Bouton pour afficher les événements passés */
+  #toggle-past-events {
+    display: block;
+    margin: 0 auto;
+    background: $primary-color;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: $border-radius;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    
+    &:hover {
+      background: $secondary-color;
+    }
+  }
+  
+  /* Calendrier */
+  #calendar {
+    background: white;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
+    
+    .calendar-header {
+      text-align: center;
+      background: $primary-color;
+      color: white;
+      padding: 1rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    
+    .calendar-navigation {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 1rem;
+      
+      button {
+        background: $primary-color;
+        color: white;
+        border: none;
+        border-radius: $border-radius;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        
+        &:hover {
+          background: $secondary-color;
+        }
+      }
+    }
+    
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr); // 7 colonnes pour les jours
+      gap: 0.5rem;
+      padding: 1rem;
+      
+      .calendar-cell {
+        background: #f0f0f0;
+        color: $text-color;
+        border-radius: 5px;
+        text-align: center;
+        position: relative;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease, background 0.3s ease;
+        
+        &:hover {
+          transform: scale(1.05);
+          background: lighten($primary-color, 40%);
+        }
+        
+        &.empty {
+          background: transparent;
+          cursor: default;
+        }
+        
+        &.has-event {
+          position: relative;
+          font-weight: bold;
+          
+          &::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 10px;
+            height: 10px;
+            background-color: #ff5722; // Pastille rouge
+            border-radius: 50%;
+            z-index: 1;
+          }
+        }
+      }
+    }
+  }
+}
+  
+  /* Responsive Design */
+  @media (max-width: 480px) {
+    .calendar-grid {
+      gap: 0.2rem;
+  }
+
+  .calendar-cell {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  #event-list li, #past-event-list li {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .calendar-cell {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  #calendar {
+    max-width: 70%;
+    margin: 0 auto;
+  }
+
+  .calendar-grid {
+    gap: 0.8rem;
+  }
+
+  .calendar-cell {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+
+  #event-list li, #past-event-list li {
+    font-size: 1rem;
+  }
+}

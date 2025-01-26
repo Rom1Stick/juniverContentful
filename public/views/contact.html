@@ -4,17 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contactez-nous</title>
-    <link rel="stylesheet" href="/public/css/styleContact.css">
+    <link rel="stylesheet" href="../assets/styles/main.min.css">
 </head>
 <body>
-    <header>
-        <h1>Contactez-nous</h1>
-        <nav>
-            <ul>
-                <li><a href="/public/index.html">Accueil</a></li>
-                <li><a href="/public/views/about.html">À propos</a></li>
-                <li><a href="/public/views/calendar.html">Programme formation</a></li>
+    <header class="header-website">
+        <nav class="nav-bar">
+          <div class="logo">
+            <!-- <img src="./assets/images/logo.png" alt="logo du site"> -->
+            <span class="logo-text">JuniverSanté Naturelle</span>
+          </div>
+      
+          <div class="menu">
+            <input type="checkbox" id="menu-toggle" class="menu-input">
+            <label for="menu-toggle" class="btn btn-secondary">
+              <i class="fa-solid fa-bars menu-icon"></i>
+              <i class="fa-solid fa-times close-icon"></i>
+            </label>
+      
+            <ul class="nav-links">
+              <li class="nav-link">
+                <a href="../index.html">Accueil</a>
+              </li>
+
+              <li class="nav-link">
+                <a href="./about.html">A propos</a>
+              </li>
+
+              <li class="nav-link">
+                <a href="./workshop.html">Nos Ateliers</a>
+              </li>
+              
+              <li class="nav-link">
+                <a href="./calendar.html">Programme formation</a>
+              </li>
+
             </ul>
+          </div>
         </nav>
     </header>
 
@@ -23,29 +48,34 @@
             <h2>Nous écrire</h2>
             <form id="contact-form" name="contact" method="POST" data-netlify="true" action="/public/views/succes.html">
               <div>
-                  <label for="name">Nom :</label>
-                  <input type="text" id="name" name="name" required>
+                <label for="name">Nom :</label>
+                <input type="text" id="name" name="name" required>
               </div>
               <div>
-                  <label for="email">Email :</label>
-                  <input type="email" id="email" name="email" required>
+                <label for="email">Email :</label>
+                <input type="email" id="email" name="email" required>
               </div>
               <div>
                   <label for="subject">Sujet :</label>
                   <input type="text" id="subject" name="subject" required>
               </div>
               <div>
-                  <label for="message">Message :</label>
-                  <textarea id="message" name="message" rows="5" required></textarea>
+                <label for="message">Message :</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
               </div>
               <!-- Champ caché pour Netlify -->
               <input type="hidden" name="form-name" value="contact">
-              <button type="submit">Envoyer</button>
-          </form>          
-        </section>
+              <button type="submit" class="button button-primary">Envoyer</button>
+            </form>
+          </section>
+          
     </main>
 
     <footer>
+        <p>
+            <a href="./privacy.html">Politique de confidentialité</a> | 
+            <a href="./legal.html">Mentions légales</a>
+        </p>
         <p>© 2024 Juniver Santé - Tous droits réservés</p>
     </footer>
 </body>
