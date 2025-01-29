@@ -24,7 +24,6 @@ async function fetchWorkshops() {
         return {
             title: workshop.fields.title || 'Sans titre',
             description: workshop.fields.description || 'Pas de description',
-            date: new Date(workshop.fields.date || Date.now()),
             recurrence: workshop.fields.recurrence || 'Non spécifiée',
             profiles: enrichedProfiles,
         };
@@ -37,18 +36,16 @@ function displayWorkshops(workshops) {
         <div class="workshop-card">
             <h3>${workshop.title}</h3>
             <p>${workshop.description}</p>
-            <p><strong>Date :</strong> ${workshop.date.toLocaleDateString()}</p>
             <p><strong>Récurrence :</strong> ${workshop.recurrence}</p>
             <div class="profiles">
                 ${workshop.profiles.map(profile => `
                     <div class="profile-container">
-                        <img src="${profile.imageUrl || '../../assets/image/default-profile.png'}" alt="${profile.name}">
+                        <img src="${profile.imageUrl || '../../../assets/image/default-profile.png'}" alt="${profile.name}">
                         <div class="profile-details">
                             <h5>${profile.name}</h5>
                             <p><strong>Métier :</strong> ${profile.job}</p>
-                            ${profile.email ? `<p>Email: <a href="mailto:${profile.email}">${profile.email}</a></p>` : ''}
-                            ${profile.phone ? `<p>Tél: ${profile.phone}</p>` : ''}
-                            ${profile.website ? `<p><a href="${profile.website}" target="_blank">Site Web</a></p>` : ''}
+                            ${profile.email ? `<p>Email : <a href="mailto:${profile.email}">${profile.email}</a></p>` : ''}
+                            ${profile.phone ? `<p>Téléphone : <a href="tel:${profile.phone}">${profile.phone}</a></p>` : ''}
                         </div>
                     </div>
                 `).join('')}
@@ -56,7 +53,6 @@ function displayWorkshops(workshops) {
         </div>
     `).join('');
 }
-
 
 
 

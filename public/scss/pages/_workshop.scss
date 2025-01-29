@@ -78,6 +78,7 @@ main
 }
 
 /* Profils */
+/* Profils */
 .profiles {
   display: flex;
   justify-content: center;
@@ -110,9 +111,9 @@ main
 
     .profile-details {
       position: absolute;
-      top: -150%;
+      bottom: 110%; /* Positionne au-dessus de l'image */
       left: 50%;
-      transform: translateX(-50%) scale(0);
+      transform: translateX(-50%) scale(0); /* Centré horizontalement */
       opacity: 0;
       background: rgba(255, 255, 255, 0.95);
       color: #333;
@@ -144,14 +145,15 @@ main
           text-decoration: underline;
         }
       }
+    }
 
-      &:hover {
-        transform: translateX(-50%) scale(1);
-        opacity: 1;
-      }
+    &:hover .profile-details {
+      transform: translateX(-50%) scale(1); /* Rentre en vue */
+      opacity: 1;
     }
   }
 }
+
 
 /* Grille des Profils */
 #profile-details {
@@ -221,5 +223,15 @@ main
 
   .profile-card img {
     height: 100px;
+  }
+
+  .profile-container {
+    width: 70px;
+    height: 70px;
+
+    .profile-details {
+      width: 180px;
+      bottom: 120%; /* Ajuste la hauteur au-dessus de l'image */
+    }
   }
 }
