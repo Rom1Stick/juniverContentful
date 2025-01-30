@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendrier des Événements</title>
+    <title>Ateliers Hebdomadaires</title>
     <link rel="stylesheet" href="../assets/styles/main.min.css">
 </head>
 <body>
@@ -31,7 +31,7 @@
               </li>
 
               <li class="nav-link">
-                <a href="./workshop.html">Nos Ateliers</a>
+                <a href="./calendar.html">Programme formation</a>
               </li>
               
               <li class="nav-link">
@@ -42,34 +42,29 @@
           </div>
         </nav>
     </header>
-
-    <main class="calendar-main">
-        <!-- Section pour la liste des événements à venir -->
-        <section id="upcoming-events">
-            <h2>Événements à venir</h2>
-            <ul id="event-list"></ul>
+    
+    <main>
+        <section id="hero">
+            <div class="hero-content">
+                <h2>Découvrez Nos Ateliers Hebdomadaires</h2>
+                <p>Explorez les activités, rencontrez nos animateurs, et inscrivez-vous dès aujourd'hui pour une expérience enrichissante.</p>
+            </div>
+        </section>
+        <section id="workshop-list">
+            <h2>Nos Ateliers</h2>
+            <!-- Les ateliers seront injectés ici -->
         </section>
 
-        <!-- Bouton pour afficher les événements passés -->
-        <section id="past-events-section" style="display: none;">
-            <h2>Événements Passés</h2>
-            <ul id="past-event-list"></ul>
-        </section>
-        <button id="toggle-past-events" style="display: none;">Afficher les événements passés</button>
-
-        <!-- Calendrier -->
-        <section id="calendar-container">
-            <div id="calendar"></div>
-        </section>
     </main>
-
     <footer>
         <p>
-            <a href="/public/views/privacy.html">Politique de confidentialité</a> | 
-            <a href="/public/views/legal.html">Mentions légales</a></p>
+            <a class="footer" href="/public/views/privacy.htm">Politique de confidentialité</a> | 
+            <a href="/public/views/legal.htm">Mentions légales</a>
+        </p>
         <p>© 2024 Juniver Santé - Tous droits réservés</p>
     </footer>
 
-    <script type="module" src="/public/js/views/calendar.js"></script>
+    
+    <script type="module" src="../js/views/workshop.js"></script>
 </body>
 </html>

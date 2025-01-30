@@ -1,0 +1,18 @@
+@use '../abstracts/variables' as *;
+
+/* Lien de retour ou action */
+.succesPageLink {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: $primary-color;
+  color: white;
+  text-decoration: none;
+  border-radius: $border-radius;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background: lighten($primary-color, 10%);
+  }
+}

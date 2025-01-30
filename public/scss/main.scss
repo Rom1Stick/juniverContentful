@@ -1,0 +1,33 @@
+// abstracts
+@use 'abstracts/variables';
+@use 'abstracts/mixins';
+@use 'abstracts/functions';
+
+// base
+@use 'base/reset';
+@use 'base/typography';
+
+
+// layout
+@use 'layout/header';
+@use 'layout/footer';
+
+// components
+@use 'components/button';
+@use 'components/carousel';
+@use 'components/filters';
+@use 'components/articleStar';
+@use 'components/card';
+
+// pages
+@use 'pages/index';
+@use 'pages/about';
+@use 'pages/calendar';
+@use 'pages/contact';
+@use 'pages/legal_and_privacy';
+@use 'pages/details';
+@use 'pages/succes';
+@use 'pages/workshop';
+
+//FontAwesome
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css');

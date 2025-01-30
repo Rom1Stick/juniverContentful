@@ -1,0 +1,411 @@
+/* admin.css */
+:root {
+  --cyber-gradient: linear-gradient(45deg, #00f2fe 0%, #4facfe 50%, #a855f7 100%);
+  --neon-border: 1px solid rgba(168, 85, 247, 0.4);
+  --cyber-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+  --cyber-bg: radial-gradient(circle at 50% 0%, #0f172a 0%, #020617 100%);
+  --cyber-accent: #a855f7;
+  --cyber-text: #e2e8f0;
+  --cyber-success: #00ff88;
+  --cyber-danger: #ff1f71;
+  --spacing-3d: 0.5rem;
+  --cyber-radius: 8px;
+  --cyber-bezier: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+body {
+  background: var(--cyber-bg);
+  color: var(--cyber-text);
+  min-height: 100vh;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* Header Cyberpunk */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 3rem;
+  background: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(16px);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: var(--neon-border);
+  box-shadow: var(--cyber-shadow);
+  margin-bottom: 4rem;
+}
+
+.admin-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  position: relative;
+  background-image: var(--cyber-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+}
+
+.admin-header h1::after {
+  content: '✦';
+  position: absolute;
+  right: -1.5rem;
+  top: -0.5rem;
+  animation: pulse 1.5s infinite;
+}
+
+/* Boutons Cyber */
+.btn {
+  padding: 1.2rem 2.5rem;
+  border: none;
+  border-radius: var(--cyber-radius);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.4s var(--cyber-bezier);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  position: relative;
+  overflow: hidden;
+  background: rgba(168, 85, 247, 0.1);
+  border: var(--neon-border);
+  color: var(--cyber-text);
+}
+
+.btn-edit {
+  color: var(--cyber-success);
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, #4facfe 0%, #a855f7 100%);
+  box-shadow: 0 0 25px -5px rgba(168, 85, 247, 0.4);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 35px -5px rgba(168, 85, 247, 0.6);
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, transparent 50%, rgba(255,255,255,0.1));
+  mix-blend-mode: overlay;
+}
+
+/* Style des boutons d'action dans les cartes */
+[class*="btn-"] {
+  position: relative;
+  overflow: hidden;
+  border: 2px solid;
+  border-image: var(--cyber-gradient) 1;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  padding: 0.8rem 1.5rem;
+  margin: 0.5rem;
+  transition: all 0.4s var(--cyber-bezier);
+  clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 25%, 100% 75%, calc(100% - 12px) 100%, 12px 100%, 0 75%, 0 25%);
+}
+
+/* Style pour le bouton Modifier correspondant au bouton Annuler */
+button[id*="edit"], 
+button[onclick*="edit"], 
+[class*="modify"] {
+    background: var(--cyber-danger) !important;
+    border: var(--neon-border) !important;
+    color: var(--cyber-text) !important;
+    padding: 1rem 2rem !important;
+    border-image: linear-gradient(
+        45deg,
+        rgba(255, 31, 113, 0.8),
+        rgba(168, 85, 247, 0.6)
+    ) 1 !important;
+    text-shadow: 0 0 10px rgba(255, 31, 113, 0.4) !important;
+    box-shadow: 0 4px 24px -6px var(--cyber-danger) !important;
+}
+
+/* Version verte pour Modifier */
+button[id*="edit"]:not([class*="danger"]),
+button[onclick*="edit"]:not([class*="danger"]), 
+[class*="modify"] {
+    background: var(--cyber-success) !important;
+    border-image: linear-gradient(
+        45deg,
+        rgba(0, 255, 136, 0.8),
+        rgba(0, 242, 254, 0.6)
+    ) 1 !important;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.4) !important;
+    box-shadow: 0 4px 24px -6px var(--cyber-success) !important;
+}
+
+/* Effets au survol */
+button[id*="edit"]:hover, 
+button[onclick*="edit"]:hover, 
+[class*="modify"]:hover {
+    transform: translateY(-2px) scale(1.05) !important;
+    filter: brightness(1.2) !important;
+    box-shadow: 0 8px 32px -8px var(--cyber-success) !important;
+}
+
+/* Conserver l'icône et l'espacement */
+button[id*="edit"] i, 
+button[onclick*="edit"] i, 
+[class*="modify"] i {
+    filter: drop-shadow(0 0 2px currentColor) !important;
+    margin-right: 0.8rem !important;
+}
+
+/* Adaptation du survol */
+button[id*="edit"]:hover, 
+button[onclick*="edit"]:hover, 
+[class*="modify"]:hover {
+    box-shadow: 0 0 30px -8px var(--cyber-success) !important;
+    background: rgba(0, 255, 136, 0.1) !important;
+}
+
+/* Bouton Supprimer */
+button[id*="delete"], button[onclick*="delete"], [class*="delete"] {
+  --cyber-accent: #ff1f71;
+  color: var(--cyber-accent);
+  text-shadow: 0 0 10px rgba(255, 31, 113, 0.4);
+}
+
+/* Effets au survol */
+[class*="btn-"]:hover {
+  background: rgba(15, 23, 42, 0.9);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 25px -5px var(--cyber-accent);
+}
+
+[class*="btn-"]:hover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+      45deg,
+      transparent 0%,
+      rgba(168, 85, 247, 0.1) 50%,
+      transparent 100%
+  );
+  animation: scanLine 2s infinite linear;
+}
+
+/* Animation de ligne de balayage */
+@keyframes scanLine {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+/* Effets actifs */
+[class*="btn-"]:active {
+  transform: translateY(1px) scale(0.98);
+  filter: brightness(0.8);
+}
+
+/* Icônes dans les boutons */
+[class*="btn-"] i {
+  filter: drop-shadow(0 0 2px currentColor);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  [class*="btn-"] {
+      width: 100%;
+      margin: 0.5rem 0;
+  }
+}
+
+/* Cartes Holographiques */
+.card {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(12px);
+  border: var(--neon-border);
+  border-radius: var(--cyber-radius);
+  padding: 2.5rem;
+  position: relative;
+  transition: all 0.6s var(--cyber-bezier);
+  transform-style: preserve-3d;
+}
+
+
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, transparent 40%, rgba(168, 85, 247, 0.1));
+  pointer-events: none;
+}
+
+/* Formulaire Futuriste */
+.form-container {
+  margin: 4rem 0;
+  animation: hologramEnter 1s var(--cyber-bezier);
+  background: rgba(15, 23, 42, 0.8);
+  border: var(--neon-border);
+  border-radius: var(--cyber-radius);
+  position: relative;
+  padding: 3rem;
+}
+
+.form-container::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: var(--cyber-gradient);
+  z-index: -1;
+  filter: blur(20px);
+  opacity: 0.3;
+}
+
+.form-group input,
+.form-group textarea {
+  background: rgba(2, 6, 23, 0.5);
+  border: 2px solid #1e293b;
+  color: var(--cyber-text);
+  padding: 1.2rem;
+  font-size: 1.1rem;
+  transition: all 0.4s var(--cyber-bezier);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--cyber-accent);
+  background: rgba(2, 6, 23, 0.8);
+  box-shadow: 0 0 30px -10px rgba(168, 85, 247, 0.4);
+}
+
+/* Effets de Validation */
+.form-group.success input {
+  border-color: var(--cyber-success);
+  background: rgba(0, 255, 136, 0.05);
+}
+
+.form-group.error input {
+  border-color: var(--cyber-danger);
+  background: rgba(255, 31, 113, 0.05);
+}
+
+/* Checkbox Cyber */
+.checkbox-grid label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: var(--cyber-radius);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.checkbox-grid input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #334155;
+  border-radius: 4px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.checkbox-grid input[type="checkbox"]:checked {
+  border-color: var(--cyber-success);
+  background: rgba(0, 255, 136, 0.1);
+}
+
+.checkbox-grid input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--cyber-success);
+}
+
+/* Loader Quantique */
+.spinner {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: conic-gradient(#4facfe, #a855f7, #00f2fe);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 0);
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes hologramEnter {
+  from {
+      opacity: 0;
+      transform: perspective(1000px) rotateY(90deg) translateZ(100px);
+  }
+  to {
+      opacity: 1;
+      transform: perspective(1000px) rotateY(0) translateZ(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Effets de Fond */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url('data:image/svg+xml,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="none"/><path d="M20 20L80 80M80 20L20 80" stroke="rgba(168,85,247,0.05)" stroke-width="1"/></svg>');
+  z-index: -1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-header {
+      flex-direction: column;
+      gap: 2rem;
+      padding: 2rem;
+  }
+
+  .card {
+      padding: 1.5rem;
+  }
+
+  .form-container {
+      padding: 2rem;
+  }
+
+  .btn {
+      width: 100%;
+      justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+      --spacing-3d: 0.3rem;
+  }
+
+  .admin-header h1 {
+      font-size: 2rem;
+  }
+
+  .grid-container {
+      grid-template-columns: 1fr;
+  }
+}

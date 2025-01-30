@@ -4,26 +4,58 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Juniver Santé</title>
-        <link rel="stylesheet" href="/public/css/styleBeks.css">
-        <link rel="stylesheet" href="/public/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
+            integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+        <link rel="stylesheet" href="./assets/styles/styleBeks.css">
+        <link rel="stylesheet" href="./assets/styles/main.min.css">
     </head>
-    <body>
+    <body class="index-page">
         <canvas id="neuro"></canvas>
-    <header>
 
-        <h1>JuniverSanté Naturelle</h1>
+        <header class="header-website">
+            <nav class="nav-bar">
+              <div class="logo">
+                <!-- <img src="./assets/images/logo.png" alt="logo du site"> -->
+                <span class="logo-text">JuniverSanté Naturelle</span>
+              </div>
+          
+              <div class="menu">
+                <input type="checkbox" id="menu-toggle" class="menu-input">
+                <label for="menu-toggle" class="btn btn-secondary">
+                  <i class="fa-solid fa-bars menu-icon"></i>
+                  <i class="fa-solid fa-times close-icon"></i>
+                </label>
+          
+                <ul class="nav-links">
+                  <li class="nav-link">
+                    <a href="index.html">Accueil</a>
+                  </li>
+          
+                  <li class="nav-link">
+                    <a href="./views/about.html">À propos</a>
+                  </li>
 
-        <nav>
-            <ul>
-                <li><a href="index.html">Accueil</a></li>
-                <li><a href="/public/views/about.html">À propos</a></li>
-                <li><a href="/public/views/calendar.html">Programme formation</a></li>
-                <li><a href="/public/views/contact.html">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-    
-    <main>
+                  <li class="nav-link">
+                    <a href="./views/calendar.html">Programme formation</a>
+                  </li>
+
+                  <li class="nav-link">
+                    <a href="./views/workshop.html">Nos Ateliers</a>
+                  </li>
+                  
+                  <li class="nav-link">
+                    <a href="./views/contact.html">Contact</a>
+                  </li>
+
+                </ul>
+              </div>
+            </nav>
+        </header>
+          
+    <main class="index-main">
 
         <section id="presentation">
             <h2></h2>

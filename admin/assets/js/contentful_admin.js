@@ -883,3 +883,203 @@ export async function unpublishEvent(eventId) {
 
     console.log("Évènement dépublié avec succès !");
 }
+
+// Workshop Management Functions
+export async function fetchWorkshopsAdmin() {
+    const url = `${BASE_CMA_URL}?content_type=workshop&include=2`;
+    try {
+        const response = await fetch(url, {
+            headers: getCMAHeaders()
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        return data.items.map(item => ({
+            id: item.sys.id,
+            title: item.fields.title?.['en-US'] || 'Sans titre',
+            description: item.fields.description?.['en-US'] || '',
+            recurrence: item.fields.recurrence?.['en-US'] || 'Non spécifiée',
+            profiles: item.fields.profiles?.['en-US']?.map(p => p.sys.id) || [],
+            version: item.sys.version
+        }));
+    } catch (error) {
+        console.error('fetchWorkshopsAdmin error:', error);
+        throw error;
+    }
+}
+
+
+
+
+export async function updateWorkshop(workshopId, workshopData) {
+    try {
+        // 🔹 Récupérer la version actuelle de l'atelier
+        const getUrl = `${BASE_CMA_URL}/${workshopId}`;
+        const getResponse = await fetch(getUrl, { headers: getCMAHeaders() });
+
+        if (!getResponse.ok) throw new Error(`HTTP GET ${getResponse.status}`);
+
+        const currentData = await getResponse.json();
+        const version = currentData.sys.version;
+
+        // Vérifier que recurrence est un tableau
+        const recurrenceValue = Array.isArray(workshopData.recurrence) 
+            ? workshopData.recurrence 
+            : [workshopData.recurrence]; 
+
+        // 🔹 Préparation des nouvelles données
+        const updateData = {
+            fields: {
+                title: { 'en-US': workshopData.title },
+                description: { 'en-US': workshopData.description },
+                recurrence: { 'en-US': recurrenceValue },
+                profiles: {
+                    'en-US': workshopData.profiles.map(id => ({
+                        sys: { type: 'Link', linkType: 'Entry', id }
+                    }))
+                }
+            }
+        };
+
+        // 🔹 Envoyer la mise à jour avec la version correcte
+        const updateResponse = await fetch(getUrl, {
+            method: 'PUT',
+            headers: {
+                ...getCMAHeaders(),
+                'X-Contentful-Version': version
+            },
+            body: JSON.stringify(updateData)
+        });
+
+        if (!updateResponse.ok) {
+            const errorData = await updateResponse.json();
+            console.error('Erreur mise à jour:', JSON.stringify(errorData, null, 2));
+            throw new Error(`HTTP PUT ${updateResponse.status}: ${errorData.message}`);
+        }
+
+        const result = await updateResponse.json();
+
+        // 🔹 Récupérer la dernière version AVANT publication
+        await publishEntry(workshopId);
+
+        return result;
+
+    } catch (error) {
+        console.error('updateWorkshop error:', error);
+        throw error;
+    }
+}
+
+export async function createWorkshop(workshopData) {
+    try {
+        // Vérifier que recurrence est un tableau
+        const recurrenceValue = Array.isArray(workshopData.recurrence) 
+            ? workshopData.recurrence 
+            : [workshopData.recurrence];
+
+        const payload = {
+            fields: {
+                title: { 'en-US': workshopData.title },
+                description: { 'en-US': workshopData.description },
+                recurrence: { 'en-US': recurrenceValue }, // Correction ici
+                profiles: {
+                    'en-US': workshopData.profiles?.map(id => ({
+                        sys: { type: 'Link', linkType: 'Entry', id: id }
+                    })) || []
+                }
+            }
+        };
+
+        const response = await fetch(BASE_CMA_URL, {
+            method: 'POST',
+            headers: getCMAHeaders('workshop'),
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Erreur Contentful:', JSON.stringify(errorData, null, 2));
+            throw new Error(`Erreur ${response.status}: ${errorData.message}`);
+        }
+
+        const result = await response.json();
+        await publishEntry(result.sys.id);
+        return result;
+
+    } catch (error) {
+        console.error('createWorkshop error:', error);
+        throw new Error(`Erreur création: ${error.message}`);
+    }
+}
+
+export async function deleteWorkshop(workshopId) {
+    try {
+        // Dépublier d'abord
+        await fetch(`${BASE_CMA_URL}/${workshopId}/published`, {
+            method: 'DELETE',
+            headers: getCMAHeaders()
+        });
+
+        // Supprimer l'atelier
+        const response = await fetch(`${BASE_CMA_URL}/${workshopId}`, {
+            method: 'DELETE',
+            headers: getCMAHeaders()
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`HTTP ${response.status}: ${errorData.message}`);
+        }
+
+        return true;
+
+    } catch (error) {
+        console.error('deleteWorkshop error:', error);
+        throw new Error(`Échec suppression: ${error.message}`);
+    }
+}
+
+async function publishEntry(entryId) {
+    try {
+        // Récupérer la dernière version de l'entrée
+        const getUrl = `${BASE_CMA_URL}/${entryId}`;
+        const getResponse = await fetch(getUrl, { headers: getCMAHeaders() });
+
+        if (!getResponse.ok) throw new Error(`HTTP GET ${getResponse.status}`);
+
+        const currentData = await getResponse.json();
+        const latestVersion = currentData.sys.version;
+
+        // 🔹 Publier avec la version correcte
+        const publishUrl = `${BASE_CMA_URL}/${entryId}/published`;
+
+        const response = await fetch(publishUrl, {
+            method: 'PUT',
+            headers: {
+                ...getCMAHeaders(),
+                'X-Contentful-Version': latestVersion
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Erreur publication:', JSON.stringify(errorData, null, 2));
+            throw new Error(`Publication failed: HTTP ${response.status}`);
+        }
+
+    } catch (error) {
+        console.error('publishEntry error:', error);
+        throw error;
+    }
+}
+
+function getCMAHeaders(contentType = null) {
+    const headers = {
+        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
+        'Content-Type': 'application/vnd.contentful.management.v1+json'
+    };
+
+    if (contentType) headers['X-Contentful-Content-Type'] = contentType;
+    return headers;
+}

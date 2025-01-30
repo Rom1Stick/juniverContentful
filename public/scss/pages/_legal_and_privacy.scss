@@ -1,0 +1,76 @@
+@use '../abstracts/variables' as *;
+
+/* Contenu principal */
+.privacy-policy-main {
+  padding: 2rem 5%;
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+
+  h2 {
+    font-size: 1.5rem;
+    color: $primary-color;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid lighten($primary-color, 40%);
+    padding-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 1rem;
+    color: $text-color;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    text-align: justify;
+  }
+
+  a {
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: $secondary-color;
+    }
+  }
+
+  ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+    list-style: disc;
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+  }
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+  main {
+    padding: 3rem 10%;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  main {
+    padding: 4rem 15%;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  p {
+    font-size: 1.2rem;
+  }
+}

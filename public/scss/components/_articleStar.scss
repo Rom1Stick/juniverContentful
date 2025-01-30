@@ -1,0 +1,60 @@
+@use '../abstracts/variables' as *;
+
+#featured-article {
+  background-color: white;
+  border: 1px solid $primary-color;
+  border-radius: 10%; // Coins arrondis
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  padding: 2rem;
+  margin: 3rem auto;
+  text-align: center;
+  width: 80%;
+  max-width: 800px; // Limite sur grands écrans
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  h2 {
+    font-size: 1.2rem;
+    color: $secondary-color;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  p {
+    font-size: 1rem;
+    color: $text-color;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+  }
+
+  a {
+    display: inline-block;
+    text-decoration: none;
+    background-color: $primary-color;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+
+    &:hover {
+      background-color: $secondary-color;
+      transform: translateY(-3px);
+    }
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: $border-radius;
+    margin-bottom: 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+}

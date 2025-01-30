@@ -1,0 +1,56 @@
+@use '../abstracts/variables' as *;
+
+#filters {
+  background-color: $light-background;
+  padding: 3%;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  margin: 0 1rem 5% 1rem;
+
+  h3 {
+    font-size: 1.3rem;
+    color: $secondary-color;
+    margin-bottom: 1rem;
+    text-align: center;
+    border-bottom: 2px solid $primary-color;
+    padding-bottom: 0.5rem;
+  }
+
+  #category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+
+    li button {
+      background-color: $primary-color;
+      color: white;
+      border: none;
+      border-radius: $border-radius;
+      padding: 0.7rem 1.2rem;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+
+      &:hover {
+        background-color: $secondary-color;
+        transform: translateY(-3px);
+      }
+    }
+  }
+}
+
+
+// responsive design
+
+@media (min-width: 768px) {
+
+  #filters {
+
+    margin: 0 20% 5% 20%;
+  }
+}

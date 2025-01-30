@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Ateliers</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/admin_workshop.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+    <!-- <style>
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 1rem 0;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+    </style> -->
+</head>
+<body>
+    <div class="loading-overlay" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <header class="admin-header">
+        <h1>Gestion des Ateliers</h1>
+        <a href="../../admin.html" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </header>
+    
+    <main class="admin-main">
+        <button class="btn btn-primary" id="add-workshop">
+            <i class="fas fa-plus"></i> Nouvel Atelier
+        </button>
+        
+        <div class="form-container card" id="workshop-form" style="display:none;">
+            <form id="workshop-editor">
+                <input type="hidden" id="workshop-id">
+                
+                <div class="form-group">
+                    <label>Titre : *</label>
+                    <input type="text" id="workshop-title" required maxlength="100">
+                </div>
+                
+                <div class="form-group">
+                    <label>Description : *</label>
+                    <textarea id="workshop-description" rows="4" required maxlength="500"></textarea>
+                </div>
+                
+                <div class="form-group">
+                  <label>Récurrence : *</label>
+                  <input type="text" 
+                        id="workshop-recurrence" 
+                        required 
+                        class="form-control"
+                        placeholder="Ex: Tous les mardis, 1er jeudi du mois...">
+                </div>
+                
+                <div class="form-group">
+                    <label>Animateurs :</label>
+                    <div id="profiles-list" class="checkbox-grid"></div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+                    <button type="button" class="btn btn-danger" id="cancel-edit">
+                        <i class="fas fa-times"></i> Annuler
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="grid-container" id="workshops-container"></div>
+    </main>
+
+    <script type="module" src="../js/admin_workshops.js"></script>
+
+    <script>
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--x', `${x}px`);
+        card.style.setProperty('--y', `${y}px`);
+    });
+});
+    </script>
+</body>
+</html>
