@@ -1,102 +1,116 @@
-/* Mobile-first design */
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  color: #333;
-  background-color: #f9f9f9;
-}
 
-.admin-header {
-  background-color: #2563eb;
-  color: #fff;
-  text-align: center;
-  padding: 20px;
-}
+    :root {
+        --primary-bg: #0a0e17;
+        --text-primary: #ffffff;
+        --text-secondary: #a3a9b5;
+        --accent-1: #00e6f6;
+        --accent-2: #7d4fff;
+        --success: #00ff88;
+        --danger: #ff3465;
+        --contrast-ratio: 4.5;
+        --card-bg: rgba(15, 23, 42, 0.95);
+        --border-neon: 1px solid rgba(125, 79, 255, 0.4);
+        --spacing-lg: 2rem;
+        --radius: 8px;
+    }
 
-.admin-header h1 {
-  margin: 0;
-  font-size: 1.8rem;
-}
+    /* Base accessible */
+    body {
+        background: var(--primary-bg);
+        color: var(--text-primary);
+        font-family: 'Inter', sans-serif;
+        line-height: 1.6;
+    }
 
-.admin-main {
-  padding: 20px;
-}
+    .admin-header {
+        background: var(--card-bg) !important;
+        backdrop-filter: blur(16px);
+        border-bottom: var(--border-neon);
+        padding: var(--spacing-lg);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
 
-.admin-navigation h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 1.5rem;
-  color: #2c3e50;
-}
+    .admin-header h1 {
+        color: var(--text-primary);
+        font-size: 2rem;
+        text-shadow: 0 0 10px rgba(125, 79, 255, 0.3);
+    }
 
-.admin-services {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-}
+    h2 {
+       margin-left: 2rem;
+    }
 
-.admin-service {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-decoration: none;
-  color: #333;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 20px;
-  width: 130px;
-  height: 150px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease-in-out;
-  text-align: center;
-}
+    .admin-services {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--spacing-lg);
+        padding: var(--spacing-lg);
+    }
 
-.admin-service i {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-  color: #3498db;
-}
+    .admin-service {
+        background: var(--card-bg);
+        border: var(--border-neon);
+        border-radius: var(--radius);
+        padding: var(--spacing-lg);
+        transition: transform 0.3s ease;
+        text-decoration: none;
+        color: var(--text-primary);
+    }
 
-.admin-service span {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #333;
-}
+    .admin-service:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(125, 79, 255, 0.2);
+    }
 
-.admin-service:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-  border-color: #3498db;
-  color: #3498db;
-}
+    .admin-service i {
+        color: var(--accent-1);
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        filter: drop-shadow(0 0 8px rgba(0, 230, 246, 0.3));
+    }
 
-.admin-footer {
-  text-align: center;
-  padding: 15px;
-  background-color: #2563eb;
-  color: #fff;
-  font-size: 0.85rem;
-}
+    .admin-service span {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        display: block;
+    }
 
-/* Responsive design */
-@media (min-width: 768px) {
-  .admin-services {
-      gap: 30px;
-  }
+    /* Formulaire accessible */
+    .login-overlay {
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(10px);
+    }
 
-  .admin-service {
-      width: 150px;
-      height: 170px;
-  }
+    .login-box {
+        background: var(--card-bg);
+        border: var(--border-neon);
+        color: var(--text-primary);
+    }
 
-  .admin-service i {
-      font-size: 3rem;
-  }
+    .login-box input {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--text-primary);
+    }
 
-  .admin-service span {
-      font-size: 1.1rem;
-  }
-}
+    .login-box button {
+        background: var(--accent-2);
+        color: white;
+        font-weight: 600;
+    }
+
+    .admin-footer {
+        background: var(--card-bg);
+        border-top: var(--border-neon);
+        color: var(--text-secondary);
+        padding: var(--spacing-lg);
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+        .admin-services {
+            grid-template-columns: 1fr;
+            padding: 1rem;
+        }
+    }
