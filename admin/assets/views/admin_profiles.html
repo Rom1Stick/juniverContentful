@@ -13,8 +13,15 @@
             <h1>Gestion des Profils</h1>
             <nav>
                 <ul class="nav-menu">
-                    <li><a href="/public/index.html" target="_blank" >Accueil</a></li>
                     <li><a href="/admin/admin.html">Tableau de bord</a></li>
+                    <li><a href="/public/index.html" target="_blank" class="cyber-link">Voir le site</a></li>
+                    <li>
+                        <a href="#add-profile-section" class="cyber-button neon-pulse">
+                            <span class="icon">✚</span>
+                            <span class="text">Nouveau profil</span>
+                            <span class="glow"></span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </div>
@@ -22,79 +29,101 @@
 
     <main class="main">
         <section class="profile-management">
-            <div class="table-container">
-                <table class="responsive-table">
-                    <thead>
-                        <tr>
-                            <th>Image</th>
-                            <th>Nom</th>
-                            <th>Métier</th>
-                            <th>Email</th>
-                            <th>Téléphone</th>
-                            <th>Site Web</th>
-                            <th>Diplômes</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="profiles-table-body">
-                        <tr>
-                            <td>
-                                <img src="{imageUrl}" alt="Profil" class="profile-img">
-                                <input type="file" class="profile-img-input hidden">
-                            </td>                
-                            <td class="editable">Nom</td>
-                            <td class="editable">Métier</td>
-                            <td class="editable">Email</td>
-                            <td class="editable">Téléphone</td>
-                            <td class="editable">Site Web</td>
-                            <td class="editable">Diplômes</td>
-                            <td>
-                                <button class="edit-profile-btn" data-id="ID_PROFIL">Modifier</button>
-                                <button class="delete-profile-btn" data-id="ID_PROFIL">Supprimer</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="profiles-grid" id="profiles-container">
+                <!-- Carte exemple -->
+                <article class="profile-card">
+                    <div class="profile-header">
+                        <img src="{imageUrl}" alt="Profil" class="profile-img">
+                        <div class="profile-info">
+                            <h3 class="editable">Nom du profil</h3>
+                            <p class="editable">Métier</p>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-content">
+                        <div class="profile-field">
+                            <label>Email :</label>
+                            <span class="editable">email@exemple.com</span>
+                        </div>
+                        <div class="profile-field">
+                            <label>Téléphone :</label>
+                            <span class="editable">0123456789</span>
+                        </div>
+                        <div class="profile-field">
+                            <label>Site web :</label>
+                            <span class="editable">www.exemple.com</span>
+                        </div>
+                        <div class="profile-field">
+                            <label>Diplômes :</label>
+                            <span class="editable">Diplôme 1, Diplôme 2</span>
+                        </div>
+                        <div class="profile-field">
+                            <label>Description :</label>
+                            <span class="editable">Description du profil...</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-actions">
+                        <button class="btn edit-profile-btn">✎ Éditer</button>
+                        <button class="btn delete-profile-btn">🗑 Supprimer</button>
+                    </div>
+                </article>
             </div>
         </section>
 
-        <section class="add-profile">
-            <h2>Ajouter un Profil</h2>
-            <form id="add-profile-form" class="form">
-                <div class="form-group">
-                    <label for="profile-name">Nom :</label>
-                    <input type="text" id="profile-name" required>
-                </div>
-                <div class="form-group">
-                    <label for="profile-job">Métier :</label>
-                    <input type="text" id="profile-job" required>
-                </div>
-                <div class="form-group">
-                    <label for="profile-email">Email :</label>
-                    <input type="email" id="profile-email" required>
-                </div>
-                <div class="form-group">
-                    <label for="profile-phone">Téléphone :</label>
-                    <input type="tel" id="profile-phone">
-                </div>
-                <div class="form-group">
-                    <label for="profile-website">Site Web :</label>
-                    <input type="url" id="profile-website">
-                </div>
-                <div class="form-group">
-                    <label for="profile-description">Description :</label>
-                    <textarea id="profile-description"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="profile-diplomas">Diplômes :</label>
-                    <input type="text" id="profile-diplomas" placeholder="Séparez par des virgules">
-                </div>
-                <div class="form-group">
-                    <label for="profile-image">Image :</label>
-                    <input type="file" id="profile-image" accept="image/*">
-                </div>
-                <button type="submit" class="btn-primary">Ajouter</button>
-            </form>
+        <section id="add-profile-section" class="cyber-create-section">
+            <div class="create-panel">
+                <h2>⚡ CRÉATION DE PROFIL ⚡</h2>
+                <form id="add-profile-form" class="cyber-form">
+                    <div class="form-row">
+                        <div class="input-cyber">
+                            <label for="profile-name">NOM COMPLET</label>
+                            <input type="text" id="profile-name" required>
+                        </div>
+                        
+                        <div class="input-cyber">
+                            <label for="profile-job">SPÉCIALITÉ</label>
+                            <input type="text" id="profile-job" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="input-cyber">
+                            <label for="profile-email">EMAIL</label>
+                            <input type="email" id="profile-email" required>
+                        </div>
+                        
+                        <div class="input-cyber">
+                            <label for="profile-phone">TÉLÉPHONE</label>
+                            <input type="tel" id="profile-phone">
+                        </div>
+                    </div>
+
+                    <div class="input-cyber">
+                        <label for="profile-website">SITE WEB</label>
+                        <input type="url" id="profile-website">
+                    </div>
+
+                    <div class="input-cyber">
+                        <label for="profile-diplomas">DIPLÔMES (séparés par des virgules)</label>
+                        <input type="text" id="profile-diplomas">
+                    </div>
+
+                    <div class="input-cyber">
+                        <label for="profile-description">DESCRIPTION</label>
+                        <textarea id="profile-description" rows="4"></textarea>
+                    </div>
+
+                    <div class="input-cyber">
+                        <label for="profile-image">PHOTO DE PROFIL</label>
+                        <input type="file" id="profile-image" accept="image/*">
+                    </div>
+
+                    <button type="submit" class="submit-cyber">
+                        GÉNÉRER LE PROFIL
+                    </button>
+                </form>
+            </div>
         </section>
     </main>
 
@@ -102,5 +131,11 @@
         <p>© 2024 Juniver Santé - Tous droits réservés</p>
     </footer>
     <script type="module" src="/admin/assets/js/admin_profiles.js"></script>
+    <div id="back-to-top" class="cyber-scroll-top">
+        <svg class="arrow" viewBox="0 0 24 24">
+            <path d="M12 2L2 12h5v8h10v-8h5L12 2z"/>
+        </svg>
+        <div class="pulse"></div>
+    </div>
 </body>
 </html>

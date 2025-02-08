@@ -56,9 +56,11 @@ export async function createAdminProfile(profileData) {
             phone: { 'en-US': parseInt(profileData.phone, 10) || 0 }, // Convertir en entier
             website: { 'en-US': profileData.website || '' },
             description: { 'en-US': profileData.description || '' },
-            diplomas: { 'en-US': Array.isArray(profileData.diplomas) && profileData.diplomas.length > 0 
-                ? profileData.diplomas.join(', ') 
-                : '' }, // Toujours envoyer une chaîne
+            diplomas: { 
+                'en-US': Array.isArray(profileData.diplomas) 
+                    ? profileData.diplomas.join(', ') // Convertir en chaîne
+                    : (profileData.diplomas || '') 
+            },
         },
     };
 
@@ -376,15 +378,26 @@ export async function updateAdminProfile(profileId, profileData) {
                 name: { 'en-US': profileData.name },
                 job: { 'en-US': profileData.job },
                 email: { 'en-US': profileData.email },
-                phone: { 'en-US': profileData.phone },
+                phone: { 'en-US': parseInt(profileData.phone, 10) || 0 }, // Conversion en nombre
                 website: { 'en-US': profileData.website },
-                diplomas: { 'en-US': profileData.diplomas },
+                diplomas: { 
+                    'en-US': Array.isArray(profileData.diplomas) 
+                        ? profileData.diplomas.join(', ') // Convertir en chaîne
+                        : (profileData.diplomas || '') 
+                },
+                description: { 'en-US': profileData.description || '' }, // Champ requis
             },
         };
 
         if (profileData.imageId) {
-            updateData.fields.image = {
-                'en-US': { sys: { type: 'Link', linkType: 'Asset', id: profileData.imageId } },
+            updateData.fields.image = { 
+                'en-US': {
+                    sys: {
+                        type: 'Link',
+                        linkType: 'Asset',
+                        id: profileData.imageId
+                    }
+                }
             };
         }
 
@@ -396,8 +409,19 @@ export async function updateAdminProfile(profileId, profileData) {
 
         if (!response.ok) {
             const errorData = await response.json();
-            console.error('Erreur de mise à jour détaillée :', errorData);
-            throw new Error(`Erreur lors de la mise à jour : ${response.status}`);
+            console.error('Erreur Contentful complète :', JSON.stringify({
+                request: { 
+                    url, 
+                    method: 'PUT',
+                    headers: headers, 
+                    body: updateData 
+                },
+                response: { 
+                    status: response.status, 
+                    body: errorData 
+                }
+            }, null, 2));
+            throw new Error(`Erreur ${response.status}: ${errorData.message}`);
         }
 
         console.log("Profil mis à jour avec succès !");

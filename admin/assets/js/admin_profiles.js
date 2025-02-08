@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (!profiles || profiles.length === 0) {
             console.warn("Aucun profil trouvé.");
-            document.getElementById('profiles-table-body').innerHTML = "<tr><td colspan='8'>Aucun profil disponible.</td></tr>";
+            document.getElementById('profiles-container').innerHTML = "<article class='profile-card'><div class='profile-header'><h3>Aucun profil disponible.</h3></div></article>";
             return;
         }
 
@@ -19,57 +19,76 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('add-profile-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        await handleProfileCreation();
+        await handleProfileAction(handleProfileCreation);
     });
 });
 
 function displayProfiles(profiles) {
-  const tableBody = document.getElementById('profiles-table-body');
-
-  if (!tableBody) {
-      console.error("Tableau des profils introuvable !");
-      return;
+  const container = document.getElementById('profiles-container');
+  
+  if (!container) {
+    console.error("Conteneur des profils introuvable !");
+    return;
   }
 
-  tableBody.innerHTML = profiles.map(profile => {
-      // Assurez-vous que l'image a une URL valide ou utilisez une image par défaut
-      const imageUrl = profile.imageUrl && profile.imageUrl !== '{imageUrl}'
-          ? profile.imageUrl
-          : '/admin/assets/images/default-profile.jpg';
+  container.innerHTML = profiles.map(profile => {
+    const imageUrl = profile.imageUrl && profile.imageUrl !== '{imageUrl}' 
+      ? profile.imageUrl 
+      : '/admin/assets/images/default-profile.jpg';
 
-      return `
-          <tr data-id="${profile.id}">
-              <td>
-                  <img src="${imageUrl}" alt="Profil" class="profile-img">
-                  <input type="file" class="profile-img-input hidden">
-              </td>
-              <td class="editable">${profile.name}</td>
-              <td class="editable">${profile.job}</td>
-              <td class="editable">${profile.email}</td>
-              <td class="editable">${profile.phone || ''}</td>
-              <td class="editable">${profile.website || ''}</td>
-              <td class="editable">${Array.isArray(profile.diplomas) ? profile.diplomas.join(', ') : ''}</td>
-              <td>
-                  <button class="edit-profile-btn">Modifier</button>
-                  <button class="delete-profile-btn">Supprimer</button>
-              </td>
-          </tr>
-      `;
+    return `
+      <article class="profile-card" data-id="${profile.id}">
+        <div class="profile-header">
+          <img src="${imageUrl}" alt="Profil" class="profile-img">
+          <div class="profile-info">
+            <h3 class="editable" data-field="name">${profile.name}</h3>
+            <p class="editable" data-field="job">${profile.job}</p>
+          </div>
+        </div>
+        
+        <div class="profile-content">
+          <div class="profile-field">
+            <label>Email :</label>
+            <span class="editable" data-field="email">${profile.email}</span>
+          </div>
+          <div class="profile-field">
+            <label>Téléphone :</label>
+            <span class="editable" data-field="phone">${profile.phone || ''}</span>
+          </div>
+          <div class="profile-field">
+            <label>Site web :</label>
+            <span class="editable" data-field="website">${profile.website || ' '}</span>
+          </div>
+          <div class="profile-field">
+            <label>Diplômes :</label>
+            <span class="editable" data-field="diplomas">${profile.diplomas || ' '}</span>
+          </div>
+          <div class="profile-field">
+            <label>Description :</label>
+            <span class="editable" data-field="description">${profile.description || ' '}</span>
+          </div>
+        </div>
+        
+        <div class="card-actions">
+          <button class="btn edit-profile-btn">✎ Éditer</button>
+          <button class="btn delete-profile-btn">🗑 Supprimer</button>
+        </div>
+      </article>
+    `;
   }).join('');
 
   attachInlineEditEvents();
 }
 
-
 function attachInlineEditEvents() {
     document.querySelectorAll('.edit-profile-btn').forEach(button => {
-        const row = button.closest('tr');
+        const row = button.closest('article');
         button.addEventListener('click', () => enableInlineEditing(row));
     });
 
     document.querySelectorAll('.delete-profile-btn').forEach(button => {
         button.addEventListener('click', async () => {
-            const profileId = button.closest('tr').dataset.id;
+            const profileId = button.closest('article').dataset.id;
             await handleProfileDelete(profileId);
         });
     });
@@ -83,7 +102,7 @@ async function handleProfileCreation() {
   const website = document.getElementById('profile-website').value.trim();
   const description = document.getElementById('profile-description').value.trim();
   const diplomasInput = document.getElementById('profile-diplomas').value.trim();
-  const diplomas = diplomasInput ? diplomasInput.split(',').map(d => d.trim()).join(', ') : 'Aucun'; // Convertir en chaîne unique
+  const diplomas = diplomasInput ? diplomasInput.trim() : ''; // Garder comme chaîne
   const imageFile = document.getElementById('profile-image').files[0];
 
   if (!name || !job || !email) {
@@ -119,9 +138,6 @@ async function handleProfileCreation() {
   }
 }
 
-
-
-
 async function handleProfileDelete(profileId) {
     if (!confirm("Êtes-vous sûr de vouloir supprimer ce profil ?")) return;
 
@@ -135,58 +151,84 @@ async function handleProfileDelete(profileId) {
     }
 }
 
-function enableInlineEditing(row) {
-    const cells = row.querySelectorAll('td.editable');
-    const profileId = row.dataset.id;
-
-    cells.forEach(cell => {
-        cell.contentEditable = true;
-        cell.classList.add('editing');
+function enableInlineEditing(card) {
+  const fields = card.querySelectorAll('.editable');
+  const profileId = card.dataset.id;
+  
+  // Activer l'édition
+  fields.forEach(field => {
+    field.contentEditable = true;
+    field.classList.add('editing');
+    
+    // Gestion du placeholder
+    if (field.textContent.trim() === '') {
+        field.textContent = ''; // Supprimer l'espace initial
+    }
+    
+    field.addEventListener('focus', () => {
+        if (field.textContent === ' ') field.textContent = '';
     });
+  });
 
-    const imgInput = row.querySelector('.profile-img-input');
-    imgInput.classList.remove('hidden');
-    imgInput.addEventListener('change', async () => {
-        const file = imgInput.files[0];
-        if (!file) return;
+  // Gestion de l'image
+  const img = card.querySelector('.profile-img');
+  const imgInput = document.createElement('input');
+  imgInput.type = 'file';
+  imgInput.accept = 'image/*';
+  imgInput.style.display = 'none';
+  imgInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      try {
+        const imageId = await uploadProfileImage(file);
+        img.src = URL.createObjectURL(file);
+        card.dataset.imageId = imageId;
+      } catch (error) {
+        console.error("Erreur upload image :", error);
+        alert("Échec de l'upload de l'image : " + error.message);
+      }
+    }
+  });
+  card.querySelector('.profile-header').appendChild(imgInput);
 
-        try {
-            const uploadedAssetId = await uploadProfileImage(file);
-            row.querySelector('.profile-img').src = URL.createObjectURL(file);
-            row.dataset.imageId = uploadedAssetId;
-        } catch (error) {
-            console.error("Erreur lors de l'upload de l'image :", error);
-            alert("Erreur lors du téléchargement de l'image.");
-        }
-    });
+  // Ajouter un bouton visuel pour déclencher l'upload
+  const uploadBtn = document.createElement('button');
+  uploadBtn.textContent = '📷 Changer photo';
+  uploadBtn.className = 'btn upload-btn';
+  uploadBtn.onclick = () => imgInput.click();
+  card.querySelector('.card-actions').prepend(uploadBtn);
 
-    const saveButton = document.createElement('button');
-    saveButton.textContent = 'Enregistrer';
-    saveButton.className = 'save-profile-btn';
-    saveButton.addEventListener('click', async () => {
+  // Bouton de sauvegarde
+  const saveBtn = card.querySelector('.edit-profile-btn');
+  const originalText = saveBtn.textContent;
+  saveBtn.textContent = '💾 Sauvegarder';
+  saveBtn.classList.add('save-mode');
+
+  const saveHandler = async () => {
+    try {
         const updatedData = {
-            name: cells[0].textContent.trim(),
-            job: cells[1].textContent.trim(),
-            email: cells[2].textContent.trim(),
-            phone: parseInt(cells[3].textContent.trim(), 10) || 0,
-            website: cells[4].textContent.trim(),
-            diplomas: cells[5].textContent.split(',').map(d => d.trim()).join(', '),
-            imageId: row.dataset.imageId || null,
+            name: card.querySelector('[data-field="name"]').textContent.trim(),
+            job: card.querySelector('[data-field="job"]').textContent.trim(),
+            email: card.querySelector('[data-field="email"]').textContent.trim(),
+            phone: card.querySelector('[data-field="phone"]').textContent.trim(),
+            website: card.querySelector('[data-field="website"]').textContent.trim(),
+            diplomas: card.querySelector('[data-field="diplomas"]').textContent.split(',').map(d => d.trim()),
+            description: card.querySelector('[data-field="description"]').textContent.trim(),
+            imageId: card.dataset.imageId || null
         };
 
-        console.log("Données envoyées :", updatedData);
+        await updateAdminProfile(profileId, updatedData);
+        alert('Modifications sauvegardées avec succès !');
+        window.location.reload();
+    } catch (error) {
+        console.error("Échec de la sauvegarde :", error);
+        alert("Erreur lors de la sauvegarde : " + error.message);
+    }
+  };
 
-        try {
-            await updateAdminProfile(profileId, updatedData);
-            alert('Profil mis à jour avec succès !');
-            window.location.reload();
-        } catch (error) {
-            console.error('Erreur lors de la mise à jour du profil :', error);
-            alert('Une erreur est survenue lors de la mise à jour.');
-        }
-    });
-
-    row.querySelector('td:last-child').appendChild(saveButton);
+  saveBtn.replaceWith(saveBtn.cloneNode(true)); // Réinitialise complètement les listeners
+  const newSaveBtn = card.querySelector('.edit-profile-btn');
+  newSaveBtn.addEventListener('click', saveHandler);
 }
 
 export async function publishAdminProfile(profileId) {
@@ -227,4 +269,51 @@ export async function publishAdminProfile(profileId) {
       throw error;
   }
 }
+
+// Ajout d'un indicateur de chargement
+async function handleProfileAction(action) {
+    const loader = document.createElement('div');
+    loader.className = 'global-loader';
+    document.body.appendChild(loader);
+    
+    try {
+        await action();
+    } catch (error) {
+        console.error("Erreur :", error);
+        alert("Erreur : " + error.message);
+    } finally {
+        loader.remove();
+    }
+}
+
+window.addEventListener('scroll', () => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const backButton = document.getElementById('back-to-top');
+    
+    if (scrollTop > 300) {
+        backButton.classList.add('visible');
+    } else {
+        backButton.classList.remove('visible');
+    }
+});
+
+document.getElementById('back-to-top').addEventListener('click', () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
 
