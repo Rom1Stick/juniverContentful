@@ -1,0 +1,25 @@
+{
+  "name": "junivercontentful",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {
+    "@eslint/js": "^9.20.0",
+    "eslint": "^9.20.1",
+    "globals": "^15.15.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rom1Stick/juniverContentful.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Rom1Stick/juniverContentful/issues"
+  },
+  "homepage": "https://github.com/Rom1Stick/juniverContentful#readme"
+}
