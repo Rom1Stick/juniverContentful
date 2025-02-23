@@ -13,29 +13,30 @@ export async function fetchAdminProfiles() {
 
         const assets = data.includes?.Asset || [];
         return data.items.map(item => {
-            const imageRef = item.fields.image?.['en-US']?.sys?.id;
-            const imageAsset = assets.find(asset => asset.sys.id === imageRef);
-            const imageUrl = imageAsset?.fields?.file?.url ? `https:${imageAsset.fields.file.url}` : './images/default-profile.jpg';
+            // Gestion simplifiée des images par défaut
+            let imageUrl = '/assets/image/default-profile-2.png'; // Image par défaut pour les profils sans image
 
-            const diplomas = Array.isArray(item.fields.diplomas?.['en-US'])
-                ? item.fields.diplomas['en-US']
-                : [];
+            // Si le profil a une référence d'image, utiliser default-profile.png
+            if (item.fields.image?.['en-US']?.sys?.id) {
+                imageUrl = '/assets/image/default-profile.png';
+            }
 
             return {
                 id: item.sys.id,
-                name: item.fields.name?.['en-US'] || 'Nom non spécifié',
-                job: item.fields.job?.['en-US'] || 'Métier non spécifié',
-                email: item.fields.email?.['en-US'] || 'Email non spécifié',
-                phone: item.fields.phone?.['en-US'] || 'Non spécifié',
-                website: item.fields.website?.['en-US'] || 'Non spécifié',
+                name: item.fields.name?.['en-US'] || '',
+                job: item.fields.job?.['en-US'] || '',
+                email: item.fields.email?.['en-US'] || '',
+                phone: item.fields.phone?.['en-US'] || '',
+                website: item.fields.website?.['en-US'] || '',
                 description: item.fields.description?.['en-US'] || '',
-                diplomas: diplomas,
-                imageUrl: imageUrl,
+                diplomas: item.fields.diplomas?.['en-US'] || [],
+                imageUrl // Utilisation directe des images par défaut
             };
         });
+
     } catch (error) {
-        console.error("Erreur lors de la récupération des profils :", error);
-        return [];
+        console.error('Erreur lors de la récupération des profils:', error);
+        throw error;
     }
 }
 
@@ -368,66 +369,67 @@ export async function updateAdminProfile(profileId, profileData) {
     };
 
     try {
-        const versionResponse = await fetch(url, { method: 'GET', headers });
-        if (!versionResponse.ok) throw new Error(`Erreur lors de la récupération de la version : ${versionResponse.status}`);
-        const versionData = await versionResponse.json();
-        const currentVersion = versionData.sys.version;
+        // 1. D'abord, récupérer l'entrée existante pour obtenir les données actuelles
+        const getResponse = await fetch(url, { headers });
+        if (!getResponse.ok) throw new Error(`Erreur lors de la récupération : ${getResponse.status}`);
+        const currentEntry = await getResponse.json();
+        
+        // 2. Conserver l'image existante si aucune nouvelle image n'est fournie
+        const existingImageId = currentEntry.fields.image?.['en-US']?.sys?.id;
+        const imageToUse = profileData.imageId || existingImageId;
 
+        // 3. Préparer les données de mise à jour
         const updateData = {
             fields: {
                 name: { 'en-US': profileData.name },
                 job: { 'en-US': profileData.job },
                 email: { 'en-US': profileData.email },
-                phone: { 'en-US': parseInt(profileData.phone, 10) || 0 }, // Conversion en nombre
+                phone: { 'en-US': parseInt(profileData.phone, 10) || 0 },
                 website: { 'en-US': profileData.website },
+                description: { 'en-US': profileData.description || '' },
                 diplomas: { 
                     'en-US': Array.isArray(profileData.diplomas) 
-                        ? profileData.diplomas.join(', ') // Convertir en chaîne
+                        ? profileData.diplomas.join(', ') 
                         : (profileData.diplomas || '') 
-                },
-                description: { 'en-US': profileData.description || '' }, // Champ requis
-            },
+                }
+            }
         };
 
-        if (profileData.imageId) {
-            updateData.fields.image = { 
+        // 4. Ajouter l'image seulement si elle existe
+        if (imageToUse) {
+            updateData.fields.image = {
                 'en-US': {
                     sys: {
                         type: 'Link',
                         linkType: 'Asset',
-                        id: profileData.imageId
+                        id: imageToUse
                     }
                 }
             };
         }
 
+        // 5. Effectuer la mise à jour
         const response = await fetch(url, {
             method: 'PUT',
-            headers: { ...headers, 'X-Contentful-Version': currentVersion },
-            body: JSON.stringify(updateData),
+            headers: {
+                ...headers,
+                'X-Contentful-Version': currentEntry.sys.version
+            },
+            body: JSON.stringify(updateData)
         });
 
         if (!response.ok) {
             const errorData = await response.json();
-            console.error('Erreur Contentful complète :', JSON.stringify({
-                request: { 
-                    url, 
-                    method: 'PUT',
-                    headers: headers, 
-                    body: updateData 
-                },
-                response: { 
-                    status: response.status, 
-                    body: errorData 
-                }
-            }, null, 2));
+            console.error('Erreur Contentful:', errorData);
             throw new Error(`Erreur ${response.status}: ${errorData.message}`);
         }
 
-        console.log("Profil mis à jour avec succès !");
+        // 6. Publier les modifications
         await publishAdminProfile(profileId);
+        console.log("Profil mis à jour avec succès !");
+
     } catch (error) {
-        console.error("Erreur lors de la mise à jour du profil :", error);
+        console.error("Erreur lors de la mise à jour du profil:", error);
         throw error;
     }
 }

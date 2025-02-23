@@ -1,4 +1,3 @@
-
     :root {
         --primary-bg: #0a0e17;
         --text-primary: #ffffff;
@@ -113,4 +112,526 @@
             grid-template-columns: 1fr;
             padding: 1rem;
         }
+    }
+
+    .admin-notifications {
+        margin: 1rem;
+        padding: 1.5rem;
+        border-radius: var(--radius);
+        background: var(--card-bg);
+        border: var(--border-neon);
+    }
+
+    .notifications-title {
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(125, 79, 255, 0.2);
+    }
+
+    .service-status {
+        display: flex;
+        align-items: center;
+        padding: 0.8rem;
+        margin: 0.5rem 0;
+        border-radius: var(--radius);
+        font-size: 0.95rem;
+        background: rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .service-status:hover {
+        transform: translateX(5px);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .service-status.success {
+        border-left: 3px solid var(--success);
+    }
+
+    .service-status.error {
+        border-left: 3px solid var(--danger);
+    }
+
+    .service-status.pending {
+        border-left: 3px solid var(--accent-1);
+    }
+
+    .status-icon {
+        margin-right: 1rem;
+        font-size: 1.2rem;
+    }
+
+    .status-text {
+        flex: 1;
+        color: var(--text-primary);
+    }
+
+    .status-badge {
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .success .status-badge {
+        background: rgba(0, 255, 136, 0.1);
+        color: var(--success);
+    }
+
+    .error .status-badge {
+        background: rgba(255, 52, 101, 0.1);
+        color: var(--danger);
+    }
+
+    .pending .status-badge {
+        background: rgba(0, 230, 246, 0.1);
+        color: var(--accent-1);
+    }
+
+    .error-details, .warning-details {
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        border-radius: var(--radius);
+        width: 100%;
+    }
+
+    .error-details {
+        background: rgba(255, 52, 101, 0.05);
+        color: var(--danger);
+    }
+
+    .warning-details {
+        background: rgba(255, 193, 7, 0.05);
+        color: #ffc107;
+    }
+
+    .service-status.warning {
+        border-left: 3px solid #ffc107;
+    }
+
+    .warning .status-badge {
+        background: rgba(255, 193, 7, 0.1);
+        color: #ffc107;
+    }
+
+    .admin-notifications.minimized {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: auto;
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        padding: 0.5rem;
+        z-index: 1000;
+    }
+
+    .toggle-notifications {
+        background: rgba(125, 79, 255, 0.2);
+        border: 1px solid var(--accent-2);
+        color: var(--text-primary);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.8rem 1.2rem;
+        border-radius: 25px;
+        width: 100%;
+        transition: all 0.3s ease;
+        gap: 1rem;
+    }
+
+    .toggle-notifications:hover {
+        background: rgba(125, 79, 255, 0.3);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(125, 79, 255, 0.2);
+    }
+
+    .toggle-content {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .toggle-icon {
+        font-size: 1.2rem;
+        filter: drop-shadow(0 0 5px var(--accent-1));
+    }
+
+    .toggle-text {
+        font-weight: 500;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .toggle-arrow {
+        font-size: 0.8rem;
+        transition: transform 0.3s ease;
+    }
+
+    /* Rotation de la flèche quand le panneau est ouvert */
+    .admin-notifications:not(.minimized) .toggle-arrow {
+        transform: rotate(180deg);
+    }
+
+    /* Ajuster le style en mode minimisé */
+    .admin-notifications.minimized .toggle-notifications {
+        background: var(--card-bg);
+        border: var(--border-neon);
+        padding: 0.6rem 1rem;
+    }
+
+    .admin-notifications.minimized .toggle-text {
+        display: none;
+    }
+
+    /* Supprimer l'animation pulse existante */
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        100% { transform: scale(1); }
+    }
+
+    /* Remplacer par une transition plus douce */
+    .admin-notifications.minimized .toggle-notifications {
+        animation: none; /* Supprimer l'animation pulse */
+        transition: all 0.3s ease;
+        transform: scale(1);
+    }
+
+    .admin-notifications.minimized .toggle-notifications:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(125, 79, 255, 0.2);
+    }
+
+    .mini-indicators {
+        display: flex;
+        gap: 0.5rem;
+        padding: 0.5rem;
+    }
+
+    .mini-indicator {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--card-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+
+    .mini-indicator:hover {
+        transform: scale(1.1);
+    }
+
+    .indicator-dot {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+    }
+
+    .mini-indicator.success .indicator-dot { background: var(--success); }
+    .mini-indicator.warning .indicator-dot { background: #ffc107; }
+    .mini-indicator.error .indicator-dot { background: var(--danger); }
+
+    .service-details-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1100;
+    }
+
+    .service-detail-card {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        padding: 2rem;
+        width: 90%;
+        max-width: 500px;
+        position: relative;
+    }
+
+    .detail-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .metric {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.8rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    .error-log {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: rgba(255, 52, 101, 0.1);
+        border-radius: var(--radius);
+    }
+
+    .expanded-services-view {
+        padding: 1rem;
+        max-height: 400px;
+        overflow-y: auto;
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        transform-origin: top;
+    }
+
+    .expanded-services-view.hidden {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    .expanded-services-view.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .expanded-service {
+        margin-bottom: 0.8rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: var(--radius);
+        transition: all 0.3s ease;
+    }
+
+    .expanded-service:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .service-brief {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .service-icon {
+        font-size: 1.5rem;
+    }
+
+    .service-info {
+        flex: 1;
+    }
+
+    .service-info h4 {
+        margin: 0;
+        color: var(--text-primary);
+        font-size: 1rem;
+    }
+
+    .service-metrics {
+        display: flex;
+        gap: 1rem;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .metric {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-btn {
+        background: rgba(125, 79, 255, 0.2);
+        border: 1px solid var(--accent-2);
+        color: var(--accent-1);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .info-btn:hover {
+        background: rgba(125, 79, 255, 0.3);
+        transform: translateY(-1px);
+    }
+
+    /* États des services étendus */
+    .expanded-service.success {
+        border-left: 3px solid var(--success);
+    }
+
+    .expanded-service.warning {
+        border-left: 3px solid #ffc107;
+    }
+
+    .expanded-service.error {
+        border-left: 3px solid var(--danger);
+    }
+
+    .expanded-service.pending {
+        border-left: 3px solid var(--accent-1);
+    }
+
+    /* Personnalisation de la barre de défilement */
+    .expanded-services-view::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .expanded-services-view::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+    }
+
+    .expanded-services-view::-webkit-scrollbar-thumb {
+        background: var(--accent-2);
+        border-radius: 3px;
+    }
+
+    .toggle-icon i,
+    .service-icon i {
+        color: var(--accent-1);
+        filter: drop-shadow(0 0 3px var(--accent-1));
+    }
+
+    .expanded-service .service-icon i {
+        font-size: 1.3rem;
+        width: 30px;
+        text-align: center;
+    }
+
+    .service-metrics i {
+        color: var(--accent-2);
+        font-size: 1rem;
+    }
+
+    .info-btn i {
+        font-size: 1rem;
+    }
+
+    /* Animation pour les icônes des services en état d'erreur */
+    .expanded-service.error .service-icon i {
+        animation: pulse-error 2s infinite;
+    }
+
+    @keyframes pulse-error {
+        0% { color: var(--danger); }
+        50% { color: var(--accent-1); }
+        100% { color: var(--danger); }
+    }
+
+    /* Animation pour les icônes des services en avertissement */
+    .expanded-service.warning .service-icon i {
+        animation: pulse-warning 2s infinite;
+    }
+
+    @keyframes pulse-warning {
+        0% { color: #ffc107; }
+        50% { color: var(--accent-1); }
+        100% { color: #ffc107; }
+    }
+
+    /* Animation pour les icônes des services opérationnels */
+    .expanded-service.success .service-icon i {
+        color: var(--success);
+    }
+
+    /* Améliorer la transition de la flèche */
+    .toggle-arrow i {
+        transition: transform 0.3s ease;
+    }
+
+    .admin-notifications:not(.minimized) .toggle-arrow i {
+        transform: rotate(180deg);
+    }
+
+    .loading-indicator {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-secondary);
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(125, 79, 255, 0.2);
+        border-radius: 50%;
+        border-top-color: var(--accent-2);
+        margin: 0 auto 1rem;
+        animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .error-state {
+        text-align: center;
+        padding: 2rem;
+        background: rgba(255, 52, 101, 0.1);
+        border-radius: var(--radius);
+        margin: 1rem;
+    }
+
+    .error-state i {
+        font-size: 2rem;
+        color: var(--danger);
+        margin-bottom: 1rem;
+    }
+
+    .retry-button {
+        background: var(--accent-2);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        cursor: pointer;
+        margin-top: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .retry-button:hover {
+        background: var(--accent-1);
+        transform: translateY(-2px);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        background: rgba(125, 79, 255, 0.1);
+        border-radius: var(--radius);
+    }
+
+    .empty-state h3 {
+        color: var(--accent-1);
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        color: var(--text-secondary);
     }
