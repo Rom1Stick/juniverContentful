@@ -7,7 +7,6 @@ export async function fetchProfiles() {
         const response = await fetch(url);
         if (!response.ok) throw new Error('Erreur lors de la récupération des profils');
         const data = await response.json();
-        console.log("Données brutes des profils :", data);
 
         return data.items.map(item => {
             // Récupération de l'image depuis includes.Asset
@@ -15,16 +14,12 @@ export async function fetchProfiles() {
             const imageAsset = data.includes?.Asset?.find(asset => asset.sys.id === imageRef);
             const imageUrl = imageAsset?.fields?.file?.url
                 ? `https:${imageAsset.fields.file.url}`
-                : null;
-
-            if (!imageUrl) {
-                console.warn("Image manquante ou mal structurée pour le profil :", item);
-            }
+                : '/assets/image/default-profile.png'; // Chemin corrigé
 
             return {
                 id: item.sys.id,
-                name: item.fields.name,
-                job: item.fields.job,
+                name: item.fields.name || 'Sans nom',
+                job: item.fields.job || 'Profession non spécifiée',
                 imageUrl: imageUrl,
                 link: `about.html?id=${item.sys.id}`
             };
@@ -43,25 +38,16 @@ export function displayProfiles(profiles) {
     }
 
     container.innerHTML = profiles.map(profile => {
-        // Générer l'HTML de l'image uniquement si une image est disponible
-        const imageHtml = profile.imageUrl 
-            ? `<img src="${profile.imageUrl}" alt="${profile.name}">` 
-            : ''; // Si pas d'image, chaîne vide (pas d'affichage d'image)
-        
         return `
             <div class="profile-card">
-                ${imageHtml}
+                <img src="${profile.imageUrl}" alt="${profile.name}" onerror="this.src='/assets/image/default-profile.png'">
                 <h3>${profile.name}</h3>
                 <p>${profile.job}</p>
                 <a href="/public/views/about.html" class="view-profile-btn">Voir le profil</a>
             </div>
         `;
     }).join('');
-
-    console.log("Profils affichés :", profiles);
 }
-
-
 
 export function initCarousel(profiles) {
     const container = document.querySelector(".carousel-container");
@@ -101,7 +87,7 @@ export function initCarousel(profiles) {
     };
 
     const startAutoScroll = () => {
-        autoScroll = setInterval(nextProfile, 2500);
+        autoScroll = setInterval(nextProfile, 2000);
     };
 
     const stopAutoScroll = () => {

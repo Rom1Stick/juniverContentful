@@ -9,7 +9,7 @@ export function displayArticles(articles, containerId = 'content') {
     contentDiv.innerHTML = "";
 
     if (articles.length === 0) {
-        contentDiv.innerHTML = "<p>Aucun article disponible.</p>";
+        contentDiv.innerHTML = "<p class='no-articles'>Aucun article disponible.</p>";
         return;
     }
 
@@ -22,7 +22,9 @@ export function displayArticles(articles, containerId = 'content') {
             articleEl.innerHTML = `
                 <h2>${title}</h2>
                 <p>${summary}</p>
-                <a href="details.html?id=${articleId}">Lire la suite</a>
+                <a href="details.html?id=${articleId}">
+                    <span>Lire la suite</span>
+                </a>
             `;
             contentDiv.appendChild(articleEl);
         } else {

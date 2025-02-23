@@ -33,7 +33,7 @@ export async function fetchProfilesWithAssets() {
             const imageAsset = assets.find(asset => asset.sys.id === imageRef);
             const imageUrl = imageAsset?.fields?.file?.url 
                 ? `https:${imageAsset.fields.file.url}` 
-                : ''; // Pas de fallback, on renvoie une chaîne vide
+                : '';
 
             const diplomas = item.fields.diplomas
                 ? item.fields.diplomas.split(',').map(degree => degree.trim())
@@ -44,7 +44,7 @@ export async function fetchProfilesWithAssets() {
                 name: item.fields.name,
                 job: item.fields.job,
                 email: item.fields.email,
-                phone: item.fields.phone,
+                phone: item.fields.phone ? String(item.fields.phone).padStart(10, '0') : '',
                 website: item.fields.website,
                 description: item.fields.description,
                 diplomas: diplomas,
