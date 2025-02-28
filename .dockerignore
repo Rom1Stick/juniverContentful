@@ -1,0 +1,11 @@
+.git
+.git*
+.vscode
+.idea
+node_modules
+*.log
+.env
+.env.*
+*.md
+!cours.md
+!README.md 

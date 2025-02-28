@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - ./public:/usr/share/nginx/html/public
+      - ./admin:/usr/share/nginx/html/admin
+      - ./config:/usr/share/nginx/html/config
+      - ./public/js:/usr/share/nginx/html/js
+      - ./public/assets:/usr/share/nginx/html/public/assets
+      - ./public/views:/usr/share/nginx/html/views
+      - ./_redirects:/usr/share/nginx/html/_redirects
+    restart: unless-stopped 
