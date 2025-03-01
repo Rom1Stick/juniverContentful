@@ -1,8 +1,10 @@
-version: '3'
+version: '3.8'
 
 services:
   web:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8080:80"
     volumes:
@@ -13,4 +15,27 @@ services:
       - ./public/assets:/usr/share/nginx/html/public/assets
       - ./public/views:/usr/share/nginx/html/views
       - ./_redirects:/usr/share/nginx/html/_redirects
-    restart: unless-stopped 
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+    networks:
+      - app-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  app-network:
+    driver: bridge 

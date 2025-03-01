@@ -5,7 +5,7 @@ COPY ./ /usr/share/nginx/html/
 
 # Configuration des redirections NGINX
 RUN rm /etc/nginx/conf.d/default.conf
-COPY nginx.conf /etc/nginx/conf.d/
+COPY nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
 
 # Exposition du port 80
 EXPOSE 80
