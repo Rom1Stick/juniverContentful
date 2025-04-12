@@ -258,21 +258,35 @@
     }
 }
 
-.price {
-    font-size: 1.8rem;
-    color: $primary-color;
-    font-weight: bold;
-    margin: 0.8rem 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.3rem;
+.price-details {
+    margin: 1rem 0;
+    padding: 0.5rem 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
 
-    &::before {
-        content: '€';
-        font-size: 1.2rem;
-        color: $light-gray;
+.price-member,
+.price-non-member {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0;
+    
+    .label {
+        font-size: 0.9rem;
+        color: $text-color;
+        font-weight: 500;
     }
+
+    .price {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: $primary-color;
+    }
+}
+
+.price-non-member .price {
+    color: darken($primary-color, 10%); // Légèrement plus foncé pour différencier
 }
 
 .features {
@@ -359,11 +373,20 @@
     margin: 5% auto;
     padding: 2rem;
     border-radius: $border-radius;
-    width: 90%;
-    max-width: 600px;
+    width: 92%;
+    max-width: 700px;
     position: relative;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     animation: slideIn 0.3s ease;
+
+    h2 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: $text-color;
+        font-size: 1.6rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
 }
 
 @keyframes slideIn {
@@ -386,23 +409,221 @@
     }
 }
 
+.pricing-options, .pricing-option, .option-details, 
+.price-category, .featured-badge, .features {
+    // Ces styles seront supprimés
+}
+
+.tarif-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 1.5rem;
+    font-family: $font-family;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    border-radius: $border-radius;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.05);
+    
+    th, td {
+        padding: 1rem 1.2rem;
+        text-align: center;
+        position: relative;
+    }
+    
+    th {
+        background: linear-gradient(135deg, $primary-color, darken($primary-color, 10%));
+        color: white;
+        font-weight: 600;
+        font-size: 1.05rem;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        border-bottom: 3px solid darken($primary-color, 15%);
+        
+        &:first-child {
+            text-align: left;
+            border-top-left-radius: $border-radius - 1px;
+        }
+        
+        &:last-child {
+            border-top-right-radius: $border-radius - 1px;
+        }
+    }
+    
+    tr {
+        background-color: white;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        
+        &:nth-child(even) {
+            background-color: rgba($light-background, 0.4);
+        }
+        
+        &:last-child td {
+            border-bottom: none;
+            
+            &:first-child {
+                border-bottom-left-radius: $border-radius - 1px;
+            }
+            
+            &:last-child {
+                border-bottom-right-radius: $border-radius - 1px;
+            }
+        }
+        
+        &:hover {
+            background-color: lighten($primary-color, 48%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            z-index: 1;
+            position: relative;
+        }
+    }
+    
+    td {
+        border-bottom: 1px solid rgba(0,0,0,0.08);
+        font-size: 1.15rem;
+        color: $text-color;
+        
+        &:first-child {
+            text-align: left;
+            font-weight: 600;
+            position: relative;
+            border-left: 1px solid transparent;
+        }
+    }
+    
+    .highlight-row {
+        background: linear-gradient(to right, rgba($primary-color, 0.1), rgba($primary-color, 0.05));
+        border-left: 4px solid $primary-color;
+        position: relative;
+        
+        td {
+            font-weight: 600;
+            color: darken($text-color, 10%);
+            
+            &:not(:first-child) {
+                color: darken($primary-color, 8%);
+            }
+        }
+        
+        &:hover {
+            background: linear-gradient(to right, rgba($primary-color, 0.15), rgba($primary-color, 0.08));
+            transform: translateY(-2px) scale(1.01);
+        }
+    }
+    
+    .recommended {
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: linear-gradient(135deg, $primary-color, darken($primary-color, 10%));
+        color: white;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 0.25rem 0.6rem;
+        border-radius: 0 0 0 5px;
+        transform: translateY(-50%);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+}
+
+.pricing-note {
+    text-align: center;
+    font-size: 0.9rem;
+    color: rgba(0, 0, 0, 0.6);
+    background: $light-background;
+    padding: 0.8rem 1rem;
+    border-radius: $border-radius;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.05);
+    margin-top: 1rem;
+    
+    p {
+        margin: 0;
+    }
+}
+
 @media (max-width: 768px) {
     .modal-content {
         width: 95%;
         margin: 10% auto;
         padding: 1.5rem;
+        
+        h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
     }
     
-    // Garder une seule colonne sur mobile pour la lisibilité
-    .pricing-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .pricing-card {
-        padding: 1.25rem;
-    }
-
-    .price {
-        font-size: 2rem;
+    .tarif-table {
+        th, td {
+            padding: 0.7rem 0.5rem;
+        }
+        
+        th {
+            font-size: 0.9rem;
+        }
+        
+        td {
+            font-size: 0.95rem;
+        }
+        
+        .recommended {
+            font-size: 0.6rem;
+            padding: 0.15rem 0.4rem;
+        }
     }
 }
+
+// Style pour la section d'adhésion
+.adhesion-section {
+    margin-top: 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.adhesion-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    background: linear-gradient(135deg, $secondary-color, darken($secondary-color, 10%));
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0.9rem 1.8rem;
+    border-radius: $border-radius;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: none;
+    cursor: pointer;
+    
+    i {
+        font-size: 1.2rem;
+    }
+    
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        background: linear-gradient(135deg, darken($secondary-color, 5%), darken($secondary-color, 15%));
+    }
+    
+    &:active {
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    }
+}
+
+.adhesion-info {
+    font-size: 0.9rem;
+    color: rgba(0, 0, 0, 0.6);
+    margin: 0;
+}
+
