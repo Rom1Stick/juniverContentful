@@ -214,3 +214,22 @@ function showEventDetails(eventsForDay) {
 
     detailsContainer.classList.remove('hidden');
 }
+
+// Gestion de la modal des tarifs
+const pricingModal = document.getElementById('pricing-modal');
+const togglePricingBtn = document.getElementById('toggle-pricing');
+const closeModalBtn = document.querySelector('.close-modal');
+
+togglePricingBtn.addEventListener('click', () => {
+    pricingModal.style.display = 'block';
+});
+
+closeModalBtn.addEventListener('click', () => {
+    pricingModal.style.display = 'none';
+});
+
+window.addEventListener('click', (event) => {
+    if (event.target === pricingModal) {
+        pricingModal.style.display = 'none';
+    }
+});
