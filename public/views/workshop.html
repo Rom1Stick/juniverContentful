@@ -4,42 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ateliers Hebdomadaires</title>
-    <link rel="stylesheet" href="../assets/styles/main.min.css">
+    <link rel="stylesheet" href="../styles/main.min.css">
 </head>
 <body>
+    <a class="skip-to-content" href="#main-content">Aller au contenu principal</a>
+    
     <header class="header-website">
-        <nav class="nav-bar">
+        <nav class="nav-bar" aria-label="Navigation principale">
           <div class="logo">
             <!-- <img src="./assets/images/logo.png" alt="logo du site"> -->
             <span class="logo-text">JuniverSanté Naturelle</span>
           </div>
       
           <div class="menu">
-            <input type="checkbox" id="menu-toggle" class="menu-input">
-            <label for="menu-toggle" class="btn btn-secondary">
-              <i class="fa-solid fa-bars menu-icon"></i>
-              <i class="fa-solid fa-times close-icon"></i>
+            <input type="checkbox" id="menu-toggle" class="menu-input" aria-describedby="menu-description">
+            <label for="menu-toggle" class="btn btn-secondary" aria-label="Ouvrir le menu de navigation">
+              <i class="fa-solid fa-bars menu-icon" aria-hidden="true"></i>
+              <i class="fa-solid fa-times close-icon" aria-hidden="true"></i>
+              <span class="sr-only" id="menu-description">Appuyez pour ouvrir ou fermer le menu</span>
             </label>
       
-            <ul class="nav-links">
-              <li class="nav-link">
-                <a href="../index.html">Accueil</a>
+            <ul class="nav-links" role="menubar">
+              <li class="nav-link" role="none">
+                <a href="../index.html" role="menuitem">Accueil</a>
               </li>
 
-              <li class="nav-link">
-                <a href="./about.html">A propos</a>
+              <li class="nav-link" role="none">
+                <a href="./about.html" role="menuitem">A propos</a>
               </li>
 
-              <li class="nav-link">
-                <a href="./calendar.html"> Programme des Ateliers</a>
+              <li class="nav-link" role="none">
+                <a href="./calendar.html" role="menuitem">Programme des Ateliers</a>
               </li>
               
-              <li class="nav-link">
-                <a href="./contact.html">Contact</a>
+              <li class="nav-link" role="none">
+                <a href="./contact.html" role="menuitem">Contact</a>
               </li>
 
-              <li class="nav-link">
-                <a href="./workshop.html">Sessions Hebdomadaires</a>
+              <li class="nav-link" role="none">
+                <a href="./workshop.html" role="menuitem" aria-current="page">Sessions Hebdomadaires</a>
               </li>
 
             </ul>
@@ -47,27 +50,39 @@
         </nav>
     </header>
     
-    <main>
-        <section id="hero">
+    <main id="main-content">
+        <section id="hero" aria-labelledby="hero-title">
             <div class="hero-content">
-                <h2>Découvrez Nos Sessions Hebdomadaires</h2>
+                <h1 id="hero-title">Découvrez Nos Sessions Hebdomadaires</h1>
                 <p>Explorez les activités, rencontrez nos animateurs, et inscrivez-vous dès aujourd'hui pour une expérience enrichissante.</p>
             </div>
         </section>
-        <section id="workshop-list">
-            <h2>Sessions Hebdomadaires</h2>
-            <!-- Les ateliers seront injectés ici -->
+        
+        <section id="workshop-list" aria-labelledby="workshops-title">
+            <h2 id="workshops-title">Sessions Hebdomadaires</h2>
+            <div role="region" aria-live="polite" aria-label="Liste des ateliers disponibles">
+                <!-- Les ateliers seront injectés ici -->
+            </div>
         </section>
     </main>
-    <footer>
-        <p>
-            <a class="footer" href="/public/views/privacy.htm">Politique de confidentialité</a> | 
-            <a href="/public/views/legal.htm">Mentions légales</a>
-        </p>
-        <p>© 2024 Juniver Santé - Tous droits réservés</p>
+    
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">JuniverSanté</span>
+                </div>
+                <nav class="footer-links" aria-label="Liens légaux et informations">
+                    <a href="./privacy.html">Politique de confidentialité</a> | 
+                    <a href="./legal.html">Mentions légales</a> |
+                    <a href="./contact.html">Contactez-nous</a>
+                </nav>
+                <p>© 2024 Juniver Santé - Tous droits réservés</p>
+            </div>
+        </div>
     </footer>
 
-    
     <script type="module" src="../js/views/workshop.js"></script>
+    <script src="../js/accessibility.js" type="module"></script>
 </body>
 </html>

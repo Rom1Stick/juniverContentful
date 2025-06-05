@@ -4,38 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>À propos - Juniver Santé</title>
-    <link rel="stylesheet" href="../assets/styles/main.min.css">
+    <link rel="stylesheet" href="../styles/main.min.css">
 </head>
 <body>
+    <a class="skip-to-content" href="#main-content">Aller au contenu principal</a>
+    
     <header class="header-website">
-        <nav class="nav-bar">
+        <nav class="nav-bar" aria-label="Navigation principale">
           <div class="logo">
             <!-- <img src="./assets/images/logo.png" alt="logo du site"> -->
             <span class="logo-text">JuniverSanté Naturelle</span>
           </div>
       
           <div class="menu">
-            <input type="checkbox" id="menu-toggle" class="menu-input">
-            <label for="menu-toggle" class="btn btn-secondary">
-              <i class="fa-solid fa-bars menu-icon"></i>
-              <i class="fa-solid fa-times close-icon"></i>
+            <input type="checkbox" id="menu-toggle" class="menu-input" aria-describedby="menu-description">
+            <label for="menu-toggle" class="btn btn-secondary" aria-label="Ouvrir le menu de navigation">
+              <i class="fa-solid fa-bars menu-icon" aria-hidden="true"></i>
+              <i class="fa-solid fa-times close-icon" aria-hidden="true"></i>
+              <span class="sr-only" id="menu-description">Appuyez pour ouvrir ou fermer le menu</span>
             </label>
       
-            <ul class="nav-links">
-              <li class="nav-link">
-                <a href="../index.html">Accueil</a>
+            <ul class="nav-links" role="menubar">
+              <li class="nav-link" role="none">
+                <a href="../index.html" role="menuitem">Accueil</a>
               </li>
 
-              <li class="nav-link">
-                <a href="./calendar.html">Programme des Ateliers</a>
+              <li class="nav-link" role="none">
+                <a href="./calendar.html" role="menuitem">Programme des Ateliers</a>
               </li>
 
-              <li class="nav-link">
-                <a href="./workshop.html">Sessions Hebdomadaires</a>
+              <li class="nav-link" role="none">
+                <a href="./workshop.html" role="menuitem">Sessions Hebdomadaires</a>
               </li>
               
-              <li class="nav-link">
-                <a href="./contact.html">Contact</a>
+              <li class="nav-link" role="none">
+                <a href="./contact.html" role="menuitem">Contact</a>
               </li>
 
             </ul>
@@ -43,45 +46,60 @@
         </nav>
     </header>
 
-    <main class="about-main">
+    <main id="main-content" class="about-main">
         <!-- Nouvelle section informant sur le cercle des thérapeutes et l'idée de Juniversanté -->
-        <section class="about-info">
-            <h2>Pourquoi le cercle des thérapeutes ?</h2>
-            <p>
-                En 2023, suite à la projection du film « <em>Suspendus, soignants entre deux mondes</em> »,
-                des thérapeutes ont eu envie de se rassembler pour relayer et venir en aide en complément de
-                la médecine conventionnelle dont le système est en crise depuis maintenant plusieurs années.
-                Le cercle des thérapeutes était né.
-            </p>
-            <p>
-                Le but : Se rencontrer entre thérapeutes, apprendre à se connaître, partager, travailler 
-                ensemble et proposer ensemble un réseau d’action et d’entraide.
-            </p>
+        <section class="about-info" aria-labelledby="about-title">
+            <h1 id="about-title">À propos de Juniver Santé</h1>
+            
+            <article aria-labelledby="circle-title">
+                <h2 id="circle-title">Pourquoi le cercle des thérapeutes ?</h2>
+                <p>
+                    En 2023, suite à la projection du film « <cite>Suspendus, soignants entre deux mondes</cite> »,
+                    des thérapeutes ont eu envie de se rassembler pour relayer et venir en aide en complément de
+                    la médecine conventionnelle dont le système est en crise depuis maintenant plusieurs années.
+                    Le cercle des thérapeutes était né.
+                </p>
+                <p>
+                    <strong>Le but :</strong> Se rencontrer entre thérapeutes, apprendre à se connaître, partager, travailler 
+                    ensemble et proposer ensemble un réseau d'action et d'entraide.
+                </p>
+            </article>
 
-            <h2>L’idée de Juniversanté est née</h2>
-            <p>
-                L’idée étant de rassembler des thérapeutes ayant une envie de partager et de transmettre 
-                des informations et outils simples pouvant aider à améliorer l’hygiène de vie au quotidien.
-                Il s’agit de permettre au plus grand nombre de mieux se connaitre et d’être acteur de sa santé 
-                en privilégiant les moyens présents dans l’environnement et à la portée de chacun.
-            </p>
-            <p>
-                Ceci en complément de la médecine conventionnelle et non à la place de celle-ci.
-            </p>
+            <article aria-labelledby="juniver-title">
+                <h2 id="juniver-title">L'idée de Juniversanté est née</h2>
+                <p>
+                    L'idée étant de rassembler des thérapeutes ayant une envie de partager et de transmettre 
+                    des informations et outils simples pouvant aider à améliorer l'hygiène de vie au quotidien.
+                    Il s'agit de permettre au plus grand nombre de mieux se connaitre et d'être acteur de sa santé 
+                    en privilégiant les moyens présents dans l'environnement et à la portée de chacun.
+                </p>
+                <p>
+                    <strong>Important :</strong> Ceci en complément de la médecine conventionnelle et non à la place de celle-ci.
+                </p>
+            </article>
         </section>
 
         <!-- Le profil spécifique sera injecté ici -->
-        <section id="profile-content">
+        <section id="profile-content" aria-labelledby="profiles-title" aria-live="polite">
+            <h2 id="profiles-title" class="sr-only">Profils des thérapeutes</h2>
             <!-- Profils affichés dynamiquement -->
         </section>
     </main>
 
-    <footer>
-        <p>
-            <a href="./privacy.html">Politique de confidentialité</a> | 
-            <a href="./legal.html">Mentions légales</a>
-        </p>
-        <p>© 2024 Juniver Santé - Tous droits réservés</p>
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">JuniverSanté</span>
+                </div>
+                <nav class="footer-links" aria-label="Liens légaux et informations">
+                    <a href="./privacy.html">Politique de confidentialité</a> | 
+                    <a href="./legal.html">Mentions légales</a> |
+                    <a href="./contact.html">Contactez-nous</a>
+                </nav>
+                <p>© 2024 Juniver Santé - Tous droits réservés</p>
+            </div>
+        </div>
     </footer>
 
     <script type="module" src="/public/js/views/about.js"></script>
