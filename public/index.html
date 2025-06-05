@@ -4,50 +4,59 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Juniver Santé</title>
+        
+        <!-- Polices Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+        <!-- Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
             integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
             crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-        <link rel="stylesheet" href="./assets/styles/styleBeks.css">
-        <link rel="stylesheet" href="./assets/styles/main.min.css">
+        <!-- Styles personnalisés -->
+        <link rel="stylesheet" href="./styles/main.min.css">
     </head>
     <body class="index-page">
-        <canvas id="neuro"></canvas>
+        <!-- Canvas avec alternative textuelle pour l'accessibilité -->
+        <canvas id="neuro" aria-hidden="true"></canvas>
+        <div class="sr-only">Animation décorative en arrière-plan</div>
 
         <header class="header-website">
-            <nav class="nav-bar">
+            <nav class="nav-bar" aria-label="Navigation principale">
               <div class="logo">
                 <!-- <img src="./assets/images/logo.png" alt="logo du site"> -->
-                <span class="logo-text">JuniverSanté Naturelle</span>
+                <span class="logo-text">JuniverSanté</span>
               </div>
           
               <div class="menu">
-                <input type="checkbox" id="menu-toggle" class="menu-input">
-                <label for="menu-toggle" class="btn btn-secondary">
-                  <i class="fa-solid fa-bars menu-icon"></i>
-                  <i class="fa-solid fa-times close-icon"></i>
+                <input type="checkbox" id="menu-toggle" class="menu-input" aria-describedby="menu-description">
+                <label for="menu-toggle" class="btn btn-secondary" aria-label="Ouvrir le menu de navigation">
+                  <i class="fa-solid fa-bars menu-icon" aria-hidden="true"></i>
+                  <i class="fa-solid fa-times close-icon" aria-hidden="true"></i>
+                  <span class="sr-only" id="menu-description">Appuyez pour ouvrir ou fermer le menu</span>
                 </label>
           
-                <ul class="nav-links">
-                  <li class="nav-link">
-                    <a href="index.html">Accueil</a>
+                <ul class="nav-links" role="menubar">
+                  <li class="nav-link" role="none">
+                    <a href="index.html" role="menuitem" aria-current="page">Accueil</a>
                   </li>
           
-                  <li class="nav-link">
-                    <a href="./views/about.html">À propos</a>
+                  <li class="nav-link" role="none">
+                    <a href="./views/about.html" role="menuitem">À propos</a>
                   </li>
 
-                  <li class="nav-link">
-                    <a href="./views/calendar.html">Programme des Ateliers</a>
+                  <li class="nav-link" role="none">
+                    <a href="./views/calendar.html" role="menuitem">Programme des Ateliers</a>
                   </li>
 
-                  <li class="nav-link">
-                    <a href="./views/workshop.html">Sessions Hebdomadaires</a>
+                  <li class="nav-link" role="none">
+                    <a href="./views/workshop.html" role="menuitem">Sessions Hebdomadaires</a>
                   </li>
                   
-                  <li class="nav-link">
-                    <a href="./views/contact.html">Contact</a>
+                  <li class="nav-link" role="none">
+                    <a href="./views/contact.html" role="menuitem">Contact</a>
                   </li>
 
                 </ul>
@@ -56,46 +65,126 @@
         </header>
           
     <main class="index-main">
-
-        <section id="presentation">
-            <h2></h2>
-            <p id="presentation-text">
-                <!-- La présentation serat injecté ici -->
-            </p>
-        </section>
-
-        <section id="featured-article">
-            <!-- L'article 6GPaVLTj72gg4kuCDFUdMU sera injecté ici -->
-        </section>
-        
-
-        <section id="profiles-carousel">
-            <h2 class="team">Rencontrez notre équipe</h2>
-            <div class="carousel-container">
-                <button id="prev-profile" class="carousel-nav">&#8249;</button>
-                <button id="next-profile" class="carousel-nav">&#8250;</button>
-                <!-- Les profils seront injectés ici -->
+        <section id="presentation" aria-labelledby="presentation-title">
+            <div class="animate-scale">
+                <h1 id="presentation-title">L'Excellence en Santé Naturelle</h1>
+                <p id="presentation-text">
+                    Découvrez notre approche sophistiquée de la santé naturelle. Chez Juniver, nous combinons tradition et innovation pour vous offrir des solutions de bien-être personnalisées qui respectent l'équilibre entre votre corps, votre esprit et votre environnement.
+                </p>
+                <a href="./views/about.html" class="read-more" aria-describedby="presentation-text">Explorez notre univers</a>
             </div>
-        </section>        
-        
-        <aside id="filters">
-            <h3>Filtres</h3>
-            <ul id="category-list"></ul>
-        </aside>
-
-        <section id="content">
-            <!-- Articles seront injectés ici -->
         </section>
+
+        <div class="container">
+            <section id="featured-article" class="animate-fadeIn" aria-labelledby="featured-title">
+                <h2 id="featured-title">Article à la une</h2>
+                <div id="featured-content" role="region" aria-live="polite" aria-label="Article vedette">
+                    <!-- L'article sera injecté ici -->
+                    <p>Chargement de l'article...</p>
+                </div>
+            </section>
+            
+
+            <section id="profiles-carousel" aria-labelledby="team-title">
+                <h2 id="team-title" class="team animate-fadeIn">Notre équipe d'experts</h2>
+                <div class="carousel-container" role="region" aria-label="Carrousel des profils d'experts" aria-live="polite">
+                    <button id="prev-profile" class="carousel-nav" aria-label="Voir le profil précédent" type="button">
+                        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                        <span class="sr-only">Profil précédent</span>
+                    </button>
+                    <div id="profiles-content" role="tabpanel" aria-labelledby="team-title">
+                        <!-- Les profils seront injectés ici -->
+                        <div class="profile-item animate-right" role="article">
+                            <div class="profile-card">
+                                <div class="profile-image">
+                                    <img src="https://images.unsplash.com/photo-1571844307880-751c6d86f3f3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Portrait de Marie Dupont, Expert en santé naturelle">
+                                </div>
+                                <div class="profile-info">
+                                    <h3>Marie Dupont</h3>
+                                    <span class="profile-title">Naturopathe certifiée</span>
+                                    <p>Spécialiste en phytothérapie et aromathérapie avec plus de 15 ans d'expérience.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="loading-text" aria-live="polite">Chargement des profils...</p>
+                    </div>
+                    <button id="next-profile" class="carousel-nav" aria-label="Voir le profil suivant" type="button">
+                        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                        <span class="sr-only">Profil suivant</span>
+                    </button>
+                </div>
+            </section>        
+            
+            <section class="content-section">
+                <div class="overlay" aria-hidden="true"></div>
+                <div class="filters-wrapper">
+                    <aside id="filters" class="animate-left" aria-labelledby="filters-title">
+                        <h3 id="filters-title">Explorer par catégorie</h3>
+                        <ul id="category-list" role="tablist" aria-label="Filtres de catégories">
+                            <!-- Les catégories seront injectées ici -->
+                            <li role="none">
+                                <button class="active" data-category="all" role="tab" aria-selected="true" aria-controls="content" id="tab-all">Tous</button>
+                            </li>
+                            <li role="none">
+                                <button data-category="phytotherapie" role="tab" aria-selected="false" aria-controls="content" id="tab-phyto">Phytothérapie</button>
+                            </li>
+                            <li role="none">
+                                <button data-category="aromatherapie" role="tab" aria-selected="false" aria-controls="content" id="tab-aroma">Aromathérapie</button>
+                            </li>
+                            <li role="none">
+                                <button data-category="meditation" role="tab" aria-selected="false" aria-controls="content" id="tab-meditation">Méditation</button>
+                            </li>
+                            <li role="none">
+                                <button data-category="nutrition" role="tab" aria-selected="false" aria-controls="content" id="tab-nutrition">Nutrition</button>
+                            </li>
+                        </ul>
+                    </aside>
+                </div>
+
+                <section id="content" role="tabpanel" aria-labelledby="filters-title" aria-live="polite">
+                    <!-- Articles seront injectés ici -->
+                    <article class="article-card animate-fadeIn">
+                        <div class="article-category" aria-label="Catégorie: Nutrition">Nutrition</div>
+                        <div class="article-image">
+                            <img src="https://images.unsplash.com/photo-1606923829579-0cb981a83e2b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Assortiment d'aliments sains et colorés pour une alimentation équilibrée">
+                        </div>
+                        <div class="article-content">
+                            <div class="article-date">
+                                <time datetime="2024-06-12">12 juin 2024</time>
+                            </div>
+                            <h3>Les super-aliments à intégrer dans votre alimentation quotidienne</h3>
+                            <p class="article-excerpt">Découvrez comment ces aliments exceptionnels peuvent transformer votre santé et votre bien-être au quotidien.</p>
+                            <a href="#" class="article-read-more" aria-describedby="article-excerpt">
+                                Lire l'article
+                                <span class="sr-only">: Les super-aliments à intégrer dans votre alimentation quotidienne</span>
+                            </a>
+                        </div>
+                    </article>
+                    <p class="loading-text" aria-live="polite">Chargement des articles...</p>
+                </section>
+            </section>
+        </div>
     </main>
 
-    <footer>
-        <p>
-            <a href="/public/views/privacy.html">Politique de confidentialité</a> | 
-            <a href="/public/views/legal.html">Mentions légales</a></p>
-        <p>© 2024 Juniver Santé - Tous droits réservés</p>
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">JuniverSanté</span>
+                </div>
+                <nav class="footer-links" aria-label="Liens légaux et informations">
+                    <a href="/public/views/privacy.html">Politique de confidentialité</a> | 
+                    <a href="/public/views/legal.html">Mentions légales</a> |
+                    <a href="/public/views/contact.html">Contactez-nous</a>
+                </nav>
+                <p>© 2024 Juniver Santé - Tous droits réservés</p>
+            </div>
+        </div>
     </footer>
 
     <script src="js/main.js" type="module"></script>
     <script src="/public/js/style/styleScript.js"></script>
+    <script src="/public/js/animations.js"></script>
+    <script src="js/accessibility.js" type="module"></script>
 </body>
 </html>

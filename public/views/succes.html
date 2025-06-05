@@ -3,17 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Message envoyé</title>
+    <title>Message envoyé - Juniver Santé</title>
+    
+    <!-- Polices Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="../assets/styles/main.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Styles personnalisés -->
+    <link rel="stylesheet" href="../styles/main.min.css">
 </head>
 <body>
-    <header>
-        <h1>Merci pour votre message !</h1>
+    <a class="skip-to-content" href="#main-content">Aller au contenu principal</a>
+    
+    <header class="header-website">
+        <nav class="nav-bar" aria-label="Navigation principale">
+          <div class="logo">
+            <!-- <img src="./assets/images/logo.png" alt="logo du site"> -->
+            <span class="logo-text">JuniverSanté</span>
+          </div>
+      
+          <div class="menu">
+            <input type="checkbox" id="menu-toggle" class="menu-input" aria-describedby="menu-description">
+            <label for="menu-toggle" class="btn btn-secondary" aria-label="Ouvrir le menu de navigation">
+              <i class="fa-solid fa-bars menu-icon" aria-hidden="true"></i>
+              <i class="fa-solid fa-times close-icon" aria-hidden="true"></i>
+              <span class="sr-only" id="menu-description">Appuyez pour ouvrir ou fermer le menu</span>
+            </label>
+      
+            <ul class="nav-links" role="menubar">
+              <li class="nav-link" role="none">
+                <a href="../index.html" role="menuitem">Accueil</a>
+              </li>
+
+              <li class="nav-link" role="none">
+                <a href="./about.html" role="menuitem">À propos</a>
+              </li>
+
+              <li class="nav-link" role="none">
+                <a href="./calendar.html" role="menuitem">Programme des Ateliers</a>
+              </li>
+
+              <li class="nav-link" role="none">
+                <a href="./workshop.html" role="menuitem">Sessions Hebdomadaires</a>
+              </li>
+              
+              <li class="nav-link" role="none">
+                <a href="./contact.html" role="menuitem">Contact</a>
+              </li>
+
+            </ul>
+          </div>
+        </nav>
     </header>
-    <main>
-        <p>Nous avons bien reçu votre message et nous vous répondrons dans les plus brefs délais.</p>
-        <a class="succesPageLink" href="/public/index.html">Retour à l'accueil</a>
+    
+    <main id="main-content" class="success-main">
+        <section aria-labelledby="success-title">
+            <h1 id="success-title">Merci pour votre message !</h1>
+            <p>Nous avons bien reçu votre message et nous vous répondrons dans les plus brefs délais.</p>
+            <a class="succesPageLink" href="../index.html" aria-describedby="return-description">
+                Retour à l'accueil
+                <span class="sr-only" id="return-description">Retourner à la page d'accueil de Juniver Santé</span>
+            </a>
+        </section>
     </main>
+
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">JuniverSanté</span>
+                </div>
+                <nav class="footer-links" aria-label="Liens légaux et informations">
+                    <a href="./privacy.html">Politique de confidentialité</a> | 
+                    <a href="./legal.html">Mentions légales</a> |
+                    <a href="./contact.html">Contactez-nous</a>
+                </nav>
+                <p>© 2024 Juniver Santé - Tous droits réservés</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/public/js/style/styleScript.js"></script>
+    <script src="/public/js/animations.js"></script>
+    <script src="../js/accessibility.js" type="module"></script>
 </body>
 </html>

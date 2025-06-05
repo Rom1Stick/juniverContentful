@@ -1,18 +1,130 @@
 @import '../abstracts/variables';
 
-body {
-  font-family: $font-family;
+*, *::before, *::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  line-height: 1.8;
-  background-color: $background-color;
-  color: $text-color;
-  width: 100%;
-  margin: 0 auto;
 }
 
-h1, h2, h3 {
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Raleway', sans-serif;
   margin: 0;
+  padding: 0;
+  line-height: 1.7;
+  background-color: #fcfcfc;
+  color: #1a2a2d;
+  width: 100%;
+  overflow-x: hidden;
+  letter-spacing: 0.02em;
+}
+
+/* Style spécifique pour la page index */
+body.index-page {
+  width: 100vw;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 500;
+  line-height: 1.3;
+  margin-bottom: 1.2rem;
+  color: #0f5257;
+}
+
+h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 1rem;
+  color: #167d7f;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+p {
+  margin-bottom: 1.5rem;
+}
+
+a {
+  color: #29a0b1;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+}
+
+a:hover {
+  color: #0f5257;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+ul {
+  list-style: none;
+}
+
+/* Classe pour masquer visuellement mais garder accessible aux lecteurs d'écran */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Amélioration pour les utilisateurs qui préfèrent voir le focus */
+.sr-only:focus {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  padding: inherit !important;
+  margin: inherit !important;
+  overflow: visible !important;
+  clip: auto !important;
+  white-space: inherit !important;
+}
+
+/* Focus amélioré pour tous les éléments interactifs */
+*:focus-visible {
+  outline: 3px solid hsl(122, 39%, 65%);
+  outline-offset: 2px;
+}
+
+/* Support pour la navigation au clavier */
+.skip-to-content {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.skip-to-content:focus {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: auto;
+  height: auto;
+  background: #36915f;
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 10000;
 }
 
 

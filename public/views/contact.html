@@ -3,39 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contactez-nous</title>
-    <link rel="stylesheet" href="../assets/styles/main.min.css">
+    <title>Contactez-nous - Juniver Santé</title>
+    
+    <!-- Polices Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Styles personnalisés -->
+    <link rel="stylesheet" href="../styles/main.min.css">
 </head>
 <body>
+    <a class="skip-to-content" href="#main-content">Aller au contenu principal</a>
+    
     <header class="header-website">
-        <nav class="nav-bar">
+        <nav class="nav-bar" aria-label="Navigation principale">
           <div class="logo">
             <!-- <img src="./assets/images/logo.png" alt="logo du site"> -->
-            <span class="logo-text">JuniverSanté Naturelle</span>
+            <span class="logo-text">JuniverSanté</span>
           </div>
       
           <div class="menu">
-            <input type="checkbox" id="menu-toggle" class="menu-input">
-            <label for="menu-toggle" class="btn btn-secondary">
-              <i class="fa-solid fa-bars menu-icon"></i>
-              <i class="fa-solid fa-times close-icon"></i>
+            <input type="checkbox" id="menu-toggle" class="menu-input" aria-describedby="menu-description">
+            <label for="menu-toggle" class="btn btn-secondary" aria-label="Ouvrir le menu de navigation">
+              <i class="fa-solid fa-bars menu-icon" aria-hidden="true"></i>
+              <i class="fa-solid fa-times close-icon" aria-hidden="true"></i>
+              <span class="sr-only" id="menu-description">Appuyez pour ouvrir ou fermer le menu</span>
             </label>
       
-            <ul class="nav-links">
-              <li class="nav-link">
-                <a href="../index.html">Accueil</a>
+            <ul class="nav-links" role="menubar">
+              <li class="nav-link" role="none">
+                <a href="../index.html" role="menuitem">Accueil</a>
               </li>
 
-              <li class="nav-link">
-                <a href="./about.html">A propos</a>
+              <li class="nav-link" role="none">
+                <a href="./about.html" role="menuitem">À propos</a>
               </li>
 
-              <li class="nav-link">
-                <a href="./workshop.html">Sessions Hebdomadaires</a>
+              <li class="nav-link" role="none">
+                <a href="./calendar.html" role="menuitem">Programme des Ateliers</a>
+              </li>
+
+              <li class="nav-link" role="none">
+                <a href="./workshop.html" role="menuitem">Sessions Hebdomadaires</a>
               </li>
               
-              <li class="nav-link">
-                <a href="./calendar.html">Programme des Ateliers</a>
+              <li class="nav-link" role="none">
+                <a href="./contact.html" role="menuitem" aria-current="page">Contact</a>
               </li>
 
             </ul>
@@ -43,40 +62,99 @@
         </nav>
     </header>
 
-    <main>
-        <section>
-            <h2>Nous écrire</h2>
-            <form id="contact-form" name="contact" method="POST" data-netlify="true" action="/public/views/succes.html">
-              <div>
-                <label for="name">Nom :</label>
-                <input type="text" id="name" name="name" required>
-              </div>
-              <div>
-                <label for="email">Email :</label>
-                <input type="email" id="email" name="email" required>
-              </div>
-              <div>
-                  <label for="subject">Sujet :</label>
-                  <input type="text" id="subject" name="subject" required>
-              </div>
-              <div>
-                <label for="message">Message :</label>
-                <textarea id="message" name="message" rows="5" required></textarea>
-              </div>
+    <main id="main-content">
+        <section aria-labelledby="contact-title">
+            <h1 id="contact-title">Nous écrire</h1>
+            
+            <form id="contact-form" name="contact" method="POST" data-netlify="true" action="/public/views/succes.html" novalidate>
+              <fieldset>
+                <legend>Informations de contact (tous les champs sont obligatoires)</legend>
+                
+                <div class="form-group">
+                  <label for="name">
+                    Nom <span class="required-indicator" aria-label="obligatoire">*</span>
+                  </label>
+                  <input type="text" 
+                         id="name" 
+                         name="name" 
+                         required 
+                         aria-describedby="name-error"
+                         aria-invalid="false">
+                  <div id="name-error" class="error-message" role="alert" aria-live="polite"></div>
+                </div>
+                
+                <div class="form-group">
+                  <label for="email">
+                    Email <span class="required-indicator" aria-label="obligatoire">*</span>
+                  </label>
+                  <input type="email" 
+                         id="email" 
+                         name="email" 
+                         required 
+                         aria-describedby="email-error email-hint"
+                         aria-invalid="false">
+                  <div id="email-hint" class="hint">Format: votre.email@example.com</div>
+                  <div id="email-error" class="error-message" role="alert" aria-live="polite"></div>
+                </div>
+                
+                <div class="form-group">
+                  <label for="subject">
+                    Sujet <span class="required-indicator" aria-label="obligatoire">*</span>
+                  </label>
+                  <input type="text" 
+                         id="subject" 
+                         name="subject" 
+                         required 
+                         aria-describedby="subject-error"
+                         aria-invalid="false">
+                  <div id="subject-error" class="error-message" role="alert" aria-live="polite"></div>
+                </div>
+                
+                <div class="form-group">
+                  <label for="message">
+                    Message <span class="required-indicator" aria-label="obligatoire">*</span>
+                  </label>
+                  <textarea id="message" 
+                            name="message" 
+                            rows="5" 
+                            required 
+                            aria-describedby="message-error message-hint"
+                            aria-invalid="false"></textarea>
+                  <div id="message-hint" class="hint">Décrivez votre demande en détail</div>
+                  <div id="message-error" class="error-message" role="alert" aria-live="polite"></div>
+                </div>
+              </fieldset>
+              
               <!-- Champ caché pour Netlify -->
               <input type="hidden" name="form-name" value="contact">
-              <button type="submit" class="button button-primary">Envoyer</button>
+              
+              <button type="submit" class="button button-primary" aria-describedby="submit-info">
+                Envoyer le message
+              </button>
+              <div id="submit-info" class="sr-only">Le formulaire sera traité après validation de tous les champs obligatoires</div>
             </form>
-          </section>
+        </section>
           
     </main>
 
-    <footer>
-        <p>
-            <a href="./privacy.html">Politique de confidentialité</a> | 
-            <a href="./legal.html">Mentions légales</a>
-        </p>
-        <p>© 2024 Juniver Santé - Tous droits réservés</p>
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">JuniverSanté</span>
+                </div>
+                <nav class="footer-links" aria-label="Liens légaux et informations">
+                    <a href="./privacy.html">Politique de confidentialité</a> | 
+                    <a href="./legal.html">Mentions légales</a> |
+                    <a href="./contact.html">Contactez-nous</a>
+                </nav>
+                <p>© 2024 Juniver Santé - Tous droits réservés</p>
+            </div>
+        </div>
     </footer>
+    
+    <script src="/public/js/style/styleScript.js"></script>
+    <script src="/public/js/animations.js"></script>
+    <script src="../js/accessibility.js" type="module"></script>
 </body>
 </html>

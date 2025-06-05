@@ -1,0 +1,89 @@
+/* Styles d'accessibilité pour les formulaires */
+.form-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.required-indicator {
+  color: #d73527;
+  font-weight: bold;
+  margin-left: 0.25rem;
+}
+
+.hint {
+  font-size: 0.875rem;
+  color: hsl(180, 25%, 45%);
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.error-message {
+  color: #d73527;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: none;
+  font-weight: 600;
+}
+
+.error-message:not(:empty) {
+  display: block;
+}
+
+/* États d'erreur pour les champs */
+input[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+  border-color: #d73527;
+  box-shadow: 0 0 0 3px rgba(215, 53, 39, 0.1);
+}
+
+/* Focus amélioré pour les champs de formulaire */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 3px solid #36915f;
+  outline-offset: 2px;
+  border-color: #36915f;
+}
+
+/* Fieldset et legend accessibles */
+fieldset {
+  border: 2px solid #36915f;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+legend {
+  font-weight: 600;
+  padding: 0 0.5rem;
+  color: #36915f;
+  background: white;
+}
+
+/* Boutons accessibles */
+button[type="submit"] {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.75rem 2rem;
+  background-color: #36915f;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: hsl(148, 44%, 35%);
+  transform: translateY(-2px);
+}
+
+button[type="submit"]:focus {
+  outline: 3px solid hsl(122, 39%, 65%);
+  outline-offset: 2px;
+}
+
+button[type="submit"]:active {
+  transform: translateY(0);
+} 
