@@ -3,43 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mentions Légales</title>
+    <title>Mentions Légales - Juniver Santé</title>
+    
+    <!-- Polices Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Styles personnalisés -->
     <link rel="stylesheet" href="../styles/main.min.css">
 </head>
 <body>
+    <a class="skip-to-content" href="#main-content">Aller au contenu principal</a>
+    
     <header class="header-website">
-        <nav class="nav-bar">
+        <nav class="nav-bar" aria-label="Navigation principale">
           <div class="logo">
             <!-- <img src="./assets/images/logo.png" alt="logo du site"> -->
-            <span class="logo-text">JuniverSanté Naturelle</span>
+            <span class="logo-text">JuniverSanté</span>
           </div>
       
           <div class="menu">
-            <input type="checkbox" id="menu-toggle" class="menu-input">
-            <label for="menu-toggle" class="btn btn-secondary">
-              <i class="fa-solid fa-bars menu-icon"></i>
-              <i class="fa-solid fa-times close-icon"></i>
+            <input type="checkbox" id="menu-toggle" class="menu-input" aria-describedby="menu-description">
+            <label for="menu-toggle" class="btn btn-secondary" aria-label="Ouvrir le menu de navigation">
+              <i class="fa-solid fa-bars menu-icon" aria-hidden="true"></i>
+              <i class="fa-solid fa-times close-icon" aria-hidden="true"></i>
+              <span class="sr-only" id="menu-description">Appuyez pour ouvrir ou fermer le menu</span>
             </label>
       
-            <ul class="nav-links">
-              <li class="nav-link">
-                <a href="../index.html">Accueil</a>
+            <ul class="nav-links" role="menubar">
+              <li class="nav-link" role="none">
+                <a href="../index.html" role="menuitem">Accueil</a>
               </li>
       
-              <li class="nav-link">
-                <a href="./about.html">À propos</a>
+              <li class="nav-link" role="none">
+                <a href="./about.html" role="menuitem">À propos</a>
               </li>
 
-              <li class="nav-link">
-                <a href="./calendar.html">Programme des Ateliers</a>
+              <li class="nav-link" role="none">
+                <a href="./calendar.html" role="menuitem">Programme des Ateliers</a>
               </li>
 
-              <li class="nav-link">
-                <a href="./workshop.html">Sessions Hebdomadaires</a>
+              <li class="nav-link" role="none">
+                <a href="./workshop.html" role="menuitem">Sessions Hebdomadaires</a>
               </li>
               
-              <li class="nav-link">
-                <a href="./contact.html">Contact</a>
+              <li class="nav-link" role="none">
+                <a href="./contact.html" role="menuitem">Contact</a>
               </li>
 
             </ul>
@@ -48,34 +63,36 @@
     </header>
 
     <main id="main-content" class="legal-main">
-        <section>
-            <h2>Éditeur du site</h2>
+        <h1>Mentions Légales</h1>
+        
+        <section aria-labelledby="editor-title">
+            <h2 id="editor-title">Éditeur du site</h2>
             <p>
                 <strong>Colectif :</strong> Juniver Santé<br>
                 <strong>Directeur de la publication :</strong> Mav_ICK*
             </p>
         </section>
 
-        <section>
-            <h2>Hébergeur</h2>
+        <section aria-labelledby="hosting-title">
+            <h2 id="hosting-title">Hébergeur</h2>
             <p>
                 Le site est hébergé par : <strong>Netlify, Inc.</strong> <br>
                 Adresse : 44 Montgomery Street, Suite 300, San Francisco, CA 94104, USA <br>
                 Email : <a href="mailto:support@netlify.com">support@netlify.com</a> <br>
-                Site Web : <a href="https://www.netlify.com" target="_blank">https://www.netlify.com</a>
+                Site Web : <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">https://www.netlify.com<span class="sr-only"> (ouvre dans un nouvel onglet)</span></a>
             </p>
         </section>
 
-        <section>
-            <h2>Propriété intellectuelle</h2>
+        <section aria-labelledby="intellectual-property-title">
+            <h2 id="intellectual-property-title">Propriété intellectuelle</h2>
             <p>
                 Le contenu du site <strong>Juniver Santé</strong> (textes, images, vidéos, graphismes, logos, etc.) est la propriété exclusive de Juniver Santé, sauf mention contraire.
                 Toute reproduction, représentation, modification, publication ou adaptation des contenus du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable de Juniver Santé.
             </p>
         </section>
 
-        <section>
-            <h2>Responsabilité</h2>
+        <section aria-labelledby="responsibility-title">
+            <h2 id="responsibility-title">Responsabilité</h2>
             <p>
                 Juniver Santé s'efforce de fournir des informations aussi précises que possible sur le site. Cependant, Juniver Santé ne pourra être tenu responsable des omissions, des inexactitudes ou des carences dans la mise à jour des informations, qu'elles soient de son fait ou du fait des tiers partenaires qui lui fournissent ces informations.
             </p>
@@ -84,23 +101,23 @@
             </p>
         </section>
 
-        <section>
-            <h2>Cookies</h2>
+        <section aria-labelledby="cookies-title">
+            <h2 id="cookies-title">Cookies</h2>
             <p>
                 Le site <strong>Juniver Santé</strong> utilise des cookies pour améliorer votre expérience de navigation. Vous pouvez configurer votre navigateur pour refuser les cookies ou être alerté lorsqu'un cookie est installé.
             </p>
         </section>
 
-        <section>
-            <h2>Données personnelles</h2>
+        <section aria-labelledby="personal-data-title">
+            <h2 id="personal-data-title">Données personnelles</h2>
             <p>
                 Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression ou d'opposition concernant vos données personnelles.
-                Pour exercer ces droits, veuillez contacter l'administrateur du site.
+                Pour exercer ces droits, veuillez <a href="./contact.html">contacter l'administrateur du site</a>.
             </p>
         </section>
 
-        <section>
-            <h2>Crédits</h2>
+        <section aria-labelledby="credits-title">
+            <h2 id="credits-title">Crédits</h2>
             <p>
                 <strong>Conception et développement :</strong> dévellopeur indépendant correspondant à l'alias : Mav_ICK*<br>
                 <strong>Images et illustrations :</strong> Banque d'images libres de droits ou crédits spécifiques indiqués sur les pages concernées.
@@ -123,5 +140,9 @@
             </div>
         </div>
     </footer>
+
+    <script src="/public/js/style/styleScript.js"></script>
+    <script src="/public/js/animations.js"></script>
+    <script src="../js/accessibility.js" type="module"></script>
 </body>
 </html>

@@ -53,14 +53,30 @@ p {
 }
 
 a {
-  color: #29a0b1;
+  color: #36915f;
   text-decoration: none;
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   position: relative;
 }
 
 a:hover {
-  color: #0f5257;
+  color: #2d7a4f;
+}
+
+/* Correction pour les liens sur fond vert */
+.index-main #presentation a:not(.read-more),
+.index-main #featured-article a:not([style*="background"]):not([class*="read-more"]),
+.index-main #content article a:not(.article-read-more),
+.index-main #filters a:not(button) {
+  color: #ffffff !important;
+  text-decoration: underline;
+}
+
+.index-main #presentation a:not(.read-more):hover,
+.index-main #featured-article a:not([style*="background"]):not([class*="read-more"]):hover,
+.index-main #content article a:not(.article-read-more):hover,
+.index-main #filters a:not(button):hover {
+  color: rgba(255, 255, 255, 0.8) !important;
 }
 
 img {
@@ -99,7 +115,7 @@ ul {
 
 /* Focus amélioré pour tous les éléments interactifs */
 *:focus-visible {
-  outline: 3px solid hsl(122, 39%, 65%);
+  outline: 3px solid hsl(146, 46%, 65%);
   outline-offset: 2px;
 }
 
@@ -293,7 +309,7 @@ footer::before {
   left: 0;
   width: 100%;
   height: 5px;
-  background: linear-gradient(90deg, #0f5257, #29a0b1);
+  background: linear-gradient(90deg, #0f5257, #36915f);
 }
 footer .footer-content {
   display: flex;
@@ -426,15 +442,15 @@ main:not(.index-main) {
   transform: translateY(-2px);
 }
 .button:focus, form button:focus {
-  outline: 2px solid hsl(122, 39%, 89%);
+  outline: 2px solid hsl(146, 46%, 89%);
   outline-offset: 2px;
 }
 .button-primary, form button {
-  background-color: hsl(122, 39%, 49%);
+  background-color: hsl(146, 46%, 39%);
   color: white;
 }
 .button-primary:hover, form button:hover {
-  background-color: hsl(122, 39%, 59%);
+  background-color: hsl(146, 46%, 49%);
 }
 .button-secondary {
   background-color: hsl(146, 50%, 36%);
@@ -452,11 +468,11 @@ main:not(.index-main) {
 }
 .button-outline-primary {
   background-color: transparent;
-  border: 2px solid hsl(122, 39%, 49%);
-  color: hsl(122, 39%, 49%);
+  border: 2px solid hsl(146, 46%, 39%);
+  color: hsl(146, 46%, 39%);
 }
 .button-outline-primary:hover {
-  background-color: hsl(122, 39%, 49%);
+  background-color: hsl(146, 46%, 39%);
   color: white;
 }
 .button-outline-secondary {
@@ -569,7 +585,7 @@ h2 {
 .carousel-container .profile-card a {
   text-decoration: none;
   font-weight: bold;
-  color: hsl(122, 39%, 49%);
+  color: hsl(146, 46%, 39%);
   transition: color 0.3s ease;
 }
 .carousel-container .profile-card a:hover {
@@ -588,7 +604,7 @@ h2 {
   color: hsl(146, 50%, 36%);
   margin-bottom: 1rem;
   text-align: center;
-  border-bottom: 2px solid hsl(122, 39%, 49%);
+  border-bottom: 2px solid hsl(146, 46%, 39%);
   padding-bottom: 0.5rem;
 }
 #filters #category-list {
@@ -601,7 +617,7 @@ h2 {
   justify-content: center;
 }
 #filters #category-list li button {
-  background-color: hsl(122, 39%, 49%);
+  background-color: hsl(146, 46%, 39%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -623,7 +639,7 @@ h2 {
 }
 #featured-article {
   background-color: white;
-  border: 1px solid hsl(122, 39%, 49%);
+  border: 1px solid hsl(146, 46%, 39%);
   border-radius: 10%;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   padding: 2rem;
@@ -653,7 +669,7 @@ h2 {
 #featured-article a {
   display: inline-block;
   text-decoration: none;
-  background-color: hsl(122, 39%, 49%);
+  background-color: hsl(146, 46%, 39%);
   color: white;
   padding: 0.8rem 1.5rem;
   font-size: 1rem;
@@ -730,7 +746,7 @@ h2 {
   display: inline-block;
   padding: 0.75rem 2rem;
   background-color: #ffffff; /* Fond blanc sur #36915f */
-  color: #36915f; /* Texte vert sur blanc - contraste 4.67:1 ✅ */
+  color: #36915f !important; /* Texte vert sur blanc - contraste 4.67:1 ✅ - !important pour surcharger la règle générale */
   text-decoration: none;
   border-radius: 8px;
   font-size: clamp(1rem, 2vw, 1.125rem);
@@ -795,7 +811,7 @@ h2 {
   display: inline-block;
   text-decoration: none;
   background-color: #ffffff; /* Fond blanc */
-  color: #36915f; /* Texte vert - contraste 4.67:1 ✅ */
+  color: #36915f !important; /* Texte vert - contraste 4.67:1 ✅ - !important pour surcharger la règle générale */
   padding: 0.875rem 2rem;
   font-size: clamp(1rem, 2vw, 1.125rem);
   font-weight: 600;
@@ -888,7 +904,7 @@ h2 {
   display: inline-flex;
   align-items: center;
   text-decoration: none;
-  color: #36915f; /* Vert sur blanc */
+  color: #36915f !important; /* Vert sur blanc - !important pour surcharger la règle générale */
   background-color: #ffffff; /* Fond blanc */
   padding: 0.75rem 1.5rem;
   border: 2px solid #ffffff;
@@ -955,7 +971,7 @@ h2 {
 }
 .index-main #filters #category-list li button {
   background-color: #ffffff; /* Fond blanc */
-  color: #36915f; /* Texte vert - contraste 4.67:1 ✅ */
+  color: #36915f !important; /* Texte vert - contraste 4.67:1 ✅ - !important pour surcharger la règle générale */
   border: 2px solid #ffffff;
   border-radius: 25px;
   padding: 0.75rem 1.5rem;
@@ -1239,7 +1255,7 @@ h2 {
 .about-main .profile-card a {
   text-decoration: none;
   font-weight: bold;
-  color: hsl(122, 39%, 49%);
+  color: hsl(146, 46%, 39%);
   transition: color 0.3s ease;
 }
 .about-main .profile-card a:hover {
@@ -1254,7 +1270,7 @@ h2 {
 }
 .about-main .profile-card .degrees .tag {
   display: inline-block;
-  background: hsl(122, 39%, 49%);
+  background: hsl(146, 46%, 39%);
   color: white;
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
@@ -1277,12 +1293,12 @@ h2 {
   margin: 0.8rem 0;
 }
 .about-main .profile-card .profile-phone a {
-  color: hsl(122, 39%, 49%);
+  color: hsl(146, 46%, 39%);
   font-weight: 500;
   transition: color 0.3s ease;
 }
 .about-main .profile-card .profile-phone a:hover {
-  color: hsl(122, 39%, 34%);
+  color: hsl(146, 46%, 24%);
   text-decoration: underline;
 }
 
@@ -1306,7 +1322,7 @@ h2 {
 }
 .calendar-main #upcoming-events h2, .calendar-main #past-events-section h2 {
   margin-bottom: 1rem;
-  color: hsl(122, 39%, 49%);
+  color: hsl(146, 46%, 39%);
 }
 .calendar-main #event-list, .calendar-main #past-event-list {
   list-style: none;
@@ -1326,13 +1342,13 @@ h2 {
 }
 .calendar-main #event-list li h3, .calendar-main #past-event-list li h3 {
   font-size: 1.2rem;
-  color: hsl(122, 39%, 49%);
+  color: hsl(146, 46%, 39%);
   margin-bottom: 0.5rem;
 }
 .calendar-main #toggle-past-events {
   display: block;
   margin: 0 auto;
-  background: hsl(122, 39%, 49%);
+  background: hsl(146, 46%, 39%);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -1351,7 +1367,7 @@ h2 {
 }
 .calendar-main #calendar .calendar-header {
   text-align: center;
-  background: hsl(122, 39%, 49%);
+  background: hsl(146, 46%, 39%);
   color: white;
   padding: 1rem;
   font-size: 1.5rem;
@@ -1363,7 +1379,7 @@ h2 {
   padding: 0.5rem 1rem;
 }
 .calendar-main #calendar .calendar-navigation button {
-  background: hsl(122, 39%, 49%);
+  background: hsl(146, 46%, 39%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -1396,7 +1412,7 @@ h2 {
 }
 .calendar-main #calendar .calendar-grid .calendar-cell:hover {
   transform: scale(1.05);
-  background: hsl(122, 39%, 89%);
+  background: hsl(146, 46%, 89%);
 }
 .calendar-main #calendar .calendar-grid .calendar-cell.empty {
   background: transparent;
@@ -1503,8 +1519,8 @@ h2 {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 .pricing-card.featured {
-  border: 2px solid hsl(122, 39%, 49%);
-  background: hsl(122, 39%, 94%);
+  border: 2px solid hsl(146, 46%, 39%);
+  background: hsl(146, 46%, 94%);
 }
 .pricing-card h3 {
   color: hsl(180, 25%, 25%);
@@ -1537,11 +1553,11 @@ h2 {
 .price-non-member .price {
   font-size: 1.3rem;
   font-weight: bold;
-  color: hsl(122, 39%, 49%);
+  color: hsl(146, 46%, 39%);
 }
 
 .price-non-member .price {
-  color: hsl(122, 39%, 39%);
+  color: hsl(146, 46%, 29%);
 }
 
 .features {
@@ -1560,7 +1576,7 @@ h2 {
 }
 .features li::before {
   content: "✓";
-  color: hsl(122, 39%, 49%);
+  color: hsl(146, 46%, 39%);
   font-weight: bold;
 }
 .features li:last-child {
@@ -1581,7 +1597,7 @@ h2 {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: hsl(122, 39%, 49%);
+  background: hsl(146, 46%, 39%);
   color: hsl(0, 0%, 100%);
   border: none;
   padding: 0.75rem 1.5rem;
@@ -1661,7 +1677,7 @@ h2 {
   transition: color 0.3s ease;
 }
 .close-modal:hover {
-  color: hsl(122, 39%, 49%);
+  color: hsl(146, 46%, 39%);
 }
 
 .tarif-table {
@@ -1681,13 +1697,13 @@ h2 {
   position: relative;
 }
 .tarif-table th {
-  background: linear-gradient(135deg, hsl(122, 39%, 49%), hsl(122, 39%, 39%));
+  background: linear-gradient(135deg, hsl(146, 46%, 39%), hsl(146, 46%, 29%));
   color: white;
   font-weight: 600;
   font-size: 1.05rem;
   letter-spacing: 0.3px;
   text-transform: uppercase;
-  border-bottom: 3px solid hsl(122, 39%, 34%);
+  border-bottom: 3px solid hsl(146, 46%, 24%);
 }
 .tarif-table th:first-child {
   text-align: left;
@@ -1713,7 +1729,7 @@ h2 {
   border-bottom-right-radius: 9px;
 }
 .tarif-table tr:hover {
-  background-color: hsl(122, 39%, 97%);
+  background-color: hsl(146, 46%, 97%);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1;
@@ -1732,7 +1748,7 @@ h2 {
 }
 .tarif-table .highlight-row {
   background: linear-gradient(to right, rgba(76.2195, 173.6805, 79.4682, 0.1), rgba(76.2195, 173.6805, 79.4682, 0.05));
-  border-left: 4px solid hsl(122, 39%, 49%);
+  border-left: 4px solid hsl(146, 46%, 39%);
   position: relative;
 }
 .tarif-table .highlight-row td {
@@ -1740,7 +1756,7 @@ h2 {
   color: hsl(180, 25%, 15%);
 }
 .tarif-table .highlight-row td:not(:first-child) {
-  color: hsl(122, 39%, 41%);
+  color: hsl(146, 46%, 31%);
 }
 .tarif-table .highlight-row:hover {
   background: linear-gradient(to right, rgba(76.2195, 173.6805, 79.4682, 0.15), rgba(76.2195, 173.6805, 79.4682, 0.08));
@@ -1751,7 +1767,7 @@ h2 {
   position: absolute;
   top: 0;
   right: 0;
-  background: linear-gradient(135deg, hsl(122, 39%, 49%), hsl(122, 39%, 39%));
+  background: linear-gradient(135deg, hsl(146, 46%, 39%), hsl(146, 46%, 29%));
   color: white;
   font-size: 0.7rem;
   font-weight: 700;
@@ -1882,7 +1898,7 @@ form input, form textarea {
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 form input:focus, form textarea:focus {
-  border-color: hsl(122, 39%, 49%);
+  border-color: hsl(146, 46%, 39%);
   box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
 }
 form textarea {
@@ -1949,9 +1965,9 @@ form button {
 }
 .privacy-policy-main h2 {
   font-size: 1.5rem;
-  color: hsl(122, 39%, 49%);
+  color: hsl(146, 46%, 39%);
   margin-bottom: 1rem;
-  border-bottom: 2px solid hsl(122, 39%, 89%);
+  border-bottom: 2px solid hsl(146, 46%, 89%);
   padding-bottom: 0.5rem;
 }
 .privacy-policy-main p {
@@ -2008,7 +2024,7 @@ form button {
 }
 
 .details-header {
-  background-color: hsl(122, 39%, 49%);
+  background-color: hsl(146, 46%, 39%);
   color: white;
   text-align: center;
   padding: 1.5rem 0;
@@ -2035,7 +2051,7 @@ form button {
   transition: color 0.3s ease;
 }
 .details-header nav ul li a:hover {
-  color: hsl(122, 39%, 89%);
+  color: hsl(146, 46%, 89%);
 }
 
 /* Article */
@@ -2133,7 +2149,7 @@ form button {
   display: inline-block;
   margin-top: 1rem;
   padding: 0.75rem 1.5rem;
-  background: hsl(122, 39%, 49%);
+  background: hsl(146, 46%, 39%);
   color: white;
   text-decoration: none;
   border-radius: 10px;
@@ -2141,7 +2157,7 @@ form button {
   transition: background-color 0.3s ease;
 }
 .succesPageLink:hover {
-  background: hsl(122, 39%, 59%);
+  background: hsl(146, 46%, 49%);
 }
 
 main #hero {
@@ -2196,7 +2212,7 @@ main #hero p {
 }
 #workshop-list .workshop-card h3 {
   font-size: 1.3rem;
-  color: #4caf50;
+  color: #36915f;
   margin-bottom: 0.5rem;
 }
 #workshop-list .workshop-card p {
@@ -2260,7 +2276,7 @@ main #hero p {
 .profiles .profile-container .profile-details h5 {
   font-size: 1rem;
   margin-bottom: 0.5rem;
-  color: #4caf50;
+  color: #36915f;
 }
 .profiles .profile-container .profile-details p {
   font-size: 0.9rem;
@@ -2268,7 +2284,7 @@ main #hero p {
   line-height: 1.4;
 }
 .profiles .profile-container .profile-details a {
-  color: #4caf50;
+  color: #36915f;
   text-decoration: none;
 }
 .profiles .profile-container .profile-details a:hover {
@@ -2309,7 +2325,7 @@ main #hero p {
 #profile-details .profile-grid .profile-card h5 {
   font-size: 1rem;
   margin: 0.5rem 0;
-  color: #4caf50;
+  color: #36915f;
 }
 #profile-details .profile-grid .profile-card p {
   font-size: 0.8rem;
