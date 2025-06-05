@@ -4,12 +4,19 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Juniver Santé</title>
+        
+        <!-- Polices Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+        <!-- Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
             integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
             crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-        <link rel="stylesheet" href="./assets/styles/styleBeks.css">
+        <!-- Styles personnalisés -->
+        <link rel="stylesheet" href="./assets/styles/new-style.css">
         <link rel="stylesheet" href="./assets/styles/main.min.css">
     </head>
     <body class="index-page">
@@ -19,7 +26,7 @@
             <nav class="nav-bar">
               <div class="logo">
                 <!-- <img src="./assets/images/logo.png" alt="logo du site"> -->
-                <span class="logo-text">JuniverSanté Naturelle</span>
+                <span class="logo-text">JuniverSanté</span>
               </div>
           
               <div class="menu">
@@ -56,46 +63,104 @@
         </header>
           
     <main class="index-main">
-
         <section id="presentation">
-            <h2></h2>
-            <p id="presentation-text">
-                <!-- La présentation serat injecté ici -->
-            </p>
-        </section>
-
-        <section id="featured-article">
-            <!-- L'article 6GPaVLTj72gg4kuCDFUdMU sera injecté ici -->
-        </section>
-        
-
-        <section id="profiles-carousel">
-            <h2 class="team">Rencontrez notre équipe</h2>
-            <div class="carousel-container">
-                <button id="prev-profile" class="carousel-nav">&#8249;</button>
-                <button id="next-profile" class="carousel-nav">&#8250;</button>
-                <!-- Les profils seront injectés ici -->
+            <div class="animate-scale">
+                <h2>L'Excellence en Santé Naturelle</h2>
+                <p id="presentation-text">
+                    Découvrez notre approche sophistiquée de la santé naturelle. Chez Juniver, nous combinons tradition et innovation pour vous offrir des solutions de bien-être personnalisées qui respectent l'équilibre entre votre corps, votre esprit et votre environnement.
+                </p>
+                <a href="./views/about.html" class="read-more">Explorez notre univers</a>
             </div>
-        </section>        
-        
-        <aside id="filters">
-            <h3>Filtres</h3>
-            <ul id="category-list"></ul>
-        </aside>
-
-        <section id="content">
-            <!-- Articles seront injectés ici -->
         </section>
+
+        <div class="container">
+            <section id="featured-article" class="animate-fadeIn">
+                <h2>Article à la une</h2>
+                <div id="featured-content">
+                    <!-- L'article sera injecté ici -->
+                    <p>Chargement de l'article...</p>
+                </div>
+            </section>
+            
+
+            <section id="profiles-carousel">
+                <h2 class="team animate-fadeIn">Notre équipe d'experts</h2>
+                <div class="carousel-container">
+                    <button id="prev-profile" class="carousel-nav"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div id="profiles-content">
+                        <!-- Les profils seront injectés ici -->
+                        <div class="profile-item animate-right">
+                            <div class="profile-card">
+                                <div class="profile-image">
+                                    <img src="https://images.unsplash.com/photo-1571844307880-751c6d86f3f3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Expert en santé naturelle">
+                                </div>
+                                <div class="profile-info">
+                                    <h3>Marie Dupont</h3>
+                                    <span class="profile-title">Naturopathe certifiée</span>
+                                    <p>Spécialiste en phytothérapie et aromathérapie avec plus de 15 ans d'expérience.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="loading-text">Chargement des profils...</p>
+                    </div>
+                    <button id="next-profile" class="carousel-nav"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            </section>        
+            
+            <section class="content-section">
+                <div class="overlay"></div>
+                <div class="filters-wrapper">
+                    <aside id="filters" class="animate-left">
+                        <h3>Explorer par catégorie</h3>
+                        <ul id="category-list">
+                            <!-- Les catégories seront injectées ici -->
+                            <li class="active" data-category="all">Tous</li>
+                            <li data-category="phytotherapie">Phytothérapie</li>
+                            <li data-category="aromatherapie">Aromathérapie</li>
+                            <li data-category="meditation">Méditation</li>
+                            <li data-category="nutrition">Nutrition</li>
+                        </ul>
+                    </aside>
+                </div>
+
+                <section id="content">
+                    <!-- Articles seront injectés ici -->
+                    <div class="article-card animate-fadeIn">
+                        <div class="article-category">Nutrition</div>
+                        <div class="article-image">
+                            <img src="https://images.unsplash.com/photo-1606923829579-0cb981a83e2b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Alimentation saine">
+                        </div>
+                        <div class="article-content">
+                            <div class="article-date">12 juin 2024</div>
+                            <h3>Les super-aliments à intégrer dans votre alimentation quotidienne</h3>
+                            <p class="article-excerpt">Découvrez comment ces aliments exceptionnels peuvent transformer votre santé et votre bien-être au quotidien.</p>
+                            <a href="#" class="article-read-more">Lire l'article</a>
+                        </div>
+                    </div>
+                    <p class="loading-text">Chargement des articles...</p>
+                </section>
+            </section>
+        </div>
     </main>
 
     <footer>
-        <p>
-            <a href="/public/views/privacy.html">Politique de confidentialité</a> | 
-            <a href="/public/views/legal.html">Mentions légales</a></p>
-        <p>© 2024 Juniver Santé - Tous droits réservés</p>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">JuniverSanté</span>
+                </div>
+                <div class="footer-links">
+                    <a href="/public/views/privacy.html">Politique de confidentialité</a> | 
+                    <a href="/public/views/legal.html">Mentions légales</a> |
+                    <a href="/public/views/contact.html">Contactez-nous</a>
+                </div>
+                <p>© 2024 Juniver Santé - Tous droits réservés</p>
+            </div>
+        </div>
     </footer>
 
     <script src="js/main.js" type="module"></script>
     <script src="/public/js/style/styleScript.js"></script>
+    <script src="/public/js/animations.js"></script>
 </body>
 </html>

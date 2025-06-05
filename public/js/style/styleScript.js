@@ -1,7 +1,6 @@
 // background style neuro dev by web beks telegram
 // https://t.me/webbeks/967
 
-const containerEl = document.querySelector(".container");
 const canvasEl = document.querySelector("canvas#neuro");
 const devicePixelRatio = Math.min(window.devicePixelRatio, 2);
 
@@ -15,6 +14,22 @@ const pointer = {
 let uniforms;
 let gl;
 
+// Ajuster le canvas à la taille de la fenêtre
+function adjustCanvasSize() {
+    if (canvasEl) {
+        canvasEl.style.width = '100vw';
+        canvasEl.style.height = '100vh';
+        canvasEl.style.position = 'fixed';
+        canvasEl.style.top = '0';
+        canvasEl.style.left = '0';
+        canvasEl.style.zIndex = '-2';
+        canvasEl.style.pointerEvents = 'none';
+    }
+}
+
+// Appliquer immédiatement le dimensionnement
+adjustCanvasSize();
+
 // Chargement asynchrone des fichiers GLSL
 async function loadShaderSource(filePath) {
     const response = await fetch(filePath);
@@ -23,30 +38,62 @@ async function loadShaderSource(filePath) {
 
 // Initialisation des shaders avec les fichiers externes
 async function initShader() {
+    if (!canvasEl) {
+        console.error("Canvas element not found");
+        return null;
+    }
+
     const vsSource = await loadShaderSource("/public/js/style/shader/vertexShader.glsl");
     const fsSource = await loadShaderSource("/public/js/style/shader/fragmentShader.glsl");
 
     const gl = canvasEl.getContext("webgl") || canvasEl.getContext("experimental-webgl");
+    
+    if (!gl) {
+        console.error("WebGL not supported");
+        return null;
+    }
 
     function createShader(gl, sourceCode, type) {
         const shader = gl.createShader(type);
         gl.shaderSource(shader, sourceCode);
         gl.compileShader(shader);
+        
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            console.error('Shader compilation error:', gl.getShaderInfoLog(shader));
+            gl.deleteShader(shader);
+            return null;
+        }
+        
         return shader;
     }
 
     const vertexShader = createShader(gl, vsSource, gl.VERTEX_SHADER);
     const fragmentShader = createShader(gl, fsSource, gl.FRAGMENT_SHADER);
+    
+    if (!vertexShader || !fragmentShader) {
+        return null;
+    }
 
     function createShaderProgram(gl, vertexShader, fragmentShader) {
         const program = gl.createProgram();
         gl.attachShader(program, vertexShader);
         gl.attachShader(program, fragmentShader);
         gl.linkProgram(program);
+        
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+            console.error('Program linking error:', gl.getProgramInfoLog(program));
+            return null;
+        }
+        
         return program;
     }
 
     const shaderProgram = createShaderProgram(gl, vertexShader, fragmentShader);
+    
+    if (!shaderProgram) {
+        return null;
+    }
+    
     uniforms = getUniforms(shaderProgram);
 
     function getUniforms(program) {
@@ -77,6 +124,8 @@ async function initShader() {
 }
 
 function render() {
+    if (!gl) return;
+    
     const currentTime = performance.now();
 
     pointer.x += (pointer.tX - pointer.x) * 0.5;
@@ -88,16 +137,23 @@ function render() {
         pointer.x / window.innerWidth,
         1 - pointer.y / window.innerHeight
     );
-    gl.uniform1f(uniforms.u_scroll_progress, window.pageYOffset / (2 * window.innerHeight));
+    gl.uniform1f(uniforms.u_scroll_progress, window.pageYOffset / (document.body.scrollHeight - window.innerHeight || 1));
 
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     requestAnimationFrame(render);
 }
 
 function resizeCanvas() {
+    if (!canvasEl || !gl) return;
+    
+    // Ajuster la taille physique du canvas à la taille de la fenêtre
     canvasEl.width = window.innerWidth * devicePixelRatio;
     canvasEl.height = window.innerHeight * devicePixelRatio;
+    
+    if (uniforms && uniforms.u_ratio) {
     gl.uniform1f(uniforms.u_ratio, canvasEl.width / canvasEl.height);
+    }
+    
     gl.viewport(0, 0, canvasEl.width, canvasEl.height);
 }
 
@@ -120,11 +176,27 @@ function setupEvents() {
 
 // Initialisation de la scène
 (async function initialize() {
+    // S'assurer que le document est complètement chargé
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAfterDOMLoaded);
+    } else {
+        initAfterDOMLoaded();
+    }
+
+    async function initAfterDOMLoaded() {
+        // Réajuster la taille du canvas
+        adjustCanvasSize();
+        
+        // Initialiser WebGL
     gl = await initShader();
+        
     if (gl) {
         setupEvents();
         resizeCanvas();
         window.addEventListener("resize", resizeCanvas);
         render();
+        } else {
+            console.error("Failed to initialize WebGL");
+        }
     }
 })();
