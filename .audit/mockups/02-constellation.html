@@ -1,0 +1,997 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>JuniverSanté — Constellation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Outfit:wght@200;300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0a1018;
+        --bg-2: #101825;
+        --ink: #efe9d8;
+        --ink-soft: rgba(239, 233, 216, 0.62);
+        --ink-mute: rgba(239, 233, 216, 0.38);
+        --gold: #e6b863;
+        --gold-deep: #c89848;
+        --jade: #7fa68f;
+        --rule: rgba(239, 233, 216, 0.12);
+        --serif: 'Cormorant Garamond', ui-serif, Georgia, serif;
+        --sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        min-width: 0;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        max-width: 100%;
+      }
+      html {
+        overflow-x: clip;
+      }
+      body {
+        overflow-x: clip;
+      }
+      img,
+      svg,
+      video {
+        max-width: 100%;
+        height: auto;
+      }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--sans);
+        font-weight: 300;
+        font-size: 15px;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+        position: relative;
+      }
+      /* deep starfield gradient */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(ellipse 90% 70% at 50% 0%, rgba(230, 184, 99, 0.07), transparent 60%),
+          radial-gradient(ellipse 60% 50% at 15% 85%, rgba(127, 166, 143, 0.08), transparent 60%),
+          radial-gradient(ellipse 60% 50% at 85% 60%, rgba(230, 184, 99, 0.05), transparent 60%);
+      }
+      canvas#sky {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .wrap {
+        position: relative;
+        z-index: 2;
+        max-width: 1360px;
+        margin: 0 auto;
+        padding: 0 clamp(24px, 5vw, 64px);
+      }
+
+      /* ─────── NAV ─────── */
+      header.nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 36px 0;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 400;
+        font-size: 26px;
+        letter-spacing: -0.005em;
+        color: var(--ink);
+      }
+      .brand svg {
+        width: 32px;
+        height: 32px;
+        display: block;
+      }
+      nav.primary {
+        display: flex;
+        gap: 34px;
+        align-items: center;
+        font-size: 13px;
+        letter-spacing: 0.04em;
+        font-weight: 300;
+      }
+      nav.primary a {
+        color: var(--ink-soft);
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+      nav.primary a:hover {
+        color: var(--gold);
+      }
+      nav.primary .cta {
+        padding: 11px 22px;
+        border: 1px solid var(--gold);
+        color: var(--gold);
+        border-radius: 2px;
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 15px;
+        font-weight: 400;
+        transition:
+          background 0.3s,
+          color 0.3s;
+      }
+      nav.primary .cta:hover {
+        background: var(--gold);
+        color: var(--bg);
+      }
+
+      /* ─────── HERO ─────── */
+      .hero {
+        padding: clamp(60px, 12vh, 140px) 0 clamp(100px, 16vh, 180px);
+        text-align: center;
+        position: relative;
+      }
+      .hero-ornament {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 18px;
+        margin-bottom: 36px;
+        color: var(--gold);
+        font-family: var(--serif);
+        font-style: italic;
+        flex-wrap: wrap;
+      }
+      .hero-ornament .line {
+        flex: 0 1 80px;
+        min-width: 0;
+        height: 1px;
+        background: var(--gold);
+        opacity: 0.6;
+      }
+      .hero-ornament .sym {
+        font-size: 20px;
+        letter-spacing: 0.3em;
+        font-weight: 300;
+      }
+      .hero-ornament .lbl {
+        font-size: 11px;
+        letter-spacing: 0.4em;
+        text-transform: uppercase;
+        color: var(--ink-mute);
+        font-family: var(--sans);
+      }
+
+      .hero h1 {
+        font-family: var(--serif);
+        font-weight: 300;
+        font-size: clamp(56px, 10vw, 156px);
+        line-height: 0.92;
+        letter-spacing: -0.02em;
+        margin: 0 0 40px;
+      }
+      .hero h1 .line1 {
+        display: block;
+      }
+      .hero h1 em {
+        font-style: italic;
+        color: var(--gold);
+        font-weight: 300;
+      }
+      .hero h1 .sub {
+        display: block;
+        font-style: italic;
+        color: var(--jade);
+        font-weight: 300;
+        font-size: 0.6em;
+        margin-top: 0.2em;
+      }
+
+      .hero-lede {
+        max-width: 58ch;
+        margin: 0 auto;
+        color: var(--ink-soft);
+        font-size: 18px;
+        line-height: 1.7;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 52px;
+        flex-wrap: wrap;
+      }
+      .btn-gold {
+        padding: 16px 32px;
+        background: var(--gold);
+        color: var(--bg);
+        border-radius: 999px;
+        text-decoration: none;
+        font-size: 14px;
+        letter-spacing: 0.08em;
+        font-weight: 400;
+        transition:
+          transform 0.3s,
+          box-shadow 0.3s;
+      }
+      .btn-gold:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 18px 40px -15px rgba(230, 184, 99, 0.5);
+      }
+      .btn-ghost {
+        padding: 16px 32px;
+        border: 1px solid var(--rule);
+        color: var(--ink);
+        border-radius: 999px;
+        text-decoration: none;
+        font-size: 14px;
+        letter-spacing: 0.08em;
+        font-weight: 300;
+        transition:
+          border-color 0.3s,
+          color 0.3s;
+      }
+      .btn-ghost:hover {
+        border-color: var(--ink);
+        color: var(--gold);
+      }
+
+      /* ─────── CONSTELLATION TÉRAPEUTES ─────── */
+      .constellation {
+        position: relative;
+        padding: clamp(80px, 14vh, 160px) 0;
+        border-top: 1px solid var(--rule);
+      }
+      .section-intro {
+        max-width: 640px;
+        margin: 0 auto 80px;
+        text-align: center;
+      }
+      .section-intro .num {
+        display: block;
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--gold);
+        font-size: 28px;
+        margin-bottom: 16px;
+      }
+      .section-intro h2 {
+        font-family: var(--serif);
+        font-weight: 300;
+        font-size: clamp(36px, 5.5vw, 68px);
+        line-height: 1.02;
+        letter-spacing: -0.015em;
+        margin: 0 0 20px;
+      }
+      .section-intro h2 em {
+        font-style: italic;
+        color: var(--gold);
+      }
+      .section-intro p {
+        color: var(--ink-soft);
+        font-size: 16px;
+        max-width: 52ch;
+        margin: 0 auto;
+      }
+
+      /* Orbital grid */
+      .orbit {
+        position: relative;
+        aspect-ratio: 16/10;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .orbit svg.lines {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+      .star {
+        position: absolute;
+        width: var(--size, 170px);
+        transform: translate(-50%, -50%);
+        text-align: center;
+        z-index: 3;
+      }
+      .star .dot {
+        width: 10px;
+        height: 10px;
+        background: var(--gold);
+        border-radius: 50%;
+        margin: 0 auto 14px;
+        box-shadow:
+          0 0 0 3px rgba(230, 184, 99, 0.15),
+          0 0 24px rgba(230, 184, 99, 0.4);
+        animation: pulse 3s ease-in-out infinite;
+      }
+      .star:nth-child(3) .dot {
+        animation-delay: -1s;
+      }
+      .star:nth-child(4) .dot {
+        animation-delay: -2s;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.25);
+          opacity: 0.6;
+        }
+      }
+
+      .star .portrait {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        margin: 0 auto 14px;
+        overflow: hidden;
+        border: 1px solid var(--gold);
+        box-shadow: 0 0 32px rgba(230, 184, 99, 0.2);
+      }
+      .star .portrait svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .star .name {
+        font-family: var(--serif);
+        font-size: 24px;
+        line-height: 1.1;
+        font-weight: 400;
+      }
+      .star .name em {
+        font-style: italic;
+        color: var(--gold);
+      }
+      .star .job {
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--ink-mute);
+        margin-top: 6px;
+      }
+      .star .link {
+        display: inline-block;
+        margin-top: 10px;
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 14px;
+        color: var(--ink);
+        text-decoration: none;
+        border-bottom: 1px solid var(--rule);
+        padding-bottom: 1px;
+        transition:
+          border-color 0.3s,
+          color 0.3s;
+      }
+      .star .link:hover {
+        color: var(--gold);
+        border-color: var(--gold);
+      }
+
+      .orbit-hint {
+        position: absolute;
+        bottom: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 13px;
+        color: var(--ink-mute);
+      }
+
+      /* ─────── JOURNAL / ARTICLE VEDETTE ─────── */
+      .journal {
+        padding: clamp(80px, 14vh, 160px) 0;
+        border-top: 1px solid var(--rule);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: center;
+      }
+      .journal-art {
+        aspect-ratio: 3/4;
+        position: relative;
+        border-radius: 2px;
+        overflow: hidden;
+        background: radial-gradient(ellipse at 30% 20%, #2a3a4e, #0f1822 70%);
+      }
+      .journal-art .constellation-svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .journal-art .moon {
+        position: absolute;
+        top: 40px;
+        right: 40px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, #f4e4b8, #c89848);
+        box-shadow: 0 0 50px rgba(230, 184, 99, 0.4);
+      }
+      .journal-art .cap {
+        position: absolute;
+        bottom: 24px;
+        left: 28px;
+        font-family: var(--serif);
+        font-style: italic;
+        color: rgba(239, 233, 216, 0.7);
+        font-size: 14px;
+        letter-spacing: 0.04em;
+      }
+      .journal-body .tag {
+        color: var(--gold);
+        font-size: 11px;
+        letter-spacing: 0.26em;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+        display: block;
+        font-family: var(--sans);
+      }
+      .journal-body h3 {
+        font-family: var(--serif);
+        font-weight: 300;
+        font-size: clamp(32px, 4.4vw, 54px);
+        line-height: 1.05;
+        letter-spacing: -0.015em;
+        margin: 0 0 24px;
+      }
+      .journal-body h3 em {
+        font-style: italic;
+        color: var(--gold);
+      }
+      .journal-body p {
+        color: var(--ink-soft);
+        font-size: 16px;
+        line-height: 1.7;
+        max-width: 46ch;
+        margin: 0 0 28px;
+      }
+      .journal-body .more {
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 16px;
+        color: var(--gold);
+        text-decoration: none;
+        border-bottom: 1px solid var(--gold);
+        padding-bottom: 2px;
+      }
+
+      /* ─────── FOOTER ─────── */
+      footer {
+        margin-top: clamp(80px, 14vh, 140px);
+        padding: 60px 0 32px;
+        border-top: 1px solid var(--rule);
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 48px;
+      }
+      footer h4 {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 400;
+        font-size: 22px;
+        margin: 0 0 16px;
+        color: var(--gold);
+      }
+      footer ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 13px;
+      }
+      footer ul li {
+        padding: 5px 0;
+      }
+      footer ul a {
+        color: var(--ink-soft);
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+      footer ul a:hover {
+        color: var(--gold);
+      }
+      .col-brand p {
+        font-size: 14px;
+        color: var(--ink-soft);
+        max-width: 32ch;
+        line-height: 1.6;
+      }
+      .foot-bottom {
+        grid-column: 1/-1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 26px;
+        border-top: 1px solid var(--rule);
+        font-size: 12px;
+        color: var(--ink-mute);
+        letter-spacing: 0.06em;
+      }
+
+      @media (max-width: 960px) {
+        .orbit {
+          aspect-ratio: auto;
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 40px;
+          padding: 20px 0;
+        }
+        .star {
+          position: static;
+          transform: none;
+          width: 100%;
+          max-width: 280px;
+          margin: 0 auto;
+        }
+        .orbit svg.lines {
+          display: none;
+        }
+        .orbit-hint {
+          display: none;
+        }
+        .journal {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+        footer {
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+          gap: 28px;
+        }
+        footer .col-brand {
+          grid-column: 1/-1;
+        }
+        nav.primary {
+          display: none;
+        }
+      }
+      @media (max-width: 640px) {
+        .wrap {
+          padding: 0 18px;
+        }
+        header.nav {
+          padding: 22px 0;
+        }
+        .brand {
+          font-size: 22px;
+        }
+        .hero {
+          padding: 56px 0 80px;
+        }
+        .hero h1 {
+          font-size: clamp(44px, 12vw, 64px);
+        }
+        .hero-ornament .sym {
+          font-size: 16px;
+        }
+        .hero-ornament .line {
+          flex-basis: 36px;
+        }
+        .hero-actions {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .hero-actions a {
+          text-align: center;
+        }
+        .constellation {
+          padding: 60px 0;
+        }
+        .section-intro h2 {
+          font-size: clamp(32px, 9vw, 44px);
+        }
+        .journal {
+          padding: 60px 0;
+        }
+        .journal-body h3 {
+          font-size: clamp(28px, 8vw, 40px);
+        }
+        footer {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 24px;
+        }
+        .foot-bottom {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="sky" aria-hidden="true"></canvas>
+
+    <div class="wrap">
+      <header class="nav">
+        <div class="brand">
+          <svg viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="16" r="1.6" fill="#E6B863" />
+            <circle cx="6" cy="8" r="1.2" fill="#E6B863" />
+            <circle cx="24" cy="6" r="1" fill="#E6B863" />
+            <circle cx="26" cy="22" r="1.4" fill="#E6B863" />
+            <circle cx="8" cy="26" r="1" fill="#E6B863" />
+            <path d="M6 8 L16 16 L24 6 M16 16 L26 22 M16 16 L8 26" stroke="#E6B863" stroke-width="0.4" opacity=".5" />
+          </svg>
+          JuniverSanté
+        </div>
+        <nav class="primary">
+          <a href="#">Cercle</a>
+          <a href="#">Thérapeutes</a>
+          <a href="#">Ateliers</a>
+          <a href="#">Journal</a>
+          <a class="cta" href="#">Rendez-vous</a>
+        </nav>
+      </header>
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-ornament">
+          <span class="line"></span>
+          <span class="sym">✦ ✧ ✦</span>
+          <span class="lbl">Cercle des thérapeutes</span>
+          <span class="sym">✦ ✧ ✦</span>
+          <span class="line"></span>
+        </div>
+
+        <h1>
+          <span class="line1">Une constellation</span>
+          <em>de soins, reliée</em>
+          <span class="sub">par l'attention au vivant.</span>
+        </h1>
+
+        <p class="hero-lede">
+          Douze praticiens indépendants, réunis en 2023 autour d'une conviction commune : la santé se tisse dans la
+          relation. Plantes, toucher, parole, respiration — autant d'étoiles qui composent notre ciel.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn-gold" href="#">Rencontrer le cercle</a>
+          <a class="btn-ghost" href="#">Lire la charte ⁘</a>
+        </div>
+      </section>
+
+      <!-- CONSTELLATION -->
+      <section class="constellation">
+        <div class="section-intro">
+          <span class="num">✧ ii ✧</span>
+          <h2>Les <em>thérapeutes</em>,<br />cartographiés.</h2>
+          <p>
+            Chaque praticien a sa trajectoire, ses outils, sa géographie. Ensemble, ils dessinent une figure — celle
+            d'un réseau d'entraide, plutôt que d'une institution.
+          </p>
+        </div>
+
+        <div class="orbit">
+          <svg
+            class="lines"
+            viewBox="0 0 1200 750"
+            preserveAspectRatio="none"
+            fill="none"
+            stroke="rgba(230,184,99,0.22)"
+            stroke-width="0.8"
+          >
+            <!-- star connections -->
+            <path
+              d="M180 180 L600 120 M600 120 L1020 200 M180 180 L380 500 M600 120 L660 430 M1020 200 L900 500 M380 500 L660 430 M660 430 L900 500 M380 500 L900 500"
+            />
+            <!-- background filaments -->
+            <path d="M80 340 Q400 300 580 380 T1120 400" stroke-opacity=".15" stroke-width=".5" />
+            <path d="M160 620 Q460 560 700 600 T1140 580" stroke-opacity=".12" stroke-width=".5" />
+          </svg>
+
+          <div class="star" style="left: 15%; top: 24%">
+            <div class="portrait">
+              <svg viewBox="0 0 90 90">
+                <defs>
+                  <radialGradient id="s1">
+                    <stop offset="0" stop-color="#D4C09A" />
+                    <stop offset="1" stop-color="#3A4830" />
+                  </radialGradient>
+                </defs>
+                <rect width="90" height="90" fill="url(#s1)" />
+                <ellipse cx="45" cy="36" rx="14" ry="17" fill="#1A1810" opacity=".55" />
+                <path d="M15 90 Q15 64 45 62 Q75 64 75 90Z" fill="#1A1810" opacity=".55" />
+              </svg>
+            </div>
+            <div class="dot"></div>
+            <div class="name">Vincent <em>Decoster</em></div>
+            <div class="job">Naturopathie · Yoga</div>
+            <a class="link" href="#">Voir l'étoile →</a>
+          </div>
+
+          <div class="star" style="left: 50%; top: 16%">
+            <div class="portrait">
+              <svg viewBox="0 0 90 90">
+                <defs>
+                  <radialGradient id="s2">
+                    <stop offset="0" stop-color="#E8C9A0" />
+                    <stop offset="1" stop-color="#5A3A25" />
+                  </radialGradient>
+                </defs>
+                <rect width="90" height="90" fill="url(#s2)" />
+                <ellipse cx="45" cy="34" rx="14" ry="17" fill="#1A0E08" opacity=".55" />
+                <path d="M15 90 Q15 62 45 60 Q75 62 75 90Z" fill="#1A0E08" opacity=".55" />
+              </svg>
+            </div>
+            <div class="dot"></div>
+            <div class="name">Joly <em>Karine</em></div>
+            <div class="job">Naturothérapie holistique</div>
+            <a class="link" href="#">Voir l'étoile →</a>
+          </div>
+
+          <div class="star" style="left: 85%; top: 27%">
+            <div class="portrait">
+              <svg viewBox="0 0 90 90">
+                <defs>
+                  <radialGradient id="s3">
+                    <stop offset="0" stop-color="#B8A58A" />
+                    <stop offset="1" stop-color="#2F3A25" />
+                  </radialGradient>
+                </defs>
+                <rect width="90" height="90" fill="url(#s3)" />
+                <ellipse cx="45" cy="36" rx="14" ry="17" fill="#111410" opacity=".6" />
+                <path d="M15 90 Q15 64 45 62 Q75 64 75 90Z" fill="#111410" opacity=".6" />
+              </svg>
+            </div>
+            <div class="dot"></div>
+            <div class="name">Périqué <em>Sandrine</em></div>
+            <div class="job">Énergétique · Reiki</div>
+            <a class="link" href="#">Voir l'étoile →</a>
+          </div>
+
+          <div class="star" style="left: 32%; top: 68%">
+            <div class="portrait">
+              <svg viewBox="0 0 90 90">
+                <defs>
+                  <radialGradient id="s4">
+                    <stop offset="0" stop-color="#D0BB96" />
+                    <stop offset="1" stop-color="#48412F" />
+                  </radialGradient>
+                </defs>
+                <rect width="90" height="90" fill="url(#s4)" />
+                <ellipse cx="45" cy="34" rx="14" ry="17" fill="#1A1810" opacity=".55" />
+                <path d="M15 90 Q15 62 45 60 Q75 62 75 90Z" fill="#1A1810" opacity=".55" />
+              </svg>
+            </div>
+            <div class="dot"></div>
+            <div class="name">Marthe <em>Léon</em></div>
+            <div class="job">Herboristerie · Phyto</div>
+            <a class="link" href="#">Voir l'étoile →</a>
+          </div>
+
+          <div class="star" style="left: 55%; top: 60%">
+            <div class="portrait">
+              <svg viewBox="0 0 90 90">
+                <defs>
+                  <radialGradient id="s5">
+                    <stop offset="0" stop-color="#C9B893" />
+                    <stop offset="1" stop-color="#3D4028" />
+                  </radialGradient>
+                </defs>
+                <rect width="90" height="90" fill="url(#s5)" />
+                <ellipse cx="45" cy="36" rx="14" ry="17" fill="#151510" opacity=".58" />
+                <path d="M15 90 Q15 64 45 62 Q75 64 75 90Z" fill="#151510" opacity=".58" />
+              </svg>
+            </div>
+            <div class="dot"></div>
+            <div class="name">Ludovic <em>Manoa</em></div>
+            <div class="job">Ostéopathie douce</div>
+            <a class="link" href="#">Voir l'étoile →</a>
+          </div>
+
+          <div class="star" style="left: 76%; top: 70%">
+            <div class="portrait">
+              <svg viewBox="0 0 90 90">
+                <defs>
+                  <radialGradient id="s6">
+                    <stop offset="0" stop-color="#DAC5A0" />
+                    <stop offset="1" stop-color="#4D3925" />
+                  </radialGradient>
+                </defs>
+                <rect width="90" height="90" fill="url(#s6)" />
+                <ellipse cx="45" cy="34" rx="14" ry="17" fill="#1A120A" opacity=".55" />
+                <path d="M15 90 Q15 62 45 60 Q75 62 75 90Z" fill="#1A120A" opacity=".55" />
+              </svg>
+            </div>
+            <div class="dot"></div>
+            <div class="name">Juliette <em>Bonnard</em></div>
+            <div class="job">Sophro · Respiration</div>
+            <a class="link" href="#">Voir l'étoile →</a>
+          </div>
+
+          <div class="orbit-hint">— douze étoiles, un même ciel —</div>
+        </div>
+      </section>
+
+      <!-- JOURNAL -->
+      <section class="journal">
+        <div class="journal-art">
+          <div class="moon"></div>
+          <svg class="constellation-svg" viewBox="0 0 400 520" fill="none">
+            <g stroke="rgba(230,184,99,0.6)" stroke-width="0.8" fill="#E6B863">
+              <circle cx="80" cy="340" r="1.4" />
+              <circle cx="180" cy="300" r="2" />
+              <circle cx="220" cy="380" r="1.5" />
+              <circle cx="300" cy="340" r="1.8" />
+              <circle cx="260" cy="260" r="1.3" />
+              <circle cx="340" cy="430" r="1.1" />
+              <circle cx="140" cy="440" r="1.6" />
+              <path d="M80 340 L180 300 L260 260 L300 340 L340 430 M180 300 L220 380 L300 340 M220 380 L140 440" />
+            </g>
+            <g fill="rgba(239,233,216,0.5)">
+              <circle cx="40" cy="180" r=".6" />
+              <circle cx="120" cy="80" r=".5" />
+              <circle cx="240" cy="120" r=".7" />
+              <circle cx="340" cy="200" r=".5" />
+              <circle cx="80" cy="480" r=".4" />
+              <circle cx="360" cy="320" r=".5" />
+              <circle cx="60" cy="60" r=".3" />
+              <circle cx="280" cy="40" r=".4" />
+              <circle cx="380" cy="100" r=".6" />
+            </g>
+          </svg>
+          <span class="cap">Planche céleste — février</span>
+        </div>
+        <div class="journal-body">
+          <span class="tag">✦ Journal · Équinoxe</span>
+          <h3>Prendre soin, <em>saison après saison</em>, comme on lit les étoiles.</h3>
+          <p>
+            Notre corps suit des cycles plus anciens que les agendas. Dans cette lettre, trois thérapeutes du cercle
+            partagent leurs pratiques du printemps : alléger, assouplir, se réaccorder au plus lent. Un texte à lire
+            lentement, un thé à la main.
+          </p>
+          <a class="more" href="#">Lire le journal →</a>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer>
+        <div class="col-brand">
+          <h4>JuniverSanté</h4>
+          <p>
+            Un cercle de thérapeutes réunis autour d'une charte commune et d'un soin porté au vivant, à la lenteur, à
+            l'écoute.
+          </p>
+        </div>
+        <div>
+          <h4>Cercle</h4>
+          <ul>
+            <li><a href="#">La charte</a></li>
+            <li><a href="#">Thérapeutes</a></li>
+            <li><a href="#">Rejoindre</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Pratique</h4>
+          <ul>
+            <li><a href="#">Ateliers</a></li>
+            <li><a href="#">Formations</a></li>
+            <li><a href="#">Calendrier</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:contact@juniversante.fr">contact@juniversante.fr</a></li>
+            <li>Bourgogne</li>
+          </ul>
+        </div>
+        <div class="foot-bottom">
+          <span>© 2026 JuniverSanté — le ciel reste libre.</span>
+          <span>Mentions · Confidentialité</span>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      /* Constellation — champ stellaire subtil + lignes qui se forment au hasard */
+      (() => {
+        const c = document.getElementById('sky');
+        const ctx = c.getContext('2d');
+        let w,
+          h,
+          dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const STARS = 180;
+        const stars = [];
+        function resize() {
+          w = c.width = innerWidth * dpr;
+          h = c.height = innerHeight * dpr;
+          c.style.width = innerWidth + 'px';
+          c.style.height = innerHeight + 'px';
+        }
+        resize();
+        addEventListener('resize', () => {
+          resize();
+          build();
+        });
+        function build() {
+          stars.length = 0;
+          for (let i = 0; i < STARS; i++) {
+            const layer = Math.random();
+            stars.push({
+              x: Math.random() * w,
+              y: Math.random() * h,
+              r: (layer > 0.95 ? 1.8 : layer > 0.7 ? 1.1 : 0.6) * dpr,
+              twinkle: Math.random() * Math.PI * 2,
+              speed: 0.008 + Math.random() * 0.02,
+              gold: layer > 0.92,
+            });
+          }
+        }
+        build();
+
+        function frame(t) {
+          ctx.clearRect(0, 0, w, h);
+          for (const s of stars) {
+            s.twinkle += s.speed;
+            const a = 0.35 + 0.55 * (0.5 + 0.5 * Math.sin(s.twinkle));
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            if (s.gold) {
+              ctx.fillStyle = `rgba(230,184,99,${a})`;
+              ctx.shadowColor = 'rgba(230,184,99,0.6)';
+              ctx.shadowBlur = 8 * dpr;
+            } else {
+              ctx.fillStyle = `rgba(239,233,216,${a * 0.7})`;
+              ctx.shadowBlur = 0;
+            }
+            ctx.fill();
+          }
+          ctx.shadowBlur = 0;
+          // random thin connections (like constellations forming)
+          const period = 6000;
+          const phase = (t % period) / period;
+          const n = 4;
+          for (let i = 0; i < n; i++) {
+            const a = stars[(i * 37) % stars.length];
+            const b = stars[(i * 37 + 11) % stars.length];
+            const fade = Math.sin(phase * Math.PI + i * 0.8);
+            if (fade > 0) {
+              ctx.strokeStyle = `rgba(230,184,99,${fade * 0.12})`;
+              ctx.lineWidth = 0.5 * dpr;
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(b.x, b.y);
+              ctx.stroke();
+            }
+          }
+          requestAnimationFrame(frame);
+        }
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          requestAnimationFrame(frame);
+        } else {
+          frame(0);
+        }
+      })();
+    </script>
+  </body>
+</html>
