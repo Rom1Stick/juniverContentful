@@ -1,0 +1,359 @@
+@use "../abstracts/variables" as v;
+
+.cycle-page {
+  .cycle-main {
+    position: relative;
+    z-index: 2;
+    padding: clamp(32px, 6vw, 72px) clamp(18px, 4vw, 56px) 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .cycle-hero {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto clamp(40px, 6vw, 72px);
+
+    h1 {
+      font-family: v.$font-display;
+      font-weight: 400;
+      font-size: clamp(32px, 6vw, 56px);
+      line-height: 1.1;
+      margin: 12px 0 18px;
+      color: v.$moss-deep;
+    }
+
+    h1 .hand {
+      font-family: v.$font-script;
+      color: v.$clay;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: clamp(15px, 2vw, 17px);
+      color: v.$ink-soft;
+      line-height: 1.6;
+      margin: 0;
+    }
+  }
+
+  .cycle-empty {
+    text-align: center;
+    color: v.$ink-soft;
+    font-style: italic;
+    padding: 40px 0;
+  }
+
+  .cycle-list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding-left: 28px;
+
+    // Ligne chronologique mobile : trait vertical à gauche
+    &::before {
+      content: "";
+      position: absolute;
+      left: 14px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: linear-gradient(
+        to bottom,
+        rgba(123, 160, 91, 0%) 0%,
+        rgba(123, 160, 91, 55%) 8%,
+        rgba(227, 184, 79, 55%) 92%,
+        rgba(227, 184, 79, 0%) 100%
+      );
+    }
+  }
+
+  .cycle-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .cycle-step__marker {
+    position: absolute;
+    left: -28px;
+    top: 18px;
+    width: 28px;
+    display: grid;
+    place-items: center;
+  }
+
+  .cycle-step__dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: v.$honey;
+    box-shadow:
+      0 0 0 4px rgba(247, 241, 224, 90%),
+      0 0 0 6px rgba(123, 160, 91, 35%);
+  }
+
+  .cycle-step:nth-child(3n + 1) .cycle-step__dot {
+    background: v.$leaf;
+  }
+
+  .cycle-step:nth-child(3n + 2) .cycle-step__dot {
+    background: v.$honey;
+  }
+
+  .cycle-step:nth-child(3n) .cycle-step__dot {
+    background: v.$clay;
+  }
+
+  .cycle-step__card {
+    background: rgba(247, 241, 224, 82%);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(46, 74, 43, 8%);
+    border-radius: v.$radius-lg;
+    padding: clamp(18px, 3vw, 26px);
+    box-shadow: v.$shadow-soft;
+    transition:
+      transform 0.25s v.$ease,
+      box-shadow 0.25s v.$ease;
+  }
+
+  .cycle-step__card:hover {
+    transform: translateY(-2px);
+    box-shadow: v.$shadow-lift;
+  }
+
+  .cycle-step__date {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    color: v.$clay;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .cycle-step__label {
+    display: inline-block;
+    font-size: 12px;
+    color: v.$moss;
+    background: rgba(123, 160, 91, 12%);
+    padding: 3px 10px;
+    border-radius: v.$radius-pill;
+    margin: 0 0 6px 8px;
+  }
+
+  .cycle-step__title {
+    font-family: v.$font-display;
+    font-weight: 400;
+    font-size: clamp(20px, 3vw, 26px);
+    margin: 6px 0 10px;
+    color: v.$moss-deep;
+    line-height: 1.2;
+  }
+
+  .cycle-step__desc {
+    font-size: 14px;
+    color: v.$ink-soft;
+    line-height: 1.55;
+    margin: 0 0 14px;
+  }
+
+  .cycle-step__people {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 14px;
+  }
+
+  .cycle-step__person {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: v.$ink;
+    background: rgba(255, 255, 255, 60%);
+    padding: 4px 10px 4px 4px;
+    border-radius: v.$radius-pill;
+    border: 1px solid rgba(46, 74, 43, 8%);
+  }
+
+  .cycle-step__person img {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .cycle-step__cta {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: v.$moss-deep;
+    font-family: v.$font-display;
+    font-size: 15px;
+    cursor: pointer;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s;
+  }
+
+  .cycle-step__cta:hover {
+    color: v.$clay;
+  }
+
+  // Desktop : timeline alternée gauche/droite avec ligne centrale
+  @media (width >= 900px) {
+    .cycle-list {
+      padding-left: 0;
+      gap: 36px;
+
+      &::before {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+
+    .cycle-step {
+      grid-template-columns: 1fr 56px 1fr;
+      align-items: center;
+    }
+
+    .cycle-step__marker {
+      position: static;
+      width: auto;
+      grid-column: 2;
+    }
+
+    .cycle-step--left .cycle-step__card {
+      grid-column: 1;
+      grid-row: 1;
+      text-align: right;
+    }
+
+    .cycle-step--left .cycle-step__people,
+    .cycle-step--left .cycle-step__cta {
+      justify-content: flex-end;
+    }
+
+    .cycle-step--right .cycle-step__card {
+      grid-column: 3;
+      grid-row: 1;
+    }
+  }
+}
+
+/* Modale cycle — styles spécifiques pour le contenu */
+.cycle-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  &__date {
+    font-size: 13px;
+    color: v.$clay;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    margin: 0;
+  }
+
+  &__label {
+    display: inline-block;
+    font-size: 12px;
+    color: v.$moss;
+    background: rgba(123, 160, 91, 14%);
+    padding: 3px 10px;
+    border-radius: v.$radius-pill;
+    margin: 0;
+    width: fit-content;
+  }
+
+  &__lead {
+    font-size: 16px;
+    line-height: 1.55;
+    color: v.$ink;
+    margin: 0;
+  }
+
+  &__modules {
+    background: rgba(123, 160, 91, 8%);
+    border-left: 3px solid v.$leaf;
+    padding: 14px 16px;
+    border-radius: v.$radius-sm;
+
+    h4 {
+      font-family: v.$font-display;
+      font-size: 15px;
+      margin: 0 0 8px;
+      color: v.$moss-deep;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 14px;
+      color: v.$ink-soft;
+      line-height: 1.6;
+    }
+
+    li {
+      padding: 2px 0;
+    }
+  }
+
+  &__people {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    h4 {
+      font-family: v.$font-display;
+      font-size: 15px;
+      margin: 0 0 4px;
+      color: v.$moss-deep;
+    }
+  }
+
+  &__person {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    strong {
+      display: block;
+      font-size: 14px;
+      color: v.$ink;
+    }
+
+    span {
+      display: block;
+      font-size: 12px;
+      color: v.$ink-soft;
+    }
+  }
+
+  &__body {
+    font-size: 14px;
+    line-height: 1.65;
+    color: v.$ink-soft;
+
+    p {
+      margin: 0 0 10px;
+    }
+  }
+
+  &__cta {
+    margin-top: 8px;
+    text-align: center;
+  }
+}

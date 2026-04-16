@@ -28,6 +28,7 @@
 @use "pages/details";
 @use "pages/succes";
 @use "pages/workshop";
+@use "pages/cycle";
 
 // Fonts externes — @forward ne supporte pas url(), on passe par @import (legacy) en fin de fichier
 @import "https://fonts.googleapis.com/css2?family=Young+Serif&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Caveat:wght@500;600&display=swap";

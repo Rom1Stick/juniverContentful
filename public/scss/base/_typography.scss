@@ -187,6 +187,33 @@ canvas#mycel {
   opacity: 1;
 }
 
+/* Mobile : réduire la présence visuelle des ambiances pour éviter un fond trop dense */
+@media (width <= 720px) {
+  canvas#mycel {
+    opacity: 0.55;
+  }
+
+  .blob {
+    filter: blur(60px);
+    opacity: 0.28;
+  }
+
+  .blob.b1 {
+    width: 280px;
+    height: 280px;
+  }
+
+  .blob.b2 {
+    width: 240px;
+    height: 240px;
+  }
+
+  .blob.b3 {
+    width: 220px;
+    height: 220px;
+  }
+}
+
 /* Illustration hero éditable sur les pages intérieures */
 .page-hero-illustration {
   display: block;

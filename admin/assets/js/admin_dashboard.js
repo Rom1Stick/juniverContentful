@@ -32,6 +32,13 @@ const COUNTS = [
     emptyHint: 'aucun atelier — à créer',
   },
   {
+    type: 'cycleDate',
+    selector: '[data-count="cycle"]',
+    singular: 'étape programmée',
+    plural: 'étapes programmées',
+    emptyHint: 'aucune étape — à créer',
+  },
+  {
     type: 'siteCopy',
     selector: '[data-count="copy"]',
     singular: 'texte enregistré',

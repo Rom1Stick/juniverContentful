@@ -2161,4 +2161,130 @@ body.admin-shell .rich-editor__area img {
   font-size: 0.85rem;
   letter-spacing: 0.02em;
   pointer-events: none;
+}
+.admin-shell.cycle-page main {
+  padding: clamp(20px, 4vw, 40px) clamp(16px, 4vw, 40px);
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.admin-shell.cycle-page .section-lead {
+  margin: 4px 0 0;
+  color: #4d5e45;
+  font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.95rem;
+  max-width: 60ch;
+}
+.admin-shell.cycle-page .page-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+.admin-shell.cycle-page .cycle-dates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.admin-shell .cycle-card {
+  background: #efe6cd;
+  border: 1px solid rgba(30, 42, 28, 0.14);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 12px 32px -16px rgba(30, 42, 28, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition:
+    border-color 0.25s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.admin-shell .cycle-card:hover {
+  border-color: rgba(227, 184, 79, 0.4);
+  transform: translateY(-1px);
+}
+.admin-shell .cycle-card__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.admin-shell .cycle-card__num {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e3b84f;
+  color: #1c2f1c;
+  display: grid;
+  place-items: center;
+  font-family: 'Young Serif', ui-serif, georgia, serif;
+  font-size: 20px;
+  font-weight: 400;
+  flex-shrink: 0;
+}
+.admin-shell .cycle-card h3 {
+  font-family: 'Young Serif', ui-serif, georgia, serif;
+  font-size: 1.1rem;
+  color: #1c2f1c;
+  margin: 0;
+  font-weight: 400;
+  line-height: 1.2;
+}
+.admin-shell .cycle-card__meta {
+  font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.82rem;
+  color: #4d5e45;
+  display: block;
+  margin-top: 2px;
+}
+.admin-shell .cycle-card__desc {
+  font-size: 0.9rem;
+  color: #4d5e45;
+  margin: 0;
+  line-height: 1.5;
+}
+.admin-shell .cycle-card__people {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.admin-shell .cycle-card__people .chip {
+  font-size: 0.78rem;
+  background: rgba(123, 160, 91, 0.14);
+  color: #1c2f1c;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.admin-shell .cycle-card__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+.admin-shell .cycle-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.admin-shell .cycle-form .grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (width >= 520px) {
+  .admin-shell .cycle-form .grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.admin-shell .cycle-form label {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #1e2a1c;
+  margin-bottom: 4px;
+  display: block;
+}
+.admin-shell .cycle-form input[type='text'],
+.admin-shell .cycle-form input[type='number'],
+.admin-shell .cycle-form input[type='date'],
+.admin-shell .cycle-form textarea {
+  width: 100%;
 } /*# sourceMappingURL=admin.min.css.map */
