@@ -25,11 +25,21 @@ function renderHeader() {
       <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav-drawer">
         <span class="bar"></span>
       </button>
-      <div class="nav-drawer" id="nav-drawer" role="dialog" aria-modal="true" aria-label="Menu">
-        <button class="nav-close" aria-label="Fermer le menu">×</button>
-        ${linksHtml}
-      </div>
     </header>`;
+}
+
+function renderDrawer() {
+  // Le drawer est rendu DEHORS du header et du .wrap : tout ancêtre avec
+  // backdrop-filter / filter / transform crée un containing block qui empêche
+  // position:fixed de couvrir le viewport, d'où le drawer qui "restait derrière".
+  const linksHtml = NAV_LINKS.map(
+    (l) => `<a href="${l.href}"${l.cta ? ' class="cta"' : ''}>${l.label}</a>`
+  ).join('');
+  return `
+    <div class="nav-drawer" id="nav-drawer" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true">
+      <button class="nav-close" aria-label="Fermer le menu">×</button>
+      ${linksHtml}
+    </div>`;
 }
 
 function renderFooter() {
@@ -108,6 +118,10 @@ function injectChrome() {
   if (headerSlot) headerSlot.outerHTML = renderHeader();
   if (footerSlot) footerSlot.outerHTML = renderFooter();
 
+  // Drawer injecté en dernier enfant du <body>, donc hors de tout ancêtre
+  // filtré/transformé — indispensable pour que position:fixed couvre le viewport.
+  document.body.insertAdjacentHTML('beforeend', renderDrawer());
+
   bindNavToggle();
 }
 
@@ -119,11 +133,13 @@ function bindNavToggle() {
 
   const open = () => {
     drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden', 'false');
     toggle.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
   };
   const shut = () => {
     drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
     toggle.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
   };
@@ -131,6 +147,9 @@ function bindNavToggle() {
   toggle.addEventListener('click', open);
   close?.addEventListener('click', shut);
   drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', shut));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer.classList.contains('open')) shut();
+  });
 }
 
 if (document.readyState === 'loading') {
