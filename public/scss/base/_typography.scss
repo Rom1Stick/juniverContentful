@@ -77,14 +77,34 @@ section {
   position: relative;
 }
 
-/* Pages internes (autres que la home) : réduit l'espace entre le header et le
-   premier titre de page pour que le titre arrive plus haut. */
+/* Pages internes (autres que la home) : titre/lede poussés près du header
+   pour qu'un aperçu du contenu soit visible au-dessus de la ligne de flottaison. */
 .about-main > section:first-child,
 .workshop-main > section:first-child,
 .calendar-main > section:first-child,
 .contact-main > section:first-child {
-  padding-top: clamp(18px, 3vh, 40px);
-  padding-bottom: clamp(28px, 5vh, 56px);
+  padding-top: clamp(4px, 1vh, 14px);
+  padding-bottom: clamp(16px, 3vh, 32px);
+}
+
+/* Sur ces pages internes, la .sec-head par défaut a 48px de marge sous le h2 ;
+   on resserre pour que le contenu de la section suive immédiatement. */
+.about-main .sec-head,
+.workshop-main .sec-head,
+.calendar-main .sec-head,
+.contact-main .sec-head,
+.cycle-main .sec-head {
+  margin-bottom: 18px;
+  gap: 8px;
+}
+
+/* Sections suivantes sur ces pages — on réduit aussi pour remonter le contenu global. */
+.about-main > section:not(:first-child),
+.workshop-main > section:not(:first-child),
+.calendar-main > section:not(:first-child),
+.contact-main > section:not(:first-child) {
+  padding-top: clamp(16px, 3vh, 32px);
+  padding-bottom: clamp(32px, 6vh, 64px);
 }
 
 @media (width <= 640px) {
@@ -100,8 +120,16 @@ section {
   .workshop-main > section:first-child,
   .calendar-main > section:first-child,
   .contact-main > section:first-child {
-    padding-top: 14px;
-    padding-bottom: 28px;
+    padding-top: 6px;
+    padding-bottom: 20px;
+  }
+
+  .about-main > section:not(:first-child),
+  .workshop-main > section:not(:first-child),
+  .calendar-main > section:not(:first-child),
+  .contact-main > section:not(:first-child) {
+    padding-top: 20px;
+    padding-bottom: 36px;
   }
 }
 
