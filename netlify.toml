@@ -2,6 +2,12 @@
   publish = "/"
   command = "npm run build"
 
+[build.environment]
+  NODE_VERSION = "22"
+  # Le Space ID Contentful et le token CDA sont publics par design (pattern standard Contentful,
+  # read-only côté client). Exclure du secret scanning pour ne pas bloquer le build.
+  SECRETS_SCAN_OMIT_KEYS = "CONTENTFUL_SPACE_ID,CONTENTFUL_ACCESS_TOKEN,CONTENTFUL_PREVIEW_TOKEN"
+
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
