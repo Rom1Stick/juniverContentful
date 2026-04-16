@@ -1,0 +1,143 @@
+[
+  {
+    "name": "dashboard",
+    "url": "http://localhost:3000/admin/admin.html",
+    "status": 304,
+    "verdict": "OK",
+    "reasons": ["2 request failure(s)"],
+    "dom": {
+      "title": "Administration — JuniverSanté",
+      "bodyClasses": "admin-shell dashboard authenticated",
+      "authenticated": true,
+      "mainVisible": true,
+      "topbarVisible": true,
+      "overlayPresent": false,
+      "listSelectorPresent": null,
+      "listChildren": null,
+      "listVisibleChildren": null,
+      "mainTextLength": 564
+    },
+    "consoleErrors": [],
+    "failedRequests": [
+      "GET https://fonts.gstatic.com/s/youngserif/v2/3qTpojO2nS2VtkB3KtkQZ1t93kY.woff2 (net::ERR_ABORTED)",
+      "GET https://fonts.gstatic.com/s/dmsans/v17/rP2Hp2ywxg089UriCZOIHQ.woff2 (net::ERR_ABORTED)"
+    ],
+    "status404": [],
+    "status5xx": []
+  },
+  {
+    "name": "profiles",
+    "url": "http://localhost:3000/admin/assets/views/admin_profiles.html",
+    "status": 200,
+    "verdict": "OK",
+    "reasons": [],
+    "dom": {
+      "title": "Profils — Administration JuniverSanté",
+      "bodyClasses": "admin-shell profiles-page authenticated",
+      "authenticated": true,
+      "mainVisible": true,
+      "topbarVisible": true,
+      "overlayPresent": false,
+      "listSelectorPresent": true,
+      "listChildren": 15,
+      "listVisibleChildren": 15,
+      "mainTextLength": 11760
+    },
+    "consoleErrors": [],
+    "failedRequests": [],
+    "status404": [],
+    "status5xx": []
+  },
+  {
+    "name": "events",
+    "url": "http://localhost:3000/admin/assets/views/admin_events.html",
+    "status": 200,
+    "verdict": "OK",
+    "reasons": [],
+    "dom": {
+      "title": "Évènements — Administration JuniverSanté",
+      "bodyClasses": "admin-shell events-page authenticated",
+      "authenticated": true,
+      "mainVisible": true,
+      "topbarVisible": true,
+      "overlayPresent": false,
+      "listSelectorPresent": true,
+      "listChildren": 30,
+      "listVisibleChildren": 30,
+      "mainTextLength": 13916
+    },
+    "consoleErrors": [],
+    "failedRequests": [],
+    "status404": [],
+    "status5xx": []
+  },
+  {
+    "name": "articles",
+    "url": "http://localhost:3000/admin/assets/views/admin_articles.html",
+    "status": 200,
+    "verdict": "OK",
+    "reasons": [],
+    "dom": {
+      "title": "Articles — Administration JuniverSanté",
+      "bodyClasses": "admin-shell articles-page authenticated",
+      "authenticated": true,
+      "mainVisible": true,
+      "topbarVisible": true,
+      "overlayPresent": false,
+      "listSelectorPresent": true,
+      "listChildren": 2,
+      "listVisibleChildren": 2,
+      "mainTextLength": 4754
+    },
+    "consoleErrors": [],
+    "failedRequests": [],
+    "status404": [],
+    "status5xx": []
+  },
+  {
+    "name": "workshops",
+    "url": "http://localhost:3000/admin/assets/views/admin_workshops.html",
+    "status": 200,
+    "verdict": "OK",
+    "reasons": [],
+    "dom": {
+      "title": "Ateliers — Administration JuniverSanté",
+      "bodyClasses": "admin-shell workshops-page authenticated",
+      "authenticated": true,
+      "mainVisible": true,
+      "topbarVisible": true,
+      "overlayPresent": false,
+      "listSelectorPresent": true,
+      "listChildren": 1,
+      "listVisibleChildren": 1,
+      "mainTextLength": 1637
+    },
+    "consoleErrors": [],
+    "failedRequests": [],
+    "status404": [],
+    "status5xx": []
+  },
+  {
+    "name": "inline_editor",
+    "url": "http://localhost:3000/admin/assets/views/admin_inline_editor.html",
+    "status": 200,
+    "verdict": "OK",
+    "reasons": [],
+    "dom": {
+      "title": "Admin — Édition du contenu",
+      "bodyClasses": "admin-shell inline-editor-body authenticated",
+      "authenticated": true,
+      "mainVisible": true,
+      "topbarVisible": true,
+      "overlayPresent": false,
+      "listSelectorPresent": true,
+      "listChildren": 61,
+      "listVisibleChildren": 61,
+      "mainTextLength": 2438
+    },
+    "consoleErrors": [],
+    "failedRequests": [],
+    "status404": [],
+    "status5xx": []
+  }
+]

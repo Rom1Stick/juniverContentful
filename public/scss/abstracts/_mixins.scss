@@ -1,0 +1,53 @@
+@use "variables" as v;
+
+// Mobile-first : @include up(tablet) active au-dessus de 1000px
+@mixin up($bp) {
+  @if $bp == tablet {
+    @media (min-width: #{v.$bp-tablet + 1}) {
+      @content;
+    }
+  } @else if $bp == mobile {
+    @media (min-width: #{v.$bp-mobile + 1}) {
+      @content;
+    }
+  } @else {
+    @media (min-width: $bp) {
+      @content;
+    }
+  }
+}
+
+// Fluid typography helper
+@mixin fluid($min, $pref, $max) {
+  font-size: clamp(#{$min}, #{$pref}, #{$max});
+}
+
+// Container wrapper avec marge fluide
+@mixin wrap {
+  position: relative;
+  z-index: 2;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 clamp(22px, 4vw, 56px);
+}
+
+// Section spacing
+@mixin section-padding {
+  padding: clamp(60px, 11vh, 130px) 0;
+
+  @media (max-width: v.$bp-mobile) {
+    padding: 56px 0;
+  }
+}
+
+// Eyebrow uppercase
+@mixin eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: v.$clay;
+  font-weight: 500;
+}

@@ -1,11 +1,47 @@
-$primary-color: hsl(122, 39%, 49%);
-$secondary-color: hsl(146, 50%, 36%);
-$info-color: hsl(211, 100%, 50%);
-$background-color: hsl(148, 45%, 94%);
-$text-color: hsl(180, 25%, 25%);
-$text-colorSecondary: hsl(0, 0%, 100%);
-$light-background: hsl(210, 20%, 98%);
-$light-gray: hsl(82, 39%, 30%);
-$box-shadow: 0 4px 8px hsla(0, 0%, 0%, 0.2);
-$border-radius: 10px;
-$font-family: "Arial", sans-serif;
+// Palette Symbiose — réseau de thérapeutes, médecines douces, savoirs botaniques
+$cream: #f7f1e0;
+$cream-warm: #efe6cd;
+$moss: #2e4a2b;
+$moss-deep: #1c2f1c;
+$leaf: #7ba05b;
+$honey: #e3b84f;
+$clay: #b97a3a;
+$sky: #8ab0b8;
+$ink: #1e2a1c;
+$ink-soft: #4d5e45;
+$rule: rgba(30, 42, 28, 14%);
+
+// Typographies
+$font-display: "Young Serif", ui-serif, georgia, serif;
+$font-body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+$font-script: "Caveat", cursive;
+
+// Rayons & ombres
+$radius-sm: 12px;
+$radius-md: 20px;
+$radius-lg: 28px;
+$radius-xl: 40px;
+$radius-pill: 999px;
+$shadow-soft: 0 12px 32px -16px rgba(30, 42, 28, 25%);
+$shadow-lift: 0 20px 40px -20px rgba(30, 42, 28, 20%);
+$shadow-deep: 0 20px 60px -20px rgba(46, 74, 43, 50%);
+
+// Transitions
+$ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+// Breakpoints
+$bp-tablet: 1000px;
+$bp-mobile: 640px;
+
+// Retrocompat (anciennes variables utilisées)
+$primary-color: $moss;
+$secondary-color: $moss-deep;
+$info-color: $sky;
+$background-color: $cream;
+$text-color: $ink;
+$text-colorSecondary: $cream;
+$light-background: $cream-warm;
+$light-gray: $ink-soft;
+$box-shadow: $shadow-soft;
+$border-radius: $radius-md;
+$font-family: $font-body;

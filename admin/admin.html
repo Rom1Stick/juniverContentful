@@ -1,106 +1,58 @@
-<!DOCTYPE html> 
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration</title>
-    <!-- Lien pour Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <!-- Lien pour Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Administration — JuniverSanté</title>
+    <link rel="stylesheet" href="/admin/assets/styles/admin.min.css?v=symbiose-7" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%237BA05B'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%23E3B84F'/%3E%3C/svg%3E"
+    />
+  </head>
+  <body class="admin-shell dashboard">
+    <div data-slot="admin-ambient"></div>
+    <div data-slot="admin-header"></div>
 
-    <link rel="stylesheet" href="/admin/assets/css/admin.css">
-    <style>
-        /* Styles pour le formulaire de connexion */
-        .login-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .login-box {
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            max-width: 300px;
-            width: 100%;
-        }
-        .login-box h2 {
-            margin-top: 0;
-            margin-bottom: 1rem;
-            text-align: center;
-            font-size: 1.5rem;
-        }
-        .login-box label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-        .login-box input[type="text"],
-        .login-box input[type="password"] {
-            width: 100%;
-            padding: 0.5rem;
-            margin-bottom: 1rem;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-        .login-box button {
-            width: 100%;
-            padding: 0.75rem;
-            background: #4caf50;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-        .login-box button:hover {
-            background: #2e8b57;
-        }
-        .login-error {
-            color: red;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-    <header class="admin-header">
-        <h1>Panneau d'administration</h1>
-    </header>
-    <main class="admin-main" style="display:none;"> <!-- Contenu masqué tant que non identifié -->
-        <section class="admin-navigation">
-            <h2>Services d'administration</h2>
-            <div class="admin-services">
-                <a href="/admin/assets/views/admin_profiles.html" class="admin-service">
-                    <i class="fas fa-user-circle"></i>
-                    <span>Gestion des profils</span>
-                </a>
-                <a href="/admin/assets/views/admin_events.html" class="admin-service">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>Gestion des événements</span>
-                </a>
-                <a href="/admin/assets/views/admin_articles.html" class="admin-service">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Articles</span>
-                </a>
-                <a href="/admin/assets/views/admin_workshops.html" class="admin-service">
-                    <i class="fas fa-wrench"></i>
-                    <span>Gestion des ateliers</span>
-                </a>
-            </div>
-        </section>
+    <main class="admin-main">
+      <section class="admin-navigation">
+        <span class="sec-eyebrow">Tableau de bord</span>
+        <h2>Services d'administration</h2>
+        <span class="sub">gérer le cercle, au rythme des saisons</span>
+        <div class="admin-services">
+          <a href="/admin/assets/views/admin_profiles.html" class="admin-service">
+            <i class="fas fa-user-circle"></i>
+            <span>Profils des thérapeutes</span>
+            <small class="admin-service-count" data-count="profiles">…</small>
+          </a>
+          <a href="/admin/assets/views/admin_events.html" class="admin-service">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Évènements du cercle</span>
+            <small class="admin-service-count" data-count="events">…</small>
+          </a>
+          <a href="/admin/assets/views/admin_articles.html" class="admin-service">
+            <i class="fas fa-feather-pointed"></i>
+            <span>Articles du journal</span>
+            <small class="admin-service-count" data-count="articles">…</small>
+          </a>
+          <a href="/admin/assets/views/admin_workshops.html" class="admin-service">
+            <i class="fas fa-seedling"></i>
+            <span>Ateliers</span>
+            <small class="admin-service-count" data-count="workshops">…</small>
+          </a>
+          <a href="/admin/assets/views/admin_inline_editor.html" class="admin-service">
+            <i class="fas fa-pen-to-square"></i>
+            <span>Contenu du site</span>
+            <small class="admin-service-count" data-count="copy">…</small>
+          </a>
+        </div>
+      </section>
     </main>
-    <footer class="admin-footer">
-        <p>© 2024 Juniver Santé - Tous droits réservés</p>
-    </footer>
-    <script src="/admin/assets/js/admin.js"></script>
-</body>
+
+    <div data-slot="admin-footer"></div>
+
+    <script src="/admin/assets/js/admin.js?v=symbiose-7"></script>
+    <script type="module" src="/admin/assets/js/adminChrome.js?v=symbiose-7"></script>
+    <script type="module" src="/admin/assets/js/admin_dashboard.js?v=symbiose-7"></script>
+  </body>
 </html>

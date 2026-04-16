@@ -1,0 +1,340 @@
+@use "../abstracts/tokens" as v;
+
+/* Masque le contenu admin tant que non authentifié — géré par admin.js qui ajoute body.authenticated */
+.admin-shell:not(.authenticated) .admin-topbar,
+.admin-shell:not(.authenticated) .admin-foot,
+.admin-shell:not(.authenticated) main,
+.admin-shell:not(.authenticated) .ie-topbar,
+.admin-shell:not(.authenticated) .ie-layout {
+  display: none !important;
+}
+
+/* Overlay login créé dynamiquement par admin.js sur body.admin-shell — classes fixes */
+.admin-shell .login-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 42, 28, 55%);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.admin-shell .login-box {
+  width: 100%;
+  max-width: 360px;
+  background: v.$cream;
+  border: 1px solid v.$rule;
+  border-radius: v.$radius-lg;
+  padding: clamp(24px, 4vw, 36px);
+  box-shadow: v.$shadow-deep;
+  font-family: v.$font-body;
+}
+
+.admin-shell .login-box h2 {
+  margin: 0 0 20px;
+  font-family: v.$font-display;
+  font-size: 22px;
+  color: v.$moss-deep;
+  text-align: center;
+  font-weight: 400;
+}
+
+.admin-shell .login-box label {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: v.$ink-soft;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.admin-shell .login-box input[type="text"],
+.admin-shell .login-box input[type="password"] {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  background: v.$cream-warm;
+  border: 1.5px solid v.$rule;
+  border-radius: v.$radius-sm;
+  font-family: v.$font-body;
+  font-size: 15px;
+  color: v.$ink;
+  transition:
+    border-color 0.25s v.$ease,
+    box-shadow 0.25s v.$ease;
+}
+
+.admin-shell .login-box input[type="text"]:focus,
+.admin-shell .login-box input[type="password"]:focus {
+  outline: none;
+  border-color: v.$honey;
+  box-shadow: 0 0 0 3px rgba(227, 184, 79, 18%);
+}
+
+.admin-shell .login-box button {
+  width: 100%;
+  padding: 14px;
+  background: v.$moss;
+  color: v.$cream;
+  border: 0;
+  border-radius: v.$radius-pill;
+  font-family: v.$font-body;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    background 0.25s v.$ease,
+    transform 0.25s v.$ease;
+}
+
+.admin-shell .login-box button:hover {
+  background: v.$moss-deep;
+  transform: translateY(-1px);
+}
+
+.admin-shell .login-error {
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  background: rgba(185, 122, 58, 12%);
+  border: 1px solid rgba(185, 122, 58, 35%);
+  border-radius: v.$radius-sm;
+  color: v.$clay;
+  font-size: 13px;
+  text-align: center;
+}
+
+/* Loading overlay partagé (ateliers + profils global-loader) */
+.admin-shell .loading-overlay,
+.admin-shell .global-loader {
+  position: fixed;
+  inset: 0;
+  background: rgba(247, 241, 224, 85%);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 900;
+}
+
+.admin-shell .loading-overlay[style*="flex"],
+.admin-shell .loading-overlay.visible,
+.admin-shell .global-loader.visible {
+  display: flex;
+}
+
+.admin-shell .spinner {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, v.$honey, v.$moss, v.$leaf, v.$honey);
+  animation: admin-spin 1s linear infinite;
+  /* stylelint-disable-next-line property-no-vendor-prefix */
+  -webkit-mask: radial-gradient(circle at center, transparent 55%, #000 56%);
+  mask: radial-gradient(circle at center, transparent 55%, #000 56%);
+}
+
+@keyframes admin-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Dialog HTML5 (update forms) */
+.admin-shell dialog {
+  border: 0;
+  border-radius: v.$radius-lg;
+  padding: 0;
+  background: transparent;
+  max-width: 90vw;
+  width: 520px;
+  color: v.$ink;
+}
+
+.admin-shell dialog::backdrop {
+  background: rgba(30, 42, 28, 50%);
+  backdrop-filter: blur(4px);
+}
+
+.admin-shell dialog .dialog-inner {
+  background: v.$cream;
+  border: 1px solid v.$rule;
+  border-radius: v.$radius-lg;
+  padding: clamp(20px, 3vw, 32px);
+  box-shadow: v.$shadow-deep;
+}
+
+/* ---------------------------------------------------------------------------
+ * Modale partagée (adminModal.js) — formulaires create/edit
+ * -------------------------------------------------------------------------- */
+body.admin-shell #admin-modal-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1100;
+}
+
+body.admin-shell .admin-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 42, 28, 55%);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(16px, 4vh, 56px) clamp(12px, 3vw, 24px);
+  overflow-y: auto;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: auto;
+
+  &.is-visible {
+    opacity: 1;
+  }
+}
+
+body.admin-shell .admin-modal {
+  width: 100%;
+  background: v.$cream;
+  border: 1px solid v.$rule;
+  border-radius: v.$radius-lg;
+  box-shadow: v.$shadow-deep;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 6vh);
+  overflow: hidden;
+  transform: translateY(8px);
+  transition: transform 0.25s v.$ease;
+
+  .admin-modal-overlay.is-visible & {
+    transform: translateY(0);
+  }
+
+  &--sm {
+    max-width: 480px;
+  }
+
+  &--md {
+    max-width: 720px;
+  }
+
+  &--lg {
+    max-width: 920px;
+  }
+}
+
+body.admin-shell .admin-modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid v.$rule;
+  background: v.$cream-warm;
+}
+
+body.admin-shell .admin-modal__title {
+  margin: 0;
+  font-family: v.$font-display;
+  font-size: 1.25rem;
+  color: v.$moss-deep;
+  font-weight: 400;
+}
+
+body.admin-shell .admin-modal__close {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  background: transparent;
+  border-radius: 999px;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: v.$ink-soft;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    background: rgba(v.$moss, 0.1);
+    color: v.$moss-deep;
+  }
+}
+
+body.admin-shell .admin-modal__body {
+  padding: 1.25rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-family: v.$font-body;
+  color: v.$ink;
+}
+
+body.admin-shell .admin-modal__body label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: v.$ink-soft;
+  margin-bottom: 0.35rem;
+}
+
+body.admin-shell .admin-modal__body input[type="text"],
+body.admin-shell .admin-modal__body input[type="email"],
+body.admin-shell .admin-modal__body input[type="url"],
+body.admin-shell .admin-modal__body input[type="tel"],
+body.admin-shell .admin-modal__body input[type="datetime-local"],
+body.admin-shell .admin-modal__body input[type="file"],
+body.admin-shell .admin-modal__body textarea,
+body.admin-shell .admin-modal__body select {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  background: v.$cream;
+  border: 1.5px solid v.$rule;
+  border-radius: v.$radius-sm;
+  font-family: v.$font-body;
+  font-size: 0.95rem;
+  color: v.$ink;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: v.$honey;
+    box-shadow: 0 0 0 3px rgba(v.$honey, 0.18);
+  }
+}
+
+body.admin-shell .admin-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed v.$rule;
+  margin-top: 0.5rem;
+}
+
+body.admin-shell .admin-modal__actions .btn {
+  min-width: 120px;
+}
+
+@media (width <= 640px) {
+  body.admin-shell .admin-modal {
+    border-radius: v.$radius-md;
+  }
+
+  body.admin-shell .admin-modal__actions {
+    flex-direction: column-reverse;
+  }
+
+  body.admin-shell .admin-modal__actions .btn {
+    width: 100%;
+  }
+}

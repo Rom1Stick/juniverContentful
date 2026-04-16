@@ -1,49 +1,34 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails de l'article</title>
-    <link rel="stylesheet" href="./styles/main.min.css">
-</head>
-<body>
-    <header class="details-header">
-        <h1>Détails de l'article</h1>
-        <nav>
-            <ul>
-                <li><a href="index.html">Retour à l'accueil</a></li>
-            </ul>
-        </nav>
-    </header>
-    <!-- Contenu principal -->
-    <main class="details-main">
-        <div id="article-content">  
-            <!-- Les détails de l'article seront injectés ici -->
-            <button id="view-image-button">Voir l'image en grand</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JuniverSanté — Article</title>
+    <meta
+      name="description"
+      content="Article du journal JuniverSanté : médecines douces, savoirs botaniques et accompagnement du vivant."
+    />
+    <link rel="stylesheet" href="/public/assets/styles/main.min.css" />
+  </head>
+  <body class="details-page">
+    <div data-slot="ambient"></div>
+    <div class="wrap">
+      <div data-slot="header"></div>
+
+      <main class="details-main">
+        <div class="details-header">
+          <a class="details-back" href="/public/index.html">← Retour au journal</a>
         </div>
-        
-        <!-- Fenêtre modale -->
-        <!-- <div id="image-modal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <img id="modal-image" src="" alt="Image agrandie">
-            </div>
-        </div> -->
 
-        
-            <a href="index.html">Retour à l'accueil</a>
-        
-    </main>
+        <article id="article-content"></article>
+      </main>
 
-    <footer>
-        <p>
-            <a href="/public/views/privacy.html">Politique de confidentialité</a> | 
-            <a href="/public/views/legal.html">Mentions légales</a></p>
-        <p>© 2024 Juniver Santé - Tous droits réservés</p>
-    </footer>
-    
-    <script src="js/main.js" type="module"></script>
-    <script src="/public/js/style/styleScript.js"></script>
-    <script src="/public/js/details.js"></script>
-</body>
+      <div data-slot="footer"></div>
+    </div>
+
+    <script type="module" src="/public/js/chrome.js?v=symbiose-7"></script>
+    <script type="module" src="/public/js/mycel.js?v=symbiose-7"></script>
+    <script type="module" src="/public/js/siteCopy.js?v=symbiose-7"></script>
+    <script type="module" src="/public/js/details.js?v=symbiose-7"></script>
+  </body>
 </html>

@@ -1,0 +1,3 @@
+// Source unique de vérité : on forwarde les tokens du public.
+// Ne JAMAIS redéfinir de hex bruts côté admin — toujours référencer ces tokens.
+@forward "../../../../public/scss/abstracts/variables";

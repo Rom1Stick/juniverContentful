@@ -1,146 +1,43 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Profils - Administration</title>
-    <link rel="stylesheet" href="/admin/assets/css/admin.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profils — Administration JuniverSanté</title>
+    <link rel="stylesheet" href="/admin/assets/styles/admin.min.css?v=symbiose-7" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%237BA05B'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%23E3B84F'/%3E%3C/svg%3E"
+    />
+  </head>
+  <body class="admin-shell profiles-page">
+    <div data-slot="admin-ambient"></div>
+    <div data-slot="admin-header"></div>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="/admin/assets/css/admin_profiles.css">
+    <main>
+      <div class="section-head">
+        <span class="sec-eyebrow">Cercle · membres</span>
+        <h1>Profils des thérapeutes</h1>
+        <p class="section-lead">
+          Gérez les fiches des praticiens du cercle : photo, coordonnées, diplômes, description.
+        </p>
+      </div>
 
+      <div class="page-actions">
+        <button type="button" class="btn btn-primary" id="new-profile-btn">
+          <i class="fas fa-user-plus"></i> Nouveau profil
+        </button>
+      </div>
 
-</head>
-<body>
-    <header class="header">
-        <div class="header-container">
-            <h1>Gestion des Profils</h1>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="/admin/admin.html">Tableau de bord</a></li>
-                    <li><a href="/public/index.html" target="_blank" class="cyber-link">Voir le site</a></li>
-                    <li>
-                        <a href="#add-profile-section" class="cyber-button neon-pulse">
-                            <span class="icon">✚</span>
-                            <span class="text">Nouveau profil</span>
-                            <span class="glow"></span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <main class="main">
-        <section class="profile-management">
-            <div class="profiles-grid" id="profiles-container">
-                <!-- Carte exemple -->
-                <article class="profile-card">
-                    <div class="profile-header">
-                        <img src="{imageUrl}" alt="Profil" class="profile-img">
-                        <div class="profile-info">
-                            <h3 class="editable">Nom du profil</h3>
-                            <p class="editable">Métier</p>
-                        </div>
-                    </div>
-                    
-                    <div class="profile-content">
-                        <div class="profile-field">
-                            <label>Email :</label>
-                            <span class="editable">email@exemple.com</span>
-                        </div>
-                        <div class="profile-field">
-                            <label>Téléphone :</label>
-                            <span class="editable">0123456789</span>
-                        </div>
-                        <div class="profile-field">
-                            <label>Site web :</label>
-                            <span class="editable">www.exemple.com</span>
-                        </div>
-                        <div class="profile-field">
-                            <label>Diplômes :</label>
-                            <span class="editable">Diplôme 1, Diplôme 2</span>
-                        </div>
-                        <div class="profile-field">
-                            <label>Description :</label>
-                            <span class="editable">Description du profil...</span>
-                        </div>
-                    </div>
-                    
-                    <div class="card-actions">
-                        <button class="btn edit-profile-btn">✎ Éditer</button>
-                        <button class="btn delete-profile-btn">🗑 Supprimer</button>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <section id="add-profile-section" class="cyber-create-section">
-            <div class="create-panel">
-                <h2>⚡ CRÉATION DE PROFIL ⚡</h2>
-                <form id="add-profile-form" class="cyber-form">
-                    <div class="form-row">
-                        <div class="input-cyber">
-                            <label for="profile-name">NOM COMPLET</label>
-                            <input type="text" id="profile-name" required>
-                        </div>
-                        
-                        <div class="input-cyber">
-                            <label for="profile-job">SPÉCIALITÉ</label>
-                            <input type="text" id="profile-job" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="input-cyber">
-                            <label for="profile-email">EMAIL</label>
-                            <input type="email" id="profile-email" required>
-                        </div>
-                        
-                        <div class="input-cyber">
-                            <label for="profile-phone">TÉLÉPHONE</label>
-                            <input type="tel" id="profile-phone">
-                        </div>
-                    </div>
-
-                    <div class="input-cyber">
-                        <label for="profile-website">SITE WEB</label>
-                        <input type="url" id="profile-website">
-                    </div>
-
-                    <div class="input-cyber">
-                        <label for="profile-diplomas">DIPLÔMES (séparés par des virgules)</label>
-                        <input type="text" id="profile-diplomas">
-                    </div>
-
-                    <div class="input-cyber">
-                        <label for="profile-description">DESCRIPTION</label>
-                        <textarea id="profile-description" rows="4"></textarea>
-                    </div>
-
-                    <div class="input-cyber">
-                        <label for="profile-image">PHOTO DE PROFIL</label>
-                        <input type="file" id="profile-image" accept="image/*">
-                    </div>
-
-                    <button type="submit" class="submit-cyber">
-                        GÉNÉRER LE PROFIL
-                    </button>
-                </form>
-            </div>
-        </section>
+      <div id="profiles-container" class="profiles-grid"></div>
     </main>
 
-    <footer class="footer">
-        <p>© 2024 Juniver Santé - Tous droits réservés</p>
-    </footer>
-    <script type="module" src="/admin/assets/js/admin_profiles.js"></script>
-    <div id="back-to-top" class="cyber-scroll-top">
-        <svg class="arrow" viewBox="0 0 24 24">
-            <path d="M12 2L2 12h5v8h10v-8h5L12 2z"/>
-        </svg>
-        <div class="pulse"></div>
-    </div>
-</body>
+    <div data-slot="admin-footer"></div>
+
+    <button id="back-to-top" aria-label="Revenir en haut">↑</button>
+
+    <script src="/admin/assets/js/admin.js?v=symbiose-7"></script>
+    <script type="module" src="/admin/assets/js/adminChrome.js?v=symbiose-7"></script>
+    <script type="module" src="/admin/assets/js/admin_profiles.js?v=symbiose-7"></script>
+  </body>
 </html>

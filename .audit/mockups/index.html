@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Refonte JuniverSanté — 6 directions</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Fraunces:ital,wght@0,400;1,300&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, sans-serif;
+        background: #0f0f10;
+        color: #eee;
+        padding: 56px 32px;
+        min-height: 100vh;
+      }
+      h1 {
+        font-family: Fraunces, serif;
+        font-weight: 400;
+        font-size: 48px;
+        letter-spacing: -0.025em;
+        margin: 0 0 10px;
+      }
+      h1 em {
+        font-style: italic;
+        color: #e6b863;
+      }
+      .sub {
+        opacity: 0.65;
+        max-width: 60ch;
+        margin: 0 0 16px;
+        line-height: 1.6;
+      }
+      .note {
+        opacity: 0.45;
+        font-size: 13px;
+        margin: 0 0 40px;
+      }
+      .batch {
+        font-size: 12px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #666;
+        margin: 32px 0 16px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .batch::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #2a2a2a;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        max-width: 1400px;
+      }
+      a.card {
+        display: block;
+        background: #1a1a1a;
+        border: 1px solid #2a2a2a;
+        border-radius: 6px;
+        padding: 24px;
+        text-decoration: none;
+        color: inherit;
+        transition:
+          transform 0.3s,
+          border-color 0.3s,
+          background 0.3s;
+        position: relative;
+        overflow: hidden;
+      }
+      a.card:hover {
+        transform: translateY(-4px);
+        border-color: #e6b863;
+        background: #1f1f1f;
+      }
+      a.card .num {
+        font-family: Fraunces, serif;
+        font-style: italic;
+        color: #e6b863;
+        font-size: 28px;
+        margin-bottom: 4px;
+      }
+      a.card h2 {
+        font-family: Fraunces, serif;
+        font-weight: 400;
+        font-size: 28px;
+        margin: 0 0 4px;
+      }
+      a.card .tag {
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #888;
+        margin-bottom: 14px;
+      }
+      a.card p {
+        font-size: 13px;
+        line-height: 1.6;
+        opacity: 0.75;
+        margin: 0 0 14px;
+      }
+      a.card .swatches {
+        display: flex;
+        gap: 5px;
+        margin: 12px 0;
+      }
+      a.card .sw {
+        width: 26px;
+        height: 26px;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      a.card .fonts {
+        font-size: 11px;
+        opacity: 0.55;
+        font-family: ui-monospace, monospace;
+      }
+      a.card .open {
+        margin-top: 12px;
+        font-size: 12px;
+        color: #e6b863;
+        letter-spacing: 0.04em;
+      }
+      a.card.new::before {
+        content: 'NOUVEAU';
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        font-size: 9px;
+        letter-spacing: 0.2em;
+        background: #e6b863;
+        color: #0f0f10;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-family: ui-monospace, monospace;
+      }
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Refonte JuniverSanté — <em>six directions</em></h1>
+    <p class="sub">
+      Six maquettes complètes. Les trois plus récentes (Symbiose, Atelier, Rivière) intègrent toutes les sections du
+      site : hero, article vedette, thérapeutes avec carousel, ateliers hebdomadaires, calendrier/événements, journal
+      filtrable, à propos, contact, footer légal.
+    </p>
+    <p class="note">Clique pour ouvrir — chaque fichier est autonome (CSS/JS inline, fonts via Google CDN).</p>
+
+    <div class="batch">Vague 2 — Pages complètes</div>
+    <div class="grid">
+      <a class="card new" href="./04-symbiose.html">
+        <div class="num">iv.</div>
+        <div class="tag">Nature · vivant · partage</div>
+        <h2>Symbiose</h2>
+        <p>
+          Palette prairie/forêt/miel/ciel. Blobs organiques, mycélium animé, touches manuscrites. Pour une ambiance
+          solaire, collective, vivante.
+        </p>
+        <div class="swatches">
+          <div class="sw" style="background: #f7f1e0"></div>
+          <div class="sw" style="background: #2e4a2b"></div>
+          <div class="sw" style="background: #7ba05b"></div>
+          <div class="sw" style="background: #e3b84f"></div>
+          <div class="sw" style="background: #b97a3a"></div>
+          <div class="sw" style="background: #8ab0b8"></div>
+        </div>
+        <div class="fonts">Young Serif · DM Sans · Caveat</div>
+        <div class="open">→ Voir la maquette complète</div>
+      </a>
+
+      <a class="card new" href="./05-atelier.html">
+        <div class="num">v.</div>
+        <div class="tag">Presse artisanale · riso</div>
+        <h2>Atelier</h2>
+        <p>
+          Studio sérigraphie. Bordures épaisses, halos riso rouge/bleu décalés, halftone, marqueurs typographiques.
+          Journal imprimé à tirage limité.
+        </p>
+        <div class="swatches">
+          <div class="sw" style="background: #f3ead4"></div>
+          <div class="sw" style="background: #17120b"></div>
+          <div class="sw" style="background: #c54a30"></div>
+          <div class="sw" style="background: #4f6fa6"></div>
+          <div class="sw" style="background: #5a5e2e"></div>
+        </div>
+        <div class="fonts">Abril Fatface · Libre Caslon · Archivo Narrow</div>
+        <div class="open">→ Voir la maquette complète</div>
+      </a>
+
+      <a class="card new" href="./06-riviere.html">
+        <div class="num">vi.</div>
+        <div class="tag">Fluide · aquatique · doux</div>
+        <h2>Rivière</h2>
+        <p>
+          Ondulations bleu-vert, corail chaleureux, sable doré. Cartes aux bords arrondis asymétriques, écriture
+          manuscrite, effets liquides.
+        </p>
+        <div class="swatches">
+          <div class="sw" style="background: #ecf2f0"></div>
+          <div class="sw" style="background: #1f3d4e"></div>
+          <div class="sw" style="background: #5b8674"></div>
+          <div class="sw" style="background: #d87e5f"></div>
+          <div class="sw" style="background: #dec9a3"></div>
+        </div>
+        <div class="fonts">DM Serif Display · Jost · Parisienne</div>
+        <div class="open">→ Voir la maquette complète</div>
+      </a>
+    </div>
+
+    <div class="batch">Vague 1 — Preuves de concept</div>
+    <div class="grid">
+      <a class="card" href="./01-herbier.html">
+        <div class="num">i.</div>
+        <div class="tag">Éditorial botanique</div>
+        <h2>Herbier</h2>
+        <p>Magazine apothicaire, crème &amp; sauge, rhizome animé.</p>
+        <div class="swatches">
+          <div class="sw" style="background: #f3ebdc"></div>
+          <div class="sw" style="background: #516b4a"></div>
+          <div class="sw" style="background: #b8632a"></div>
+          <div class="sw" style="background: #1c2418"></div>
+        </div>
+        <div class="fonts">Fraunces · Manrope</div>
+        <div class="open">→ Voir</div>
+      </a>
+      <a class="card" href="./02-constellation.html">
+        <div class="num">ii.</div>
+        <div class="tag">Nocturne contemplatif</div>
+        <h2>Constellation</h2>
+        <p>Ciel profond, or pâle, thérapeutes en étoiles.</p>
+        <div class="swatches">
+          <div class="sw" style="background: #0a1018"></div>
+          <div class="sw" style="background: #e6b863"></div>
+          <div class="sw" style="background: #7fa68f"></div>
+          <div class="sw" style="background: #efe9d8"></div>
+        </div>
+        <div class="fonts">Cormorant · Outfit</div>
+        <div class="open">→ Voir</div>
+      </a>
+      <a class="card" href="./03-praxis.html">
+        <div class="num">iii.</div>
+        <div class="tag">Swiss éditorial</div>
+        <h2>Praxis</h2>
+        <p>Grotesk massif, grille stricte, data-viz ember.</p>
+        <div class="swatches">
+          <div class="sw" style="background: #f2efe6"></div>
+          <div class="sw" style="background: #0e1a11"></div>
+          <div class="sw" style="background: #1e4a2e"></div>
+          <div class="sw" style="background: #d94e1f"></div>
+        </div>
+        <div class="fonts">Bricolage · Instrument · JetBrains</div>
+        <div class="open">→ Voir</div>
+      </a>
+    </div>
+  </body>
+</html>

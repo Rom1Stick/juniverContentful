@@ -1,0 +1,117 @@
+@use "../abstracts/tokens" as v;
+
+.admin-shell.events-page main {
+  padding: clamp(20px, 4vw, 40px) clamp(16px, 4vw, 40px);
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.admin-shell.events-page .section-lead {
+  margin: 4px 0 0;
+  color: v.$ink-soft;
+  font-family: v.$font-body;
+  font-size: 0.95rem;
+  max-width: 60ch;
+}
+
+.admin-shell.events-page .page-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.admin-shell.events-page #events-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (width >= 720px) {
+  .admin-shell.events-page #events-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width >= 1100px) {
+  .admin-shell.events-page #events-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.admin-shell .event-card {
+  background: v.$cream-warm;
+  border: 1px solid v.$rule;
+  border-radius: v.$radius-md;
+  padding: 18px;
+  box-shadow: v.$shadow-soft;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition:
+    border-color 0.25s v.$ease,
+    transform 0.25s v.$ease;
+}
+
+.admin-shell .event-card:hover {
+  border-color: rgba(v.$honey, 0.4);
+  transform: translateY(-1px);
+}
+
+.admin-shell .event-card__head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-shell .event-card h3 {
+  font-family: v.$font-display;
+  font-size: 1.15rem;
+  color: v.$moss-deep;
+  margin: 0;
+  font-weight: 400;
+}
+
+.admin-shell .event-card__when,
+.admin-shell .event-card__where {
+  font-family: v.$font-body;
+  font-size: 0.85rem;
+  color: v.$ink-soft;
+  margin: 0;
+}
+
+.admin-shell .event-card__where {
+  font-weight: 500;
+  color: v.$moss;
+}
+
+.admin-shell .event-card__preview {
+  font-family: v.$font-body;
+  font-size: 0.86rem;
+  color: v.$ink-soft;
+  margin: 0;
+  line-height: 1.45;
+  -webkit-line-clamp: 3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.admin-shell .event-card__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.admin-shell .form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @media (width >= 640px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}

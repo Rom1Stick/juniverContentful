@@ -1,0 +1,216 @@
+@use "../abstracts/tokens" as v;
+
+.admin-shell.profiles-page main {
+  padding: clamp(20px, 4vw, 40px) clamp(16px, 4vw, 40px);
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.admin-shell.profiles-page .section-lead {
+  margin: 4px 0 0;
+  color: v.$ink-soft;
+  font-family: v.$font-body;
+  font-size: 0.95rem;
+  max-width: 60ch;
+}
+
+.admin-shell.profiles-page .page-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Grille de profils */
+.admin-shell .profiles-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (width >= 720px) {
+  .admin-shell .profiles-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width >= 1100px) {
+  .admin-shell .profiles-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.admin-shell .profile-card {
+  background: v.$cream-warm;
+  border: 1px solid v.$rule;
+  border-radius: v.$radius-lg;
+  padding: 18px;
+  box-shadow: v.$shadow-soft;
+  transition:
+    transform 0.25s v.$ease,
+    box-shadow 0.25s v.$ease,
+    border-color 0.25s v.$ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-shell .profile-card:hover {
+  transform: translateY(-2px);
+  box-shadow: v.$shadow-lift;
+  border-color: rgba(v.$honey, 0.4);
+}
+
+.admin-shell .profile-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.admin-shell .profile-img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: v.$cream;
+  border: 1.5px solid v.$rule;
+  flex: 0 0 64px;
+}
+
+.admin-shell .profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.admin-shell .profile-info h3 {
+  font-family: v.$font-display;
+  font-size: 1.1rem;
+  color: v.$moss-deep;
+  margin: 0;
+  word-break: break-word;
+  font-weight: 400;
+}
+
+.admin-shell .profile-info p {
+  font-family: v.$font-script;
+  font-size: 1.05rem;
+  color: v.$clay;
+  margin: 0;
+}
+
+.admin-shell .profile-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-shell .profile-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.85rem;
+}
+
+.admin-shell .profile-field label {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: v.$ink-soft;
+  font-weight: 500;
+}
+
+.admin-shell .profile-field span {
+  color: v.$ink;
+  word-break: break-word;
+}
+
+.admin-shell .profile-bio {
+  color: v.$ink-soft !important;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.admin-shell .card-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px dashed v.$rule;
+}
+
+/* Back-to-top */
+.admin-shell #back-to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: v.$moss;
+  color: v.$cream;
+  border: 0;
+  font-size: 1.2rem;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+  box-shadow: v.$shadow-lift;
+  z-index: 900;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Modale profil ===== */
+.admin-shell .profile-photo-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-shell .profile-photo-preview {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  background: v.$cream-warm;
+  border: 1px solid v.$rule;
+  border-radius: v.$radius-md;
+
+  img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid v.$cream;
+    box-shadow: v.$shadow-soft;
+    flex: 0 0 80px;
+    transition:
+      opacity 0.2s ease,
+      filter 0.2s ease;
+
+    &.is-uploading {
+      opacity: 0.6;
+      filter: grayscale(0.4);
+    }
+  }
+}
+
+.admin-shell .profile-photo-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  .btn {
+    align-self: flex-start;
+  }
+}

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin — Édition du contenu</title>
+    <link rel="stylesheet" href="/admin/assets/styles/admin.min.css?v=symbiose-7" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%237BA05B'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%23E3B84F'/%3E%3C/svg%3E"
+    />
+  </head>
+  <body class="admin-shell inline-editor-body">
+    <header class="ie-topbar">
+      <div class="ie-brand">
+        <a href="/admin/admin.html" class="ie-back"><i class="fas fa-arrow-left"></i> Tableau de bord</a>
+        <span class="ie-sep">·</span>
+        <span class="ie-title">Édition du contenu</span>
+      </div>
+      <div class="ie-controls">
+        <label class="ie-page-select">
+          Page :
+          <select id="ie-page">
+            <option value="/public/index.html">Accueil</option>
+            <option value="/public/views/about.html">Le cercle</option>
+            <option value="/public/views/workshop.html">Ateliers</option>
+            <option value="/public/views/calendar.html">Calendrier</option>
+            <option value="/public/views/contact.html">Contact</option>
+            <option value="/public/views/legal.html">Mentions légales</option>
+            <option value="/public/views/privacy.html">Confidentialité</option>
+            <option value="/public/views/succes.html">Merci (formulaire)</option>
+          </select>
+        </label>
+        <div class="ie-viewport-switch" role="group" aria-label="Aperçu">
+          <button id="ie-view-desktop" class="ie-vp-btn active" type="button" title="Vue bureau" aria-pressed="true">
+            <i class="fas fa-desktop"></i>
+          </button>
+          <button id="ie-view-mobile" class="ie-vp-btn" type="button" title="Vue mobile" aria-pressed="false">
+            <i class="fas fa-mobile-screen"></i>
+          </button>
+        </div>
+        <button id="ie-reload" class="ie-btn ghost" type="button" title="Recharger l'aperçu">↻</button>
+        <button id="ie-panel-toggle" class="ie-btn ghost" type="button" aria-expanded="false" aria-controls="ie-panel">
+          <i class="fas fa-list-ul"></i> <span class="ie-panel-toggle-label">Liste des textes</span>
+        </button>
+        <button id="ie-save" class="ie-btn primary" type="button" disabled>Enregistrer</button>
+      </div>
+    </header>
+
+    <main class="ie-layout" data-panel="closed" data-viewport="desktop">
+      <section class="ie-preview" aria-label="Aperçu éditable">
+        <div class="ie-viewport-frame">
+          <iframe id="ie-frame" src="/public/index.html?edit=1" title="Aperçu éditable du site"></iframe>
+        </div>
+      </section>
+      <aside class="ie-panel" id="ie-panel" aria-label="Panneau d'édition" aria-hidden="true">
+        <div class="ie-panel-head">
+          <h2>Contenus éditables</h2>
+          <span id="ie-count" class="ie-count" title="Textes et images repérés dans cette page">0</span>
+        </div>
+        <p class="ie-hint">
+          Textes et images éditables sont repérés ici. Cliquez dans l'aperçu ou dans la liste pour modifier. Les
+          changements non sauvegardés apparaissent surlignés en <strong>miel</strong> ; seuls ceux que vous enregistrez
+          sont publiés sur le site.
+        </p>
+        <div id="ie-status" class="ie-status"></div>
+        <div id="ie-list" class="ie-list"></div>
+      </aside>
+    </main>
+
+    <script src="/admin/assets/js/admin.js?v=symbiose-7"></script>
+    <script type="module" src="/admin/assets/js/admin_inline_editor.js?v=symbiose-7"></script>
+  </body>
+</html>

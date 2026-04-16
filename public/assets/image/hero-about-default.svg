@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration Symbiose — cercle des thérapeutes">
+  <defs>
+    <linearGradient id="h1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f7f1e0"/>
+      <stop offset="100%" stop-color="#efe6cd"/>
+    </linearGradient>
+    <radialGradient id="h2" cx="0.7" cy="0.3" r="0.7">
+      <stop offset="0%" stop-color="#e3b84f" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#e3b84f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="300" fill="url(#h1)"/>
+  <rect width="600" height="300" fill="url(#h2)"/>
+  <g transform="translate(120 40) rotate(-12 110 120)">
+    <path d="M110 10 Q200 80 180 180 Q120 240 70 220 Q20 180 30 100 Q50 30 110 10 Z" fill="#7ba05b" opacity="0.85"/>
+    <path d="M110 10 Q115 100 120 220" stroke="#1c2f1c" stroke-width="1.4" fill="none" opacity="0.5"/>
+    <path d="M120 60 Q90 80 60 90" stroke="#1c2f1c" stroke-width="1" fill="none" opacity="0.4"/>
+    <path d="M120 110 Q85 130 55 140" stroke="#1c2f1c" stroke-width="1" fill="none" opacity="0.4"/>
+  </g>
+  <g transform="translate(420 60) rotate(30 40 40)">
+    <path d="M40 10 Q70 25 65 60 Q50 80 30 75 Q10 60 15 35 Q25 15 40 10 Z" fill="#e3b84f" opacity="0.8"/>
+  </g>
+  <circle cx="500" cy="230" r="18" fill="#b97a3a" opacity="0.75"/>
+  <circle cx="500" cy="230" r="6" fill="#f7f1e0"/>
+  <g opacity="0.45">
+    <path d="M20 280 Q200 260 380 275 Q500 280 580 270" stroke="#2e4a2b" stroke-width="1.2" fill="none"/>
+    <circle cx="80" cy="273" r="3" fill="#7ba05b"/>
+    <circle cx="200" cy="268" r="3" fill="#7ba05b"/>
+    <circle cx="340" cy="272" r="3" fill="#7ba05b"/>
+    <circle cx="470" cy="270" r="3" fill="#7ba05b"/>
+  </g>
+</svg>

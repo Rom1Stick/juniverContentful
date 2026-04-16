@@ -1,0 +1,7 @@
+node_modules/
+public/assets/styles/main.min.css
+public/assets/styles/main.min.css.map
+public/assets/styles/styleBeks.css
+admin/assets/css/**
+package-lock.json
+project_structure.txt

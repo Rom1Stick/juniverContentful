@@ -1,0 +1,87 @@
+{
+  "name": "junivercontentful",
+  "version": "1.0.0",
+  "description": "JuniverSanté — site Contentful/Netlify",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm-run-all --parallel dev:scss dev:scss:admin dev:serve",
+    "dev:full": "npm-run-all --parallel dev:scss dev:scss:admin dev:api",
+    "dev:scss": "sass --watch public/scss/main.scss:public/assets/styles/main.min.css --style=compressed --source-map",
+    "dev:scss:admin": "sass --watch admin/assets/scss/main.scss:admin/assets/styles/admin.min.css --style=compressed --source-map",
+    "dev:serve": "live-server --port=3000 --no-browser --mount=/public:./public --mount=/admin:./admin --mount=/config:./config --mount=/assets:./assets",
+    "dev:api": "netlify dev",
+    "build": "npm run build:scss && npm run build:scss:admin",
+    "build:scss": "sass public/scss/main.scss:public/assets/styles/main.min.css --style=compressed --source-map",
+    "build:scss:admin": "sass admin/assets/scss/main.scss:admin/assets/styles/admin.min.css --style=compressed --source-map",
+    "lint": "npm-run-all --parallel lint:*",
+    "lint:js": "eslint \"public/js/**/*.js\" \"admin/assets/js/**/*.js\" \"netlify/functions/**/*.js\" \"scripts/**/*.js\"",
+    "lint:scss": "stylelint \"public/scss/**/*.scss\" \"admin/assets/scss/**/*.scss\"",
+    "lint:html": "htmlhint \"public/**/*.html\" \"admin/**/*.html\"",
+    "format": "prettier --write \"**/*.{js,scss,css,html,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,scss,css,html,json,md}\"",
+    "a11y": "pa11y http://localhost:3000/public/index.html",
+    "lighthouse": "lhci autorun",
+    "test:click": "node audit/click-test.mjs",
+    "test:upload": "node audit/upload-test.mjs",
+    "test:auth": "node .audit/auth-flow-test.mjs",
+    "test:mobile": "node .audit/mobile-audit-live.mjs",
+    "test:e2e": "npm-run-all test:click test:upload test:auth test:mobile",
+    "hash-password": "node scripts/hash-password.js",
+    "docker:up": "docker compose up -d --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "prepare": "husky",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
+    "@eslint/js": "^9.20.0",
+    "eslint": "^9.20.1",
+    "globals": "^15.15.0",
+    "htmlhint": "^1.1.4",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "live-server": "^1.2.2",
+    "netlify-cli": "^17.38.1",
+    "npm-run-all": "^4.1.5",
+    "pa11y": "^8.0.0",
+    "prettier": "^3.3.3",
+    "sass": "^1.81.0",
+    "stylelint": "^16.10.0",
+    "stylelint-config-standard-scss": "^13.1.0"
+  },
+  "lint-staged": {
+    "*.{js,mjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.scss": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "*.{html,json,md,css}": [
+      "prettier --write"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rom1Stick/juniverContentful.git"
+  },
+  "keywords": [
+    "contentful",
+    "netlify",
+    "juniversante"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Rom1Stick/juniverContentful/issues"
+  },
+  "homepage": "https://github.com/Rom1Stick/juniverContentful#readme"
+}

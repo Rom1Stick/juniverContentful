@@ -1,0 +1,42 @@
+@use "../abstracts/tokens" as v;
+
+.admin-shell .card,
+.admin-shell .a-card {
+  background: v.$cream-warm;
+  border: 1px solid v.$rule;
+  border-radius: v.$radius-md;
+  padding: clamp(18px, 3vw, 28px);
+  box-shadow: v.$shadow-soft;
+  transition:
+    transform 0.3s v.$ease,
+    box-shadow 0.3s v.$ease,
+    border-color 0.3s v.$ease;
+}
+
+.admin-shell .card:hover,
+.admin-shell .a-card:hover {
+  border-color: rgba(227, 184, 79, 50%);
+}
+
+/* Badge statut (inspiré .seed du public) */
+.admin-shell .seed,
+.admin-shell .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: v.$honey;
+  color: v.$moss-deep;
+  border-radius: v.$radius-pill;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.admin-shell .seed::before,
+.admin-shell .badge::before {
+  content: "●";
+  color: v.$moss-deep;
+  font-size: 8px;
+}
