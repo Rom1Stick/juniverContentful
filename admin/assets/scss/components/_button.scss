@@ -1,0 +1,153 @@
+@use "../abstracts/tokens" as v;
+
+.admin-shell .btn,
+.admin-shell button.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: v.$radius-pill;
+  background: v.$moss;
+  color: v.$cream;
+  border: 0;
+  text-decoration: none;
+  font-family: v.$font-body;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    background 0.25s v.$ease,
+    color 0.25s v.$ease,
+    transform 0.25s v.$ease,
+    box-shadow 0.25s v.$ease;
+  line-height: 1;
+}
+
+.admin-shell .btn:hover,
+.admin-shell button.btn:hover {
+  background: v.$clay;
+  color: v.$cream;
+  transform: translateY(-1px);
+  box-shadow: v.$shadow-soft;
+}
+
+.admin-shell .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: v.$radius-pill;
+  background: v.$moss;
+  color: v.$cream;
+  border: 0;
+  text-decoration: none;
+  font-family: v.$font-body;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition:
+    background 0.25s v.$ease,
+    transform 0.25s v.$ease,
+    box-shadow 0.25s v.$ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-shell .btn-primary:hover {
+  background: v.$moss-deep;
+  transform: translateY(-1px);
+  box-shadow: v.$shadow-soft;
+}
+
+.admin-shell .btn-ghost,
+.admin-shell .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 20px;
+  border: 1.5px solid v.$moss;
+  background: transparent;
+  color: v.$moss;
+  border-radius: v.$radius-pill;
+  text-decoration: none;
+  font-family: v.$font-body;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition:
+    background 0.25s v.$ease,
+    color 0.25s v.$ease;
+}
+
+.admin-shell .btn-ghost:hover,
+.admin-shell .btn-secondary:hover {
+  background: v.$moss;
+  color: v.$cream;
+}
+
+.admin-shell .btn-danger,
+.admin-shell .delete-profile-btn,
+.admin-shell .delete-event,
+.admin-shell .delete-article,
+.admin-shell .btn-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: transparent;
+  color: v.$clay;
+  border: 1px solid rgba(185, 122, 58, 40%);
+  border-radius: v.$radius-pill;
+  font-family: v.$font-body;
+  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background 0.25s v.$ease,
+    color 0.25s v.$ease,
+    border-color 0.25s v.$ease;
+}
+
+.admin-shell .btn-danger:hover,
+.admin-shell .delete-profile-btn:hover,
+.admin-shell .delete-event:hover,
+.admin-shell .delete-article:hover,
+.admin-shell .btn-delete:hover {
+  background: v.$clay;
+  color: v.$cream;
+  border-color: v.$clay;
+}
+
+.admin-shell .edit-profile-btn,
+.admin-shell .edit-event,
+.admin-shell .edit-article,
+.admin-shell .btn-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: v.$honey;
+  color: v.$moss-deep;
+  border: 0;
+  border-radius: v.$radius-pill;
+  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background 0.25s v.$ease,
+    transform 0.25s v.$ease;
+}
+
+.admin-shell .edit-profile-btn:hover,
+.admin-shell .edit-event:hover,
+.admin-shell .edit-article:hover,
+.admin-shell .btn-edit:hover {
+  background: v.$clay;
+  color: v.$cream;
+  transform: translateY(-1px);
+}

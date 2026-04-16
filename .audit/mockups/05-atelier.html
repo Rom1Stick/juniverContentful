@@ -1,0 +1,2134 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>JuniverSanté — Atelier</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Archivo+Narrow:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --paper: #f3ead4;
+        --paper-2: #e9ddc0;
+        --ink: #17120b;
+        --ink-2: #3a2f1f;
+        --mute: #7a6a52;
+        --brick: #c54a30;
+        --brick-deep: #8e2e1c;
+        --riso-blue: #4f6fa6;
+        --olive: #5a5e2e;
+        --rule: rgba(23, 18, 11, 0.18);
+        --display: 'Abril Fatface', ui-serif, Georgia, serif;
+        --serif: 'Libre Caslon Text', ui-serif, Georgia, serif;
+        --cond: 'Archivo Narrow', ui-sans-serif, system-ui, sans-serif;
+        --mono: 'DM Mono', ui-monospace, monospace;
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        min-width: 0;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        max-width: 100%;
+      }
+      html {
+        overflow-x: clip;
+      }
+      body {
+        overflow-x: clip;
+      }
+      img,
+      svg,
+      video {
+        max-width: 100%;
+        height: auto;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--cond);
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+      }
+      /* riso paper texture */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        opacity: 0.35;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12  0 0 0 0 0.09  0 0 0 0 0.05  0 0 0 0.4 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+        mix-blend-mode: multiply;
+      }
+      /* registration marks */
+      body::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background-image:
+          radial-gradient(circle 100px at 4% 4%, rgba(197, 74, 48, 0.14), transparent 70%),
+          radial-gradient(circle 120px at 96% 6%, rgba(79, 111, 166, 0.14), transparent 70%),
+          radial-gradient(circle 150px at 6% 96%, rgba(197, 74, 48, 0.12), transparent 70%),
+          radial-gradient(circle 140px at 94% 96%, rgba(79, 111, 166, 0.12), transparent 70%);
+      }
+      canvas#trame {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none;
+        opacity: 0.7;
+        mix-blend-mode: multiply;
+      }
+
+      .wrap {
+        position: relative;
+        z-index: 2;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 clamp(22px, 4vw, 48px);
+      }
+
+      /* ─────── TOP RIBBON ─────── */
+      .ribbon {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px clamp(22px, 4vw, 48px);
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-left: calc(-1 * clamp(22px, 4vw, 48px));
+        margin-right: calc(-1 * clamp(22px, 4vw, 48px));
+        max-width: calc(100% + 2 * clamp(22px, 4vw, 48px));
+        position: relative;
+        z-index: 10;
+      }
+      .ribbon .sep {
+        opacity: 0.4;
+      }
+      .ribbon .live {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .ribbon .live::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        background: var(--brick);
+        border-radius: 50%;
+        animation: blink 1.4s infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.25;
+        }
+      }
+
+      /* ─────── NAV ─────── */
+      header.nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 26px 0 22px;
+        border-bottom: 2px solid var(--ink);
+        position: relative;
+      }
+      .brand {
+        display: flex;
+        align-items: flex-end;
+        gap: 14px;
+        font-family: var(--display);
+        font-size: 36px;
+        color: var(--ink);
+        line-height: 0.9;
+        letter-spacing: -0.01em;
+      }
+      .brand .mark {
+        width: 50px;
+        height: 50px;
+        flex: 0 0 50px;
+        position: relative;
+        border: 2px solid var(--ink);
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        transform: rotate(-8deg);
+        background: var(--brick);
+        color: var(--paper);
+        font-family: var(--display);
+        font-size: 24px;
+        line-height: 1;
+        padding-top: 4px;
+      }
+      .brand .est {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        color: var(--mute);
+        align-self: flex-end;
+        padding-bottom: 6px;
+      }
+      nav.primary {
+        display: flex;
+        gap: 22px;
+        align-items: center;
+        font-family: var(--cond);
+        font-weight: 500;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      nav.primary a {
+        color: var(--ink);
+        text-decoration: none;
+        padding: 6px 0;
+        position: relative;
+      }
+      nav.primary a:hover::after {
+        content: '';
+        position: absolute;
+        inset: auto 0 -4px 0;
+        height: 2px;
+        background: var(--brick);
+      }
+      nav.primary .cta {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 18px;
+        border-radius: 0;
+        letter-spacing: 0.12em;
+        transition: background 0.2s;
+      }
+      nav.primary .cta:hover {
+        background: var(--brick);
+      }
+
+      /* ─────── HERO POSTER ─────── */
+      .hero {
+        padding: clamp(40px, 7vh, 80px) 0 clamp(50px, 9vh, 100px);
+        position: relative;
+        border-bottom: 2px solid var(--ink);
+      }
+      .hero-top {
+        display: flex;
+        justify-content: space-between;
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--ink-2);
+        margin-bottom: 30px;
+      }
+      .hero h1 {
+        font-family: var(--display);
+        font-weight: 400;
+        font-size: clamp(48px, 14vw, 220px);
+        line-height: 0.85;
+        letter-spacing: -0.02em;
+        margin: 0 0 24px;
+        position: relative;
+        word-break: break-word;
+      }
+      .hero h1 .red {
+        color: var(--brick);
+        position: relative;
+        display: inline-block;
+      }
+      .hero h1 .red::after {
+        content: '';
+        position: absolute;
+        inset: -4% -2%;
+        background: var(--brick);
+        opacity: 0.18;
+        border-radius: 4px;
+        z-index: -1;
+        mix-blend-mode: multiply;
+      }
+      .hero h1 .serifit {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 400;
+        font-size: 0.58em;
+        color: var(--olive);
+      }
+      .hero h1 .blue {
+        color: var(--riso-blue);
+        -webkit-text-stroke: 0;
+        position: relative;
+      }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.3fr 1fr;
+        gap: 48px;
+        align-items: start;
+        margin-top: 36px;
+      }
+      .hero-lede {
+        font-family: var(--serif);
+        font-size: 21px;
+        line-height: 1.45;
+        color: var(--ink);
+        max-width: 44ch;
+      }
+      .hero-lede strong {
+        font-family: var(--display);
+        font-weight: 400;
+        color: var(--brick);
+        font-size: 1.2em;
+        line-height: 0.8;
+      }
+      .hero-right {
+        border-left: 2px solid var(--ink);
+        padding-left: 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .hero-right .label {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--mute);
+      }
+      .hero-right .big {
+        font-family: var(--display);
+        font-size: 48px;
+        line-height: 1;
+        color: var(--ink);
+      }
+      .hero-right .big .small {
+        font-family: var(--serif);
+        font-size: 0.45em;
+        font-style: italic;
+        color: var(--brick);
+      }
+      .hero-right p {
+        font-size: 14px;
+        color: var(--ink-2);
+        margin: 0;
+        line-height: 1.5;
+      }
+      .hero-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 36px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .btn-solid {
+        padding: 16px 28px;
+        background: var(--brick);
+        color: var(--paper);
+        text-decoration: none;
+        font-family: var(--cond);
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-size: 13px;
+        transition:
+          background 0.2s,
+          transform 0.2s;
+        border: 2px solid var(--brick);
+      }
+      .btn-solid:hover {
+        background: var(--brick-deep);
+        border-color: var(--brick-deep);
+        transform: translate(-2px, -2px);
+        box-shadow: 4px 4px 0 var(--ink);
+      }
+      .btn-outline {
+        padding: 16px 28px;
+        background: transparent;
+        color: var(--ink);
+        text-decoration: none;
+        font-family: var(--cond);
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-size: 13px;
+        border: 2px solid var(--ink);
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+      .btn-outline:hover {
+        background: var(--ink);
+        color: var(--paper);
+      }
+
+      /* ─────── MARQUEE ─────── */
+      .marquee {
+        border-top: 2px solid var(--ink);
+        border-bottom: 2px solid var(--ink);
+        background: var(--paper-2);
+        padding: 16px 0;
+        overflow: hidden;
+        white-space: nowrap;
+        font-family: var(--display);
+        font-size: 26px;
+        color: var(--ink);
+        margin-top: 48px;
+        margin-left: calc(-1 * clamp(22px, 4vw, 48px));
+        margin-right: calc(-1 * clamp(22px, 4vw, 48px));
+        max-width: calc(100% + 2 * clamp(22px, 4vw, 48px));
+      }
+      .marquee span {
+        padding-left: clamp(22px, 4vw, 48px);
+      }
+      .marquee span {
+        display: inline-block;
+        animation: slide 40s linear infinite;
+      }
+      .marquee em {
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--brick);
+        font-size: 0.8em;
+        padding: 0 14px;
+      }
+      @keyframes slide {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+
+      /* ─────── SECTION HEADER ─────── */
+      .sect {
+        padding: clamp(56px, 9vh, 100px) 0;
+        border-bottom: 2px solid var(--ink);
+        position: relative;
+      }
+      .sect-num {
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.22em;
+        color: var(--brick);
+        text-transform: uppercase;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .sect-num::before {
+        content: '';
+        width: 40px;
+        height: 2px;
+        background: var(--brick);
+      }
+      .sect h2 {
+        font-family: var(--display);
+        font-weight: 400;
+        font-size: clamp(44px, 7vw, 96px);
+        line-height: 0.92;
+        letter-spacing: -0.01em;
+        margin: 0 0 28px;
+        max-width: 18ch;
+      }
+      .sect h2 .it {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 400;
+        color: var(--brick);
+        font-size: 0.82em;
+      }
+      .sect h2 .blue {
+        color: var(--riso-blue);
+      }
+      .sect > p.intro {
+        font-family: var(--serif);
+        font-size: 19px;
+        line-height: 1.5;
+        max-width: 58ch;
+        color: var(--ink-2);
+        margin: 0 0 40px;
+      }
+
+      /* ─────── FEATURED ARTICLE ─────── */
+      .feat-card {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        border: 2px solid var(--ink);
+        background: var(--paper);
+      }
+      .feat-art {
+        aspect-ratio: 4/5;
+        position: relative;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 30% 30%, var(--brick), transparent 55%),
+          radial-gradient(circle at 70% 70%, var(--riso-blue), transparent 55%), var(--paper-2);
+        border-right: 2px solid var(--ink);
+      }
+      .feat-art::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(circle, rgba(23, 18, 11, 0.6) 1.2px, transparent 1.6px);
+        background-size: 8px 8px;
+        opacity: 0.25;
+      }
+      .feat-art .stamp {
+        position: absolute;
+        top: 22px;
+        left: 22px;
+        background: var(--ink);
+        color: var(--paper);
+        padding: 6px 12px;
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+      .feat-art .plate {
+        position: absolute;
+        bottom: 22px;
+        left: 22px;
+        right: 22px;
+        font-family: var(--display);
+        color: var(--paper);
+        font-size: 36px;
+        line-height: 1;
+        text-shadow: 0 2px 8px rgba(23, 18, 11, 0.4);
+      }
+      .feat-body {
+        padding: clamp(28px, 4vw, 56px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 20px;
+      }
+      .feat-body .head {
+        display: flex;
+        justify-content: space-between;
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--mute);
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--rule);
+      }
+      .feat-body h3 {
+        font-family: var(--display);
+        font-size: clamp(32px, 4.4vw, 56px);
+        line-height: 1;
+        margin: 0;
+        letter-spacing: -0.01em;
+      }
+      .feat-body h3 em {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 400;
+        color: var(--brick);
+        font-size: 0.88em;
+      }
+      .feat-body p {
+        font-family: var(--serif);
+        font-size: 17px;
+        line-height: 1.55;
+        margin: 0;
+        color: var(--ink-2);
+      }
+      .feat-body .byline {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        color: var(--mute);
+        margin-top: 4px;
+      }
+      .feat-body a {
+        align-self: flex-start;
+        margin-top: 8px;
+      }
+
+      /* ─────── THERAPEUTES ─────── */
+      .t-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 24px;
+        margin-bottom: 36px;
+        flex-wrap: wrap;
+      }
+      .carousel-nav {
+        display: flex;
+        gap: 0;
+        border: 2px solid var(--ink);
+      }
+      .carousel-nav button {
+        width: 50px;
+        height: 50px;
+        background: var(--paper);
+        border: 0;
+        cursor: pointer;
+        font-family: var(--cond);
+        font-size: 20px;
+        transition:
+          background 0.2s,
+          color 0.2s;
+        color: var(--ink);
+      }
+      .carousel-nav button + button {
+        border-left: 2px solid var(--ink);
+      }
+      .carousel-nav button:hover {
+        background: var(--brick);
+        color: var(--paper);
+      }
+      .t-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0;
+        border: 2px solid var(--ink);
+        border-right: 0;
+      }
+      .t-card {
+        padding: 26px 22px 30px;
+        border-right: 2px solid var(--ink);
+        position: relative;
+        background: var(--paper);
+        transition: background 0.3s;
+      }
+      .t-card:hover {
+        background: var(--paper-2);
+      }
+      .t-card .plate-no {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        color: var(--mute);
+      }
+      .t-card .portrait {
+        aspect-ratio: 1;
+        width: 100%;
+        margin-bottom: 16px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--ink);
+        filter: grayscale(0.4) contrast(1.05);
+      }
+      .t-card .portrait::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        mix-blend-mode: multiply;
+        background: radial-gradient(circle, rgba(197, 74, 48, 0.25) 0%, transparent 60%);
+      }
+      .t-card .portrait svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .t-card h4 {
+        font-family: var(--display);
+        font-weight: 400;
+        font-size: 26px;
+        line-height: 1;
+        margin: 0 0 4px;
+        letter-spacing: -0.005em;
+      }
+      .t-card .role {
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 14px;
+        color: var(--brick);
+        margin-bottom: 10px;
+      }
+      .t-card .bio {
+        font-size: 13px;
+        color: var(--ink-2);
+        line-height: 1.5;
+        margin-bottom: 14px;
+      }
+      .t-card .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-bottom: 14px;
+      }
+      .t-card .tags span {
+        font-family: var(--mono);
+        font-size: 10px;
+        padding: 3px 7px;
+        border: 1px solid var(--ink);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .t-card .see {
+        font-family: var(--cond);
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--ink);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .t-card .see:hover {
+        color: var(--brick);
+      }
+
+      /* ─────── ATELIERS ─────── */
+      .ateliers-wrap {
+        background: var(--ink);
+        color: var(--paper);
+        margin-left: calc(-1 * clamp(22px, 4vw, 48px));
+        margin-right: calc(-1 * clamp(22px, 4vw, 48px));
+        padding: clamp(56px, 9vh, 100px) clamp(22px, 4vw, 48px);
+        border-bottom: 2px solid var(--ink);
+        max-width: calc(100% + 2 * clamp(22px, 4vw, 48px));
+      }
+      .ateliers-wrap .sect-num {
+        color: var(--brick);
+      }
+      .ateliers-wrap .sect-num::before {
+        background: var(--brick);
+      }
+      .ateliers-wrap h2 {
+        color: var(--paper);
+      }
+      .ateliers-wrap h2 .it {
+        color: var(--brick);
+      }
+      .ateliers-wrap .intro {
+        color: rgba(243, 234, 212, 0.75);
+      }
+      .atel-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .at {
+        background: var(--paper);
+        color: var(--ink);
+        border: 2px solid var(--paper);
+        padding: 28px 24px;
+        position: relative;
+        transition:
+          transform 0.3s,
+          background 0.3s;
+      }
+      .at:hover {
+        transform: translate(-4px, -4px);
+        box-shadow: 6px 6px 0 var(--brick);
+      }
+      .at .stamp {
+        display: inline-block;
+        background: var(--ink);
+        color: var(--paper);
+        padding: 4px 10px;
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+      }
+      .at .no {
+        font-family: var(--display);
+        font-size: 72px;
+        line-height: 0.8;
+        color: var(--brick);
+        margin-bottom: 12px;
+        opacity: 0.9;
+      }
+      .at h4 {
+        font-family: var(--display);
+        font-size: 30px;
+        line-height: 1;
+        margin: 0 0 10px;
+        letter-spacing: -0.005em;
+      }
+      .at p {
+        font-family: var(--serif);
+        font-size: 15px;
+        color: var(--ink-2);
+        line-height: 1.5;
+        margin: 0 0 18px;
+      }
+      .at .rail {
+        display: flex;
+        justify-content: space-between;
+        padding-top: 14px;
+        border-top: 1px dashed var(--ink);
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .at .rail .price {
+        font-family: var(--display);
+        font-size: 20px;
+        color: var(--brick);
+      }
+
+      /* ─────── CALENDAR ─────── */
+      .cal-wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        border: 2px solid var(--ink);
+      }
+      .cal-events {
+        padding: 32px;
+        border-right: 2px solid var(--ink);
+      }
+      .cal-events h3 {
+        font-family: var(--display);
+        font-size: 32px;
+        margin: 0 0 20px;
+      }
+      .ev {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 20px;
+        padding: 20px 0;
+        border-bottom: 1px dashed var(--rule);
+        align-items: center;
+      }
+      .ev:last-child {
+        border-bottom: 0;
+      }
+      .ev .d {
+        text-align: center;
+        font-family: var(--display);
+      }
+      .ev .d .day {
+        font-size: 40px;
+        line-height: 0.85;
+        color: var(--brick);
+      }
+      .ev .d .mo {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--mute);
+        margin-top: 4px;
+      }
+      .ev .info h5 {
+        font-family: var(--serif);
+        font-weight: 700;
+        font-size: 18px;
+        margin: 0 0 2px;
+        line-height: 1.2;
+      }
+      .ev .info .loc {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        color: var(--mute);
+      }
+      .ev .book {
+        padding: 8px 14px;
+        background: var(--ink);
+        color: var(--paper);
+        font-family: var(--cond);
+        font-weight: 700;
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: background 0.2s;
+      }
+      .ev .book:hover {
+        background: var(--brick);
+      }
+      .cal-mini {
+        padding: 32px;
+        background: var(--paper-2);
+      }
+      .cal-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .cal-head h5 {
+        font-family: var(--display);
+        font-size: 28px;
+        margin: 0;
+      }
+      .cal-head .nav button {
+        background: transparent;
+        border: 2px solid var(--ink);
+        width: 34px;
+        height: 34px;
+        cursor: pointer;
+        font-family: var(--cond);
+        font-size: 16px;
+      }
+      .cal-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+      }
+      .cal-grid .dow {
+        font-family: var(--mono);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--mute);
+        text-align: center;
+        padding: 6px 0;
+      }
+      .cal-grid .day {
+        aspect-ratio: 1;
+        display: grid;
+        place-items: center;
+        font-family: var(--serif);
+        font-size: 14px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+      .cal-grid .day:hover {
+        background: var(--paper);
+      }
+      .cal-grid .day.mute {
+        color: rgba(23, 18, 11, 0.3);
+      }
+      .cal-grid .day.event {
+        color: var(--brick);
+        font-weight: 700;
+        border-color: var(--brick);
+      }
+      .cal-grid .day.today {
+        background: var(--ink);
+        color: var(--paper);
+      }
+
+      /* ─────── JOURNAL ─────── */
+      .filt {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0;
+        margin-bottom: 24px;
+        border: 2px solid var(--ink);
+        background: var(--paper);
+      }
+      .filt button {
+        padding: 12px 20px;
+        background: transparent;
+        border: 0;
+        border-right: 2px solid var(--ink);
+        font-family: var(--cond);
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+      .filt button:last-child {
+        border-right: 0;
+      }
+      .filt button.active {
+        background: var(--brick);
+        color: var(--paper);
+      }
+      .filt button:hover:not(.active) {
+        background: var(--paper-2);
+      }
+      .arts {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0;
+        border: 2px solid var(--ink);
+        border-right: 0;
+        border-bottom: 0;
+      }
+      .arts article {
+        border-right: 2px solid var(--ink);
+        border-bottom: 2px solid var(--ink);
+        background: var(--paper);
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .arts article .cov {
+        aspect-ratio: 5/3;
+        position: relative;
+        border-bottom: 2px solid var(--ink);
+        overflow: hidden;
+      }
+      .arts article .cov .cat {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: var(--paper);
+        padding: 4px 10px;
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        border: 1px solid var(--ink);
+      }
+      .arts article .b {
+        padding: 20px 22px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1;
+      }
+      .arts article h5 {
+        font-family: var(--display);
+        font-size: 24px;
+        margin: 0;
+        line-height: 1.1;
+        letter-spacing: -0.005em;
+      }
+      .arts article .sum {
+        font-family: var(--serif);
+        font-size: 14px;
+        color: var(--ink-2);
+        line-height: 1.5;
+        flex: 1;
+        margin: 0;
+      }
+      .arts article .meta {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        color: var(--mute);
+        display: flex;
+        justify-content: space-between;
+        padding-top: 10px;
+        border-top: 1px dashed var(--rule);
+        margin-top: 8px;
+      }
+      .arts article .meta a {
+        color: var(--brick);
+        text-decoration: none;
+      }
+
+      /* ─────── ABOUT ─────── */
+      .about-block {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 0;
+        border: 2px solid var(--ink);
+        background: var(--paper);
+      }
+      .about-txt {
+        padding: clamp(32px, 5vw, 64px);
+        border-right: 2px solid var(--ink);
+      }
+      .about-txt h2 {
+        margin-bottom: 20px;
+      }
+      .about-txt .pull {
+        font-family: var(--display);
+        font-size: 32px;
+        line-height: 1.1;
+        color: var(--brick);
+        margin: 20px 0;
+        padding: 16px 0;
+        border-top: 2px solid var(--ink);
+        border-bottom: 2px solid var(--ink);
+      }
+      .about-txt p {
+        font-family: var(--serif);
+        font-size: 17px;
+        line-height: 1.55;
+        color: var(--ink);
+        margin: 0 0 14px;
+      }
+      .about-txt p em {
+        color: var(--brick);
+      }
+      .about-viz {
+        padding: 40px;
+        background: var(--paper-2);
+        display: grid;
+        place-items: center;
+        position: relative;
+      }
+
+      /* ─────── CONTACT ─────── */
+      .contact-block {
+        display: grid;
+        grid-template-columns: 1fr 1.15fr;
+        gap: 0;
+        border: 2px solid var(--ink);
+      }
+      .contact-left {
+        padding: clamp(32px, 5vw, 64px);
+        background: var(--brick);
+        color: var(--paper);
+        border-right: 2px solid var(--ink);
+      }
+      .contact-left h2 {
+        color: var(--paper);
+        margin: 0 0 20px;
+      }
+      .contact-left h2 .it {
+        color: var(--paper);
+        font-style: italic;
+        border-bottom: 3px solid var(--paper);
+        padding-bottom: 4px;
+      }
+      .contact-left p {
+        font-family: var(--serif);
+        font-size: 17px;
+        line-height: 1.5;
+        margin: 0 0 24px;
+      }
+      .contact-left .info {
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.1em;
+        line-height: 1.8;
+      }
+      .contact-form {
+        background: var(--paper);
+        padding: clamp(32px, 5vw, 64px);
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+      .field label {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--mute);
+        margin-bottom: 6px;
+        display: block;
+      }
+      .field input,
+      .field textarea {
+        width: 100%;
+        padding: 12px 0;
+        border: 0;
+        border-bottom: 2px solid var(--ink);
+        background: transparent;
+        font-family: var(--serif);
+        font-size: 17px;
+        color: var(--ink);
+        outline: none;
+      }
+      .field input:focus,
+      .field textarea:focus {
+        border-color: var(--brick);
+      }
+      .field textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+      .row2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+      .contact-form button {
+        padding: 18px 32px;
+        background: var(--ink);
+        color: var(--paper);
+        border: 0;
+        font-family: var(--cond);
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        font-size: 13px;
+        cursor: pointer;
+        align-self: flex-start;
+        transition: background 0.2s;
+      }
+      .contact-form button:hover {
+        background: var(--brick);
+      }
+
+      /* ─────── FOOTER ─────── */
+      footer {
+        margin-top: clamp(56px, 9vh, 100px);
+        padding: 56px 0 24px;
+        border-top: 2px solid var(--ink);
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+        gap: 40px;
+      }
+      footer .col-brand .brand {
+        margin-bottom: 12px;
+      }
+      footer .col-brand p {
+        font-family: var(--serif);
+        font-size: 14px;
+        color: var(--ink-2);
+        max-width: 32ch;
+        line-height: 1.55;
+      }
+      footer h4 {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--brick);
+        margin: 0 0 14px;
+      }
+      footer ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 14px;
+      }
+      footer ul li {
+        padding: 3px 0;
+      }
+      footer ul a {
+        color: var(--ink);
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+      }
+      footer ul a:hover {
+        border-color: var(--brick);
+        color: var(--brick);
+      }
+      .foot-bottom {
+        grid-column: 1/-1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 22px;
+        border-top: 1px solid var(--rule);
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        color: var(--mute);
+        text-transform: uppercase;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      @media (max-width: 1000px) {
+        .hero-grid {
+          grid-template-columns: 1fr;
+          gap: 32px;
+        }
+        .hero-right {
+          border-left: 0;
+          padding-left: 0;
+          border-top: 2px solid var(--ink);
+          padding-top: 24px;
+        }
+        .feat-card {
+          grid-template-columns: 1fr;
+        }
+        .feat-art {
+          border-right: 0;
+          border-bottom: 2px solid var(--ink);
+          aspect-ratio: 3/2;
+        }
+        .t-grid {
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        }
+        .t-card:nth-child(2n) {
+          border-right: 0;
+        }
+        .atel-grid {
+          grid-template-columns: 1fr;
+        }
+        .cal-wrap {
+          grid-template-columns: 1fr;
+        }
+        .cal-events {
+          border-right: 0;
+          border-bottom: 2px solid var(--ink);
+        }
+        .arts {
+          grid-template-columns: 1fr;
+        }
+        .about-block {
+          grid-template-columns: 1fr;
+        }
+        .about-txt {
+          border-right: 0;
+          border-bottom: 2px solid var(--ink);
+        }
+        .contact-block {
+          grid-template-columns: 1fr;
+        }
+        .contact-left {
+          border-right: 0;
+          border-bottom: 2px solid var(--ink);
+        }
+        footer {
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        }
+        footer .col-brand {
+          grid-column: 1/-1;
+        }
+        nav.primary {
+          display: none;
+        }
+      }
+      @media (max-width: 640px) {
+        .wrap {
+          padding: 0 18px;
+        }
+        .ribbon {
+          font-size: 10px;
+          padding: 10px 18px;
+        }
+        .ribbon > span:nth-child(3) {
+          display: none;
+        }
+        header.nav {
+          padding: 20px 0 16px;
+          gap: 12px;
+        }
+        .brand {
+          font-size: 24px;
+          gap: 10px;
+        }
+        .brand .mark {
+          width: 38px;
+          height: 38px;
+          font-size: 18px;
+        }
+        .brand .est {
+          display: none;
+        }
+        .cta-bar {
+          display: none;
+        }
+        .hero {
+          padding: 36px 0 48px;
+        }
+        .hero-top {
+          font-size: 9px;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+        .hero-lede {
+          font-size: 17px;
+        }
+        .hero-actions {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .hero-actions a {
+          text-align: center;
+        }
+        .hero-right .big {
+          font-size: 36px;
+        }
+        .marquee {
+          font-size: 20px;
+        }
+        .sect {
+          padding: 48px 0;
+        }
+        .sect h2 {
+          font-size: clamp(36px, 9vw, 56px);
+        }
+        .feat-body {
+          padding: 28px 22px;
+        }
+        .feat-body h3 {
+          font-size: clamp(28px, 7vw, 40px);
+        }
+        .feat-body .head {
+          flex-direction: column;
+          gap: 4px;
+          align-items: flex-start;
+        }
+        .t-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .t-grid {
+          grid-template-columns: 1fr;
+        }
+        .t-card {
+          border-right: 0;
+          border-bottom: 2px solid var(--ink);
+        }
+        .t-card:last-child {
+          border-bottom: 0;
+        }
+        .at {
+          padding: 24px 20px;
+        }
+        .at h4 {
+          font-size: 26px;
+        }
+        .cal-events {
+          padding: 24px 20px;
+        }
+        .cal-events h3 {
+          font-size: 26px;
+        }
+        .ev {
+          grid-template-columns: 54px 1fr;
+          gap: 14px;
+        }
+        .ev .book {
+          grid-column: 1/-1;
+          text-align: center;
+          padding: 10px;
+        }
+        .cal-mini {
+          padding: 24px 20px;
+        }
+        .filt {
+          flex-wrap: wrap;
+        }
+        .filt button {
+          flex: 1 0 auto;
+          border-bottom: 2px solid var(--ink);
+        }
+        .arts article .b {
+          padding: 18px 20px 22px;
+        }
+        .about-txt {
+          padding: 28px 20px;
+        }
+        .about-txt .pull {
+          font-size: 22px;
+        }
+        .about-viz {
+          padding: 28px 20px;
+        }
+        .contact-left {
+          padding: 28px 20px;
+        }
+        .contact-form {
+          padding: 28px 20px;
+        }
+        .row2 {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        footer {
+          grid-template-columns: 1fr;
+          padding: 40px 18px 24px;
+          gap: 28px;
+        }
+        .foot-bottom {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+          font-size: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="trame" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div class="ribbon">
+        <span class="live">Cercle en activité — atelier en cours</span>
+        <span>№ 001 · Printemps 2026 <span class="sep">//</span> Bourgogne · FR</span>
+        <span>ISSN 2026-0014 · 12 praticiens</span>
+      </div>
+
+      <header class="nav">
+        <div class="brand">
+          <span class="mark">J</span>
+          Juniver<br />Santé
+          <span class="est">EST. 2023<br />FR · BGN</span>
+        </div>
+        <nav class="primary">
+          <a href="#">Accueil</a>
+          <a href="#about">À propos</a>
+          <a href="#calendar">Formations</a>
+          <a href="#workshops">Ateliers</a>
+          <a href="#journal">Journal</a>
+          <a href="#contact">Contact</a>
+          <a class="cta" href="#contact">Rendez-vous →</a>
+        </nav>
+      </header>
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-top">
+          <span>Édito nº 001 — Tirage limité</span>
+          <span>Imprimé sur papier recyclé · à lire lentement</span>
+        </div>
+        <h1>
+          Un <span class="red">cercle</span><br />
+          de <span class="serifit">thérapeutes</span><br />
+          <span class="blue">ind</span><span class="serifit">é</span><span class="blue">pendants</span>
+        </h1>
+        <div class="hero-grid">
+          <div>
+            <p class="hero-lede">
+              JuniverSanté est un collectif fondé en Bourgogne en 2023. <strong>Douze</strong> praticiens indépendants,
+              réunis par une charte et par la conviction que le soin se tisse — entre plantes, toucher, parole et
+              présence.
+            </p>
+            <div class="hero-actions">
+              <a class="btn-solid" href="#therapists">Rencontrer le cercle →</a>
+              <a class="btn-outline" href="#workshops">Voir les ateliers</a>
+            </div>
+          </div>
+          <div class="hero-right">
+            <div>
+              <span class="label">Depuis</span>
+              <div class="big">2023</div>
+            </div>
+            <div>
+              <span class="label">Thérapeutes</span>
+              <div class="big">12<span class="small"> praticien·nes</span></div>
+            </div>
+            <div>
+              <span class="label">Ateliers / an</span>
+              <div class="big">34<span class="small"> +</span></div>
+            </div>
+            <p>Chaque praticien·ne reçoit en cabinet indépendant. Le cercle coordonne, pas ne centralise.</p>
+          </div>
+        </div>
+        <div class="marquee">
+          <span
+            >Naturopathie <em>·</em> Phytothérapie <em>·</em> Réflexologie <em>·</em> Sophrologie <em>·</em> Reiki
+            <em>·</em> Herboristerie <em>·</em> Ostéopathie <em>·</em> Fleurs de Bach <em>·</em> Respiration
+            <em>·</em> Naturopathie <em>·</em> Phytothérapie <em>·</em> Réflexologie <em>·</em> Sophrologie
+            <em>·</em> Reiki <em>·</em> Herboristerie <em>·</em> Ostéopathie <em>·</em></span
+          >
+        </div>
+      </section>
+
+      <!-- FEATURED ARTICLE -->
+      <section class="sect">
+        <div class="sect-num">Feuillet 01 / Édito du mois</div>
+        <h2>Ce qu'on appelle <span class="it">la santé,</span><br />au fond.</h2>
+        <div class="feat-card">
+          <div class="feat-art">
+            <span class="stamp">◉ TIRAGE LIMITÉ</span>
+            <div class="plate">« Se soigner,<br />ensemble. »</div>
+          </div>
+          <div class="feat-body">
+            <div class="head"><span>ÉDITORIAL // 08 MIN</span><span>MARS 2026</span></div>
+            <h3>Quand <em>se soigner</em> redevient un geste du quotidien.</h3>
+            <p>
+              Pendant un an, les douze praticien·nes du cercle ont tenu un carnet partagé. Ce premier dossier en extrait
+              une lecture commune : la santé comme relation, pas comme performance. Un texte à lire lentement,
+              idéalement le matin.
+            </p>
+            <div class="byline">— Le cercle · texte collectif · 8 min</div>
+            <a class="btn-outline" href="#">Lire le dossier →</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- THÉRAPEUTES -->
+      <section class="sect" id="therapists">
+        <div class="t-header">
+          <div>
+            <div class="sect-num">Feuillet 02 / Le cercle</div>
+            <h2 style="margin-bottom: 0">Les <span class="it">douze</span> praticien·nes<br />du collectif.</h2>
+          </div>
+          <div class="carousel-nav">
+            <button id="tprev" aria-label="Précédent">‹</button>
+            <button id="tnext" aria-label="Suivant">›</button>
+          </div>
+        </div>
+        <div class="t-grid">
+          <article class="t-card">
+            <span class="plate-no">№ 01</span>
+            <div class="portrait">
+              <svg viewBox="0 0 200 200">
+                <defs>
+                  <linearGradient id="rp1" x2="0" y2="1">
+                    <stop offset="0" stop-color="#D8C89F" />
+                    <stop offset="1" stop-color="#4A4828" />
+                  </linearGradient>
+                </defs>
+                <rect width="200" height="200" fill="url(#rp1)" />
+                <ellipse cx="100" cy="78" rx="30" ry="36" fill="#1C1710" opacity=".55" />
+                <path d="M40 200 Q40 138 100 134 Q160 138 160 200Z" fill="#1C1710" opacity=".55" />
+              </svg>
+            </div>
+            <h4>Vincent Decoster</h4>
+            <div class="role">Naturopathie · Yoga</div>
+            <p class="bio">Respiration, rééquilibrage, lenteur comme méthode.</p>
+            <div class="tags"><span>Respiration</span><span>Aliment.</span></div>
+            <a class="see" href="#">Voir le profil →</a>
+          </article>
+          <article class="t-card">
+            <span class="plate-no">№ 02</span>
+            <div class="portrait">
+              <svg viewBox="0 0 200 200">
+                <defs>
+                  <linearGradient id="rp2" x2="0" y2="1">
+                    <stop offset="0" stop-color="#E8CDA1" />
+                    <stop offset="1" stop-color="#7A5335" />
+                  </linearGradient>
+                </defs>
+                <rect width="200" height="200" fill="url(#rp2)" />
+                <ellipse cx="100" cy="78" rx="30" ry="36" fill="#1E0E08" opacity=".55" />
+                <path d="M40 200 Q40 138 100 134 Q160 138 160 200Z" fill="#1E0E08" opacity=".55" />
+              </svg>
+            </div>
+            <h4>Joly Karine</h4>
+            <div class="role">Naturothérapie holistique</div>
+            <p class="bio">Plante, toucher, parole — une triangulation lente.</p>
+            <div class="tags"><span>Herbo</span><span>Réflexo</span></div>
+            <a class="see" href="#">Voir le profil →</a>
+          </article>
+          <article class="t-card">
+            <span class="plate-no">№ 03</span>
+            <div class="portrait">
+              <svg viewBox="0 0 200 200">
+                <defs>
+                  <linearGradient id="rp3" x2="0" y2="1">
+                    <stop offset="0" stop-color="#C2B090" />
+                    <stop offset="1" stop-color="#3E4228" />
+                  </linearGradient>
+                </defs>
+                <rect width="200" height="200" fill="url(#rp3)" />
+                <ellipse cx="100" cy="78" rx="30" ry="36" fill="#12140E" opacity=".6" />
+                <path d="M40 200 Q40 138 100 134 Q160 138 160 200Z" fill="#12140E" opacity=".6" />
+              </svg>
+            </div>
+            <h4>Périqué Sandrine</h4>
+            <div class="role">Énergétique · Reiki</div>
+            <p class="bio">Le toucher précis des choses qui ne s'écrivent pas.</p>
+            <div class="tags"><span>Reiki</span><span>Bach</span></div>
+            <a class="see" href="#">Voir le profil →</a>
+          </article>
+          <article class="t-card">
+            <span class="plate-no">№ 04</span>
+            <div class="portrait">
+              <svg viewBox="0 0 200 200">
+                <defs>
+                  <linearGradient id="rp4" x2="0" y2="1">
+                    <stop offset="0" stop-color="#D4BC92" />
+                    <stop offset="1" stop-color="#4E472A" />
+                  </linearGradient>
+                </defs>
+                <rect width="200" height="200" fill="url(#rp4)" />
+                <ellipse cx="100" cy="78" rx="30" ry="36" fill="#1E180A" opacity=".55" />
+                <path d="M40 200 Q40 138 100 134 Q160 138 160 200Z" fill="#1E180A" opacity=".55" />
+              </svg>
+            </div>
+            <h4>Marthe Léon</h4>
+            <div class="role">Herboristerie de terrain</div>
+            <p class="bio">Cueillette, tisanes, paysages du Morvan.</p>
+            <div class="tags"><span>Cueill.</span><span>Tisanes</span></div>
+            <a class="see" href="#">Voir le profil →</a>
+          </article>
+        </div>
+      </section>
+
+      <!-- ATELIERS -->
+      <section class="ateliers-wrap" id="workshops">
+        <div class="sect-num">Feuillet 03 / Ateliers hebdomadaires</div>
+        <h2>Semaine après semaine,<br /><span class="it">on se rassemble.</span></h2>
+        <p class="intro">
+          Petits groupes, cadres accueillants. Cueillette, respiration, cuisine vivante, lecture de paysage — les
+          ateliers du cercle sont pensés pour être accessibles et reproduits chez soi.
+        </p>
+        <div class="atel-grid">
+          <article class="at">
+            <span class="stamp">◉ Samedi matin</span>
+            <div class="no">01</div>
+            <h4>Cueillette de printemps</h4>
+            <p>
+              Identifier, goûter, transformer. Une matinée en forêt pour renouer avec les plantes sauvages de saison.
+            </p>
+            <div class="rail"><span>3h · Morvan</span><span class="price">32 €</span></div>
+          </article>
+          <article class="at">
+            <span class="stamp">◉ Mardi soir</span>
+            <div class="no">02</div>
+            <h4>Respiration & mouvement</h4>
+            <p>Réaccorder corps et souffle en une heure lente, avec une praticienne du cercle.</p>
+            <div class="rail"><span>1h · Cabinet</span><span class="price">18 €</span></div>
+          </article>
+          <article class="at">
+            <span class="stamp">◉ Jeudi après-midi</span>
+            <div class="no">03</div>
+            <h4>Cuisine vivante</h4>
+            <p>Fermentations simples, soupes de saison, pain au levain. Repartir avec son bocal.</p>
+            <div class="rail"><span>2h30 · Atelier</span><span class="price">28 €</span></div>
+          </article>
+        </div>
+        <div style="text-align: center; margin-top: 36px">
+          <a class="btn-outline" style="border-color: var(--paper); color: var(--paper)" href="#"
+            >Programme complet →</a
+          >
+        </div>
+      </section>
+
+      <!-- CALENDAR -->
+      <section class="sect" id="calendar">
+        <div class="sect-num">Feuillet 04 / Programme formation</div>
+        <h2>Les saisons <span class="it">qui viennent.</span></h2>
+        <div class="cal-wrap">
+          <div class="cal-events">
+            <h3>Avril — Mai 2026</h3>
+            <div class="ev">
+              <div class="d">
+                <div class="day">25</div>
+                <div class="mo">Avr</div>
+              </div>
+              <div class="info">
+                <h5>Journée plantes sauvages comestibles</h5>
+                <div class="loc">SECTEUR DE LA BÉGUDE — MIREILLE VERNET</div>
+              </div>
+              <a class="book" href="#">Réserver</a>
+            </div>
+            <div class="ev">
+              <div class="d">
+                <div class="day">29</div>
+                <div class="mo">Avr</div>
+              </div>
+              <div class="info">
+                <h5>Les parasites, ces clandestins</h5>
+                <div class="loc">LA PÈGUE — SANDRINE BONNARDEL</div>
+              </div>
+              <a class="book" href="#">Réserver</a>
+            </div>
+            <div class="ev">
+              <div class="d">
+                <div class="day">08</div>
+                <div class="mo">Mai</div>
+              </div>
+              <div class="info">
+                <h5>Week-end découverte plantes & terroir</h5>
+                <div class="loc">VAL DEUX26 — GROUPE DE 12</div>
+              </div>
+              <a class="book" href="#">Réserver</a>
+            </div>
+            <div class="ev">
+              <div class="d">
+                <div class="day">22</div>
+                <div class="mo">Mai</div>
+              </div>
+              <div class="info">
+                <h5>Lecture de paysage — introduction</h5>
+                <div class="loc">MORVAN — BALADE GUIDÉE</div>
+              </div>
+              <a class="book" href="#">Réserver</a>
+            </div>
+            <div style="margin-top: 18px">
+              <a
+                href="#"
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  letter-spacing: 0.15em;
+                  text-transform: uppercase;
+                  color: var(--brick);
+                  text-decoration: none;
+                  border-bottom: 1px dashed var(--brick);
+                  padding-bottom: 2px;
+                "
+                >← Afficher les événements passés</a
+              >
+            </div>
+          </div>
+          <div class="cal-mini">
+            <div class="cal-head">
+              <h5>Avril 2026</h5>
+              <div class="nav"><button>‹</button><button>›</button></div>
+            </div>
+            <div class="cal-grid">
+              <div class="dow">D</div>
+              <div class="dow">L</div>
+              <div class="dow">M</div>
+              <div class="dow">M</div>
+              <div class="dow">J</div>
+              <div class="dow">V</div>
+              <div class="dow">S</div>
+              <div class="day mute">30</div>
+              <div class="day mute">31</div>
+              <div class="day">1</div>
+              <div class="day">2</div>
+              <div class="day">3</div>
+              <div class="day">4</div>
+              <div class="day">5</div>
+              <div class="day">6</div>
+              <div class="day">7</div>
+              <div class="day">8</div>
+              <div class="day">9</div>
+              <div class="day">10</div>
+              <div class="day">11</div>
+              <div class="day">12</div>
+              <div class="day">13</div>
+              <div class="day today">14</div>
+              <div class="day">15</div>
+              <div class="day">16</div>
+              <div class="day">17</div>
+              <div class="day">18</div>
+              <div class="day">19</div>
+              <div class="day">20</div>
+              <div class="day">21</div>
+              <div class="day">22</div>
+              <div class="day">23</div>
+              <div class="day">24</div>
+              <div class="day event">25</div>
+              <div class="day">26</div>
+              <div class="day">27</div>
+              <div class="day">28</div>
+              <div class="day event">29</div>
+              <div class="day">30</div>
+              <div class="day mute">1</div>
+              <div class="day mute">2</div>
+              <div class="day mute">3</div>
+            </div>
+            <div
+              style="
+                margin-top: 20px;
+                font-family: var(--mono);
+                font-size: 11px;
+                color: var(--mute);
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+              "
+            >
+              ◉ 4 événements · 2 places restantes
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- JOURNAL -->
+      <section class="sect" id="journal">
+        <div class="sect-num">Feuillet 05 / Journal du cercle</div>
+        <h2>Lire, au rythme <span class="it">des saisons.</span></h2>
+        <div class="filt">
+          <button class="active">◉ Tous</button>
+          <button>Plantes</button>
+          <button>Corps</button>
+          <button>Soin</button>
+          <button>Éditorial</button>
+          <button>Ateliers</button>
+        </div>
+        <div class="arts">
+          <article>
+            <div
+              class="cov"
+              style="
+                background:
+                  radial-gradient(circle at 30% 30%, #c54a30, transparent 55%),
+                  radial-gradient(circle at 70% 70%, #5a5e2e, transparent 55%), var(--paper-2);
+              "
+            >
+              <span class="cat">Plantes · 6 min</span>
+            </div>
+            <div class="b">
+              <h5>Reconnaître l'ortie<br />et la cuisiner.</h5>
+              <p class="sum">Une plante sauvage qui soigne ce qu'elle pique. Trois recettes et une infusion.</p>
+              <div class="meta"><span>MARTHE LÉON</span><a href="#">LIRE →</a></div>
+            </div>
+          </article>
+          <article>
+            <div
+              class="cov"
+              style="
+                background:
+                  radial-gradient(circle at 35% 40%, #4f6fa6, transparent 55%),
+                  radial-gradient(circle at 75% 60%, #c54a30, transparent 55%), var(--paper-2);
+              "
+            >
+              <span class="cat">Corps · 4 min</span>
+            </div>
+            <div class="b">
+              <h5>Le diaphragme,<br />muscle de l'émotion.</h5>
+              <p class="sum">Pourquoi respirer bas change notre rapport au stress. Exercice en fin d'article.</p>
+              <div class="meta"><span>VINCENT DECOSTER</span><a href="#">LIRE →</a></div>
+            </div>
+          </article>
+          <article>
+            <div
+              class="cov"
+              style="
+                background:
+                  radial-gradient(circle at 40% 40%, #c54a30, transparent 50%),
+                  radial-gradient(circle at 70% 70%, #4f6fa6, transparent 50%), var(--paper-2);
+              "
+            >
+              <span class="cat">Soin · 5 min</span>
+            </div>
+            <div class="b">
+              <h5>Un cabinet est<br />un lieu d'écoute.</h5>
+              <p class="sum">Notes sur ce que "recevoir" veut dire, au juste, dans la consultation.</p>
+              <div class="meta"><span>JOLY KARINE</span><a href="#">LIRE →</a></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ABOUT -->
+      <section class="sect" id="about">
+        <div class="sect-num">Feuillet 06 / Notre histoire</div>
+        <h2>Pourquoi un cercle<br /><span class="it">de thérapeutes ?</span></h2>
+        <div class="about-block">
+          <div class="about-txt">
+            <p>
+              En 2023, après la projection du film <em>« Suspendus, soignants entre deux mondes »</em>, une dizaine de
+              thérapeutes ont eu envie de se rassembler — se rencontrer, se connaître, travailler ensemble.
+            </p>
+            <div class="pull">
+              « Se relier, se transmettre,<br />prendre soin — en complément<br />de la médecine. »
+            </div>
+            <p>
+              Le cercle est né de cette envie. L'idée : mettre en commun des outils simples, pour que chacun puisse
+              devenir <em>acteur de sa santé</em>, en privilégiant les moyens présents dans l'environnement et à la
+              portée de tous.
+            </p>
+            <p
+              style="
+                font-family: var(--mono);
+                font-size: 12px;
+                letter-spacing: 0.1em;
+                color: var(--mute);
+                margin-top: 24px;
+              "
+            >
+              — CHARTE DU CERCLE · 2023 · PARAGRAPHE 1
+            </p>
+          </div>
+          <div class="about-viz">
+            <svg viewBox="0 0 360 360" style="width: 100%; max-width: 320px">
+              <defs>
+                <pattern id="halftone" patternUnits="userSpaceOnUse" width="6" height="6">
+                  <circle cx="3" cy="3" r="1.2" fill="#C54A30" />
+                </pattern>
+              </defs>
+              <circle cx="180" cy="180" r="150" fill="url(#halftone)" opacity=".4" />
+              <circle cx="180" cy="180" r="150" stroke="#17120B" stroke-width="2" fill="none" />
+              <circle
+                cx="180"
+                cy="180"
+                r="100"
+                stroke="#17120B"
+                stroke-width="1.5"
+                fill="none"
+                stroke-dasharray="3 4"
+              />
+              <g stroke="#4F6FA6" stroke-width="1.5" opacity=".75">
+                <line x1="180" y1="50" x2="290" y2="120" />
+                <line x1="290" y1="120" x2="310" y2="245" />
+                <line x1="310" y1="245" x2="225" y2="310" />
+                <line x1="225" y1="310" x2="100" y2="295" />
+                <line x1="100" y1="295" x2="55" y2="200" />
+                <line x1="55" y1="200" x2="90" y2="80" />
+                <line x1="90" y1="80" x2="180" y2="50" />
+              </g>
+              <g fill="#17120B">
+                <circle cx="180" cy="50" r="7" />
+                <circle cx="290" cy="120" r="7" />
+                <circle cx="310" cy="245" r="7" />
+                <circle cx="225" cy="310" r="7" />
+                <circle cx="100" cy="295" r="7" />
+                <circle cx="55" cy="200" r="7" />
+                <circle cx="90" cy="80" r="7" />
+              </g>
+              <circle cx="180" cy="180" r="20" fill="#C54A30" />
+              <text x="180" y="185" font-family="Abril Fatface" font-size="18" fill="#F3EAD4" text-anchor="middle">
+                12
+              </text>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+      <section class="sect" id="contact">
+        <div class="sect-num">Feuillet 07 / Nous écrire</div>
+        <h2>Une question ?<br /><span class="it">Écrivez-nous.</span></h2>
+        <div class="contact-block">
+          <div class="contact-left">
+            <h2 style="font-size: 44px; line-height: 0.95">
+              Le bureau <span class="it">répond</span> à tout le monde.
+            </h2>
+            <p>
+              Pour s'inscrire à un atelier, rejoindre le cercle ou simplement échanger. Les praticien·nes lisent les
+              messages à tour de rôle, dans la semaine.
+            </p>
+            <div class="info">
+              ◎ CONTACT@JUNIVERSANTE.FR<br />
+              ◎ BOURGOGNE, FRANCE<br />
+              ◎ RÉPONSE SOUS 3-5 JOURS<br />
+              ◎ NEWSLETTER LE DIMANCHE
+            </div>
+          </div>
+          <form class="contact-form">
+            <div class="row2">
+              <div class="field"><label for="fn">Nom</label><input id="fn" type="text" required /></div>
+              <div class="field"><label for="fe">Email</label><input id="fe" type="email" required /></div>
+            </div>
+            <div class="field"><label for="fs">Sujet</label><input id="fs" type="text" /></div>
+            <div class="field"><label for="fm">Message</label><textarea id="fm" required></textarea></div>
+            <button type="submit">Envoyer →</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer>
+        <div class="col-brand">
+          <div class="brand" style="font-size: 28px">
+            <span class="mark" style="width: 40px; height: 40px; font-size: 20px">J</span>
+            JuniverSanté
+          </div>
+          <p>
+            Collectif de thérapeutes indépendants, fondé en Bourgogne en 2023. Cercle autogéré, charte commune,
+            pratiques distinctes.
+          </p>
+        </div>
+        <div>
+          <h4>Le cercle</h4>
+          <ul>
+            <li><a href="#">La charte</a></li>
+            <li><a href="#">Thérapeutes</a></li>
+            <li><a href="#">Rejoindre</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Pratique</h4>
+          <ul>
+            <li><a href="#">Ateliers</a></li>
+            <li><a href="#">Formations</a></li>
+            <li><a href="#">Calendrier</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Lire</h4>
+          <ul>
+            <li><a href="#">Journal</a></li>
+            <li><a href="#">Newsletter</a></li>
+            <li><a href="#">Archives</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Légal</h4>
+          <ul>
+            <li><a href="#">Mentions</a></li>
+            <li><a href="#">Confidentialité</a></li>
+            <li><a href="#">Cookies</a></li>
+          </ul>
+        </div>
+        <div class="foot-bottom">
+          <span>© 2026 JUNIVERSANTÉ — IMPRIMÉ AVEC SOIN</span>
+          <span>№ 001 · FR · BGN · ISSN 2026-0014</span>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      /* Trame d'impression — halftone + petits nœuds riso décalés */
+      (() => {
+        const c = document.getElementById('trame');
+        const ctx = c.getContext('2d');
+        let w,
+          h,
+          dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const N = 45;
+        const nodes = [];
+        function resize() {
+          w = c.width = innerWidth * dpr;
+          h = c.height = innerHeight * dpr;
+          c.style.width = innerWidth + 'px';
+          c.style.height = innerHeight + 'px';
+        }
+        resize();
+        addEventListener('resize', () => {
+          resize();
+          build();
+        });
+        function build() {
+          nodes.length = 0;
+          for (let i = 0; i < N; i++) {
+            nodes.push({
+              x: Math.random() * w,
+              y: Math.random() * h,
+              vx: (Math.random() - 0.5) * 0.12 * dpr,
+              vy: (Math.random() - 0.5) * 0.12 * dpr,
+              r: (Math.random() * 2 + 1.5) * dpr,
+              col: Math.random() > 0.55 ? 'brick' : 'blue',
+            });
+          }
+        }
+        build();
+        const maxD = 220 * dpr;
+        function frame() {
+          ctx.clearRect(0, 0, w, h);
+          for (let i = 0; i < nodes.length; i++) {
+            const a = nodes[i];
+            a.x += a.vx;
+            a.y += a.vy;
+            if (a.x < 0 || a.x > w) a.vx *= -1;
+            if (a.y < 0 || a.y > h) a.vy *= -1;
+            for (let j = i + 1; j < nodes.length; j++) {
+              const b = nodes[j];
+              const d = Math.hypot(a.x - b.x, a.y - b.y);
+              if (d < maxD) {
+                const o = (1 - d / maxD) * 0.7;
+                ctx.strokeStyle =
+                  a.col === 'brick' && b.col === 'brick'
+                    ? `rgba(197,74,48,${o * 0.3})`
+                    : a.col === 'blue' && b.col === 'blue'
+                      ? `rgba(79,111,166,${o * 0.3})`
+                      : `rgba(23,18,11,${o * 0.18})`;
+                ctx.lineWidth = 0.7 * dpr;
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.stroke();
+              }
+            }
+          }
+          // dots avec halo riso (décalage rouge/bleu pour effet impression)
+          for (const n of nodes) {
+            const base = n.col === 'brick' ? 'rgba(197,74,48,' : 'rgba(79,111,166,';
+            // halo décalé (offset mimicking misregistration)
+            ctx.fillStyle = base + '0.25)';
+            ctx.beginPath();
+            ctx.arc(n.x + 2 * dpr, n.y + 2 * dpr, n.r * 1.6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = base + '0.7)';
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          requestAnimationFrame(frame);
+        }
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) requestAnimationFrame(frame);
+        else frame();
+      })();
+    </script>
+  </body>
+</html>

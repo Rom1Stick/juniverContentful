@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>JuniverSanté — Herbier</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Manrope:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f3ebdc;
+        --bg-deep: #eadfc9;
+        --ink: #1c2418;
+        --ink-soft: #4c5245;
+        --sage: #516b4a;
+        --sage-deep: #344028;
+        --clay: #b8632a;
+        --rule: rgba(28, 36, 24, 0.14);
+        --serif: 'Fraunces', ui-serif, Georgia, serif;
+        --sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        min-width: 0;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        max-width: 100%;
+      }
+      html {
+        overflow-x: clip;
+      }
+      body {
+        overflow-x: clip;
+      }
+      img,
+      svg,
+      video {
+        max-width: 100%;
+        height: auto;
+      }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--sans);
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      /* grain overlay */
+      body::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0.35;
+        mix-blend-mode: multiply;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.11  0 0 0 0 0.14  0 0 0 0 0.09  0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+      }
+      canvas#rhizome {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+        opacity: 0.75;
+      }
+
+      .wrap {
+        position: relative;
+        z-index: 1;
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 0 clamp(24px, 5vw, 72px);
+      }
+
+      /* ─────── NAV ─────── */
+      header.nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 28px 0 20px;
+        border-bottom: 1px solid var(--rule);
+      }
+      .brand {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        font-family: var(--serif);
+        font-weight: 400;
+        font-size: 22px;
+        letter-spacing: -0.01em;
+      }
+      .brand em {
+        font-style: italic;
+        color: var(--clay);
+        font-weight: 300;
+      }
+      .brand-mark {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--clay);
+        box-shadow: 0 0 0 3px rgba(184, 99, 42, 0.15);
+        transform: translateY(1px);
+        margin-right: 4px;
+      }
+      nav.primary {
+        display: flex;
+        gap: 28px;
+        align-items: center;
+        font-size: 14px;
+      }
+      nav.primary a {
+        color: var(--ink);
+        text-decoration: none;
+        padding: 4px 0;
+        position: relative;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.3s;
+      }
+      nav.primary a:hover {
+        border-color: var(--clay);
+      }
+      nav.primary .cta {
+        padding: 10px 18px;
+        border: 1px solid var(--ink);
+        border-radius: 999px;
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 14px;
+        transition:
+          background 0.25s,
+          color 0.25s;
+      }
+      nav.primary .cta:hover {
+        background: var(--ink);
+        color: var(--bg);
+        border-color: var(--ink);
+      }
+
+      /* ─────── HERO ─────── */
+      .hero {
+        padding: clamp(56px, 10vh, 120px) 0 clamp(80px, 14vh, 140px);
+        position: relative;
+      }
+      .hero-meta {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        margin-bottom: 40px;
+      }
+      .hero-meta .dash {
+        flex: 0 0 36px;
+        height: 1px;
+        background: var(--ink-soft);
+      }
+      .hero h1 {
+        font-family: var(--serif);
+        font-weight: 300;
+        font-size: clamp(52px, 8.5vw, 132px);
+        line-height: 0.94;
+        letter-spacing: -0.025em;
+        margin: 0 0 44px;
+        max-width: 18ch;
+        font-variation-settings:
+          'SOFT' 50,
+          'opsz' 144;
+      }
+      .hero h1 em {
+        font-style: italic;
+        color: var(--clay);
+        font-weight: 300;
+        font-variation-settings:
+          'SOFT' 100,
+          'opsz' 144;
+      }
+      .hero h1 .amp {
+        font-style: italic;
+        color: var(--sage);
+        font-weight: 300;
+      }
+      .hero-bottom {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 64px;
+        align-items: end;
+        margin-top: 24px;
+      }
+      .hero-lede {
+        max-width: 46ch;
+        color: var(--ink-soft);
+        font-size: 17px;
+        line-height: 1.65;
+      }
+      .hero-lede strong {
+        color: var(--ink);
+        font-weight: 500;
+      }
+      .hero-side {
+        border-left: 1px solid var(--rule);
+        padding-left: 32px;
+      }
+      .hero-side .label {
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--clay);
+        margin-bottom: 12px;
+      }
+      .hero-side .quote {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 300;
+        font-size: 22px;
+        line-height: 1.3;
+        color: var(--ink);
+      }
+      .hero-side .sig {
+        margin-top: 18px;
+        font-size: 12px;
+        color: var(--ink-soft);
+        letter-spacing: 0.08em;
+      }
+
+      /* botanical ornament */
+      .ornament {
+        position: absolute;
+        top: 80px;
+        right: 0;
+        width: 200px;
+        height: 200px;
+        opacity: 0.55;
+        pointer-events: none;
+      }
+      @media (max-width: 900px) {
+        .ornament {
+          display: none;
+        }
+      }
+
+      /* ─────── SECTION THÉRAPEUTES ─────── */
+      .section {
+        padding: clamp(80px, 12vh, 140px) 0;
+        border-top: 1px solid var(--rule);
+      }
+      .section-head {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 48px;
+        margin-bottom: 64px;
+        align-items: start;
+      }
+      .section-num {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 300;
+        font-size: 64px;
+        color: var(--clay);
+        line-height: 0.9;
+      }
+      .section-num small {
+        display: block;
+        font-size: 11px;
+        font-style: normal;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        margin-top: 8px;
+        font-family: var(--sans);
+      }
+      .section h2 {
+        font-family: var(--serif);
+        font-weight: 300;
+        font-size: clamp(36px, 5vw, 64px);
+        line-height: 1.02;
+        letter-spacing: -0.02em;
+        margin: 0 0 18px;
+        max-width: 16ch;
+      }
+      .section h2 em {
+        font-style: italic;
+        color: var(--sage);
+      }
+      .section-kicker {
+        max-width: 48ch;
+        color: var(--ink-soft);
+        font-size: 16px;
+      }
+
+      .therapists {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: clamp(20px, 2.5vw, 40px);
+      }
+      .card {
+        background: var(--bg-deep);
+        border: 1px solid var(--rule);
+        border-radius: 2px;
+        padding: 28px 28px 32px;
+        position: relative;
+        overflow: hidden;
+        transition:
+          transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1),
+          box-shadow 0.5s;
+      }
+      .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 18px 40px -20px rgba(28, 36, 24, 0.25);
+      }
+      .card::before {
+        content: '';
+        position: absolute;
+        inset: auto -30% -30% auto;
+        width: 70%;
+        height: 70%;
+        background: radial-gradient(circle, rgba(81, 107, 74, 0.18), transparent 70%);
+        pointer-events: none;
+      }
+      .card .portrait {
+        aspect-ratio: 4/5;
+        width: 100%;
+        border-radius: 1px;
+        overflow: hidden;
+        background: linear-gradient(180deg, #c7b896, #8a9470);
+        position: relative;
+        margin-bottom: 20px;
+        filter: sepia(0.15) contrast(0.95);
+      }
+      .card .portrait svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .card .num {
+        position: absolute;
+        top: 22px;
+        right: 22px;
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 20px;
+        color: var(--clay);
+      }
+      .card h3 {
+        font-family: var(--serif);
+        font-weight: 400;
+        font-size: 26px;
+        line-height: 1.1;
+        letter-spacing: -0.01em;
+        margin: 0 0 4px;
+      }
+      .card h3 em {
+        font-style: italic;
+        font-weight: 300;
+        color: var(--sage-deep);
+      }
+      .card .job {
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        margin-bottom: 14px;
+      }
+      .card .bio {
+        font-size: 14px;
+        color: var(--ink-soft);
+        line-height: 1.55;
+        margin-bottom: 22px;
+      }
+      .card .diplomas {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 18px;
+      }
+      .card .diplomas span {
+        font-size: 11px;
+        padding: 4px 10px;
+        border: 1px solid var(--rule);
+        border-radius: 999px;
+        color: var(--ink-soft);
+        background: rgba(255, 255, 255, 0.3);
+      }
+      .card-link {
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 15px;
+        color: var(--ink);
+        text-decoration: none;
+        border-bottom: 1px solid var(--ink);
+        padding-bottom: 2px;
+        transition:
+          color 0.25s,
+          border-color 0.25s;
+      }
+      .card-link:hover {
+        color: var(--clay);
+        border-color: var(--clay);
+      }
+
+      /* ─────── FEATURED ARTICLE ─────── */
+      .featured {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: clamp(32px, 6vw, 96px);
+        align-items: center;
+      }
+      .featured-img {
+        aspect-ratio: 4/5;
+        background:
+          radial-gradient(ellipse at 30% 20%, rgba(184, 99, 42, 0.5), transparent 60%),
+          linear-gradient(135deg, #3a4b32 0%, #6b8059 45%, #ccae7b 100%);
+        position: relative;
+        border-radius: 2px;
+        overflow: hidden;
+        filter: contrast(0.96) saturate(0.9);
+      }
+      .featured-img::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='1'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.35'/></svg>");
+        mix-blend-mode: multiply;
+        opacity: 0.6;
+      }
+      .featured-img .leaf {
+        position: absolute;
+        bottom: 18px;
+        right: 18px;
+        color: rgba(243, 235, 220, 0.85);
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 14px;
+        letter-spacing: 0.04em;
+      }
+      .featured-body .tag {
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--clay);
+        margin-bottom: 16px;
+        display: block;
+      }
+      .featured-body h2 {
+        font-family: var(--serif);
+        font-weight: 300;
+        font-size: clamp(32px, 4.6vw, 56px);
+        line-height: 1.04;
+        letter-spacing: -0.02em;
+        margin: 0 0 24px;
+        max-width: 16ch;
+      }
+      .featured-body h2 em {
+        font-style: italic;
+        color: var(--sage);
+      }
+      .featured-body p {
+        color: var(--ink-soft);
+        font-size: 16px;
+        line-height: 1.65;
+        max-width: 52ch;
+        margin: 0 0 28px;
+      }
+      .btn-read {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 22px 14px 28px;
+        border-radius: 999px;
+        background: var(--ink);
+        color: var(--bg);
+        text-decoration: none;
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 16px;
+        transition:
+          background 0.3s,
+          transform 0.3s;
+      }
+      .btn-read svg {
+        transition: transform 0.3s;
+      }
+      .btn-read:hover {
+        background: var(--clay);
+      }
+      .btn-read:hover svg {
+        transform: translateX(4px);
+      }
+
+      /* ─────── FOOTER ─────── */
+      footer {
+        margin-top: clamp(80px, 12vh, 140px);
+        padding: 48px 0 28px;
+        border-top: 1px solid var(--rule);
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 48px;
+      }
+      footer h4 {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 300;
+        font-size: 20px;
+        margin: 0 0 14px;
+      }
+      footer ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 14px;
+        color: var(--ink-soft);
+      }
+      footer ul li {
+        padding: 4px 0;
+      }
+      footer ul a {
+        color: inherit;
+        text-decoration: none;
+      }
+      footer ul a:hover {
+        color: var(--clay);
+      }
+      footer .col-brand p {
+        font-size: 14px;
+        color: var(--ink-soft);
+        max-width: 32ch;
+        line-height: 1.55;
+      }
+      .foot-bottom {
+        grid-column: 1/-1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 24px;
+        border-top: 1px solid var(--rule);
+        font-size: 12px;
+        color: var(--ink-soft);
+        letter-spacing: 0.06em;
+      }
+
+      @media (max-width: 900px) {
+        .hero-bottom {
+          grid-template-columns: 1fr;
+          gap: 36px;
+        }
+        .section-head {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+        .therapists {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+        .featured {
+          grid-template-columns: 1fr;
+          gap: 36px;
+        }
+        footer {
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+          gap: 28px;
+        }
+        footer .col-brand {
+          grid-column: 1/-1;
+        }
+        nav.primary {
+          display: none;
+        }
+      }
+      @media (max-width: 640px) {
+        .wrap {
+          padding: 0 18px;
+        }
+        .hero {
+          padding: 48px 0 64px;
+        }
+        .hero h1 {
+          font-size: clamp(40px, 11vw, 60px);
+        }
+        .hero-meta {
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+        .hero-meta .dash {
+          flex-basis: 24px;
+        }
+        .section {
+          padding: 60px 0;
+        }
+        .section-num {
+          font-size: 48px;
+        }
+        .featured-body h2 {
+          font-size: clamp(28px, 8vw, 40px);
+        }
+        .foot-bottom {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="rhizome" aria-hidden="true"></canvas>
+
+    <div class="wrap">
+      <header class="nav">
+        <div class="brand"><span class="brand-mark"></span>JuniverSanté <em>naturelle</em></div>
+        <nav class="primary">
+          <a href="#">Cercle</a>
+          <a href="#">Thérapeutes</a>
+          <a href="#">Ateliers</a>
+          <a href="#">Formations</a>
+          <a href="#">Journal</a>
+          <a class="cta" href="#">Prendre rendez-vous</a>
+        </nav>
+      </header>
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-meta">
+          <span class="dash"></span>
+          <span>№ 001 — Édition printemps 2026</span>
+          <span>·</span>
+          <span>Bourgogne, France</span>
+        </div>
+
+        <h1>Un cercle <em>de thérapeutes,</em><br />tissé au plus près <span class="amp">&amp;</span> du vivant.</h1>
+
+        <div class="hero-bottom">
+          <p class="hero-lede">
+            JuniverSanté rassemble des praticiens indépendants qui relient
+            <strong>médecines douces, savoirs botaniques et accompagnement du quotidien.</strong> Un réseau — plutôt
+            qu'une institution — pensé comme un herbier vivant : chaque thérapeute y apporte sa feuille, sa racine, sa
+            méthode.
+          </p>
+          <aside class="hero-side">
+            <div class="label">Manifeste · Extrait</div>
+            <p class="quote">
+              « Se connaître, se relier, prendre soin. Non pas à la place de la médecine conventionnelle — avec elle, à
+              côté d'elle, en complément. »
+            </p>
+            <div class="sig">— Charte du cercle, 2023</div>
+          </aside>
+        </div>
+
+        <svg class="ornament" viewBox="0 0 200 200" fill="none" stroke="#516B4A" stroke-width="0.7" opacity=".8">
+          <path
+            d="M100 20 Q95 80 60 100 Q40 110 50 140 Q58 160 100 160 Q142 160 150 140 Q160 110 140 100 Q105 80 100 20Z"
+          />
+          <path d="M100 60 Q85 100 70 110" />
+          <path d="M100 60 Q115 100 130 110" />
+          <path d="M100 90 Q90 120 80 130" />
+          <path d="M100 90 Q110 120 120 130" />
+          <circle cx="100" cy="20" r="2" fill="#B8632A" />
+          <circle cx="60" cy="100" r="1.5" fill="#516B4A" />
+          <circle cx="140" cy="100" r="1.5" fill="#516B4A" />
+        </svg>
+      </section>
+
+      <!-- THERAPISTS -->
+      <section class="section">
+        <div class="section-head">
+          <div class="section-num">II<small>Le cercle</small></div>
+          <div>
+            <h2>Douze praticiens, <em>une même attention</em> portée au vivant.</h2>
+            <p class="section-kicker">
+              Chaque thérapeute cultive une approche distincte — naturopathie, phytothérapie, soin énergétique — mais
+              tous partagent le même engagement : prendre le temps, écouter, accompagner sans promettre.
+            </p>
+          </div>
+        </div>
+
+        <div class="therapists">
+          <article class="card">
+            <div class="num">i.</div>
+            <div class="portrait">
+              <svg viewBox="0 0 200 250" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                  <radialGradient id="p1" cx=".5" cy=".3">
+                    <stop offset="0" stop-color="#D4C09A" />
+                    <stop offset="1" stop-color="#5C6B45" />
+                  </radialGradient>
+                </defs>
+                <rect width="200" height="250" fill="url(#p1)" />
+                <ellipse cx="100" cy="95" rx="38" ry="44" fill="#2B2418" opacity=".55" />
+                <path d="M40 250 Q40 165 100 160 Q160 165 160 250Z" fill="#2B2418" opacity=".55" />
+              </svg>
+            </div>
+            <h3>Vincent <em>Decoster</em></h3>
+            <div class="job">Naturopathe · Communication</div>
+            <p class="bio">
+              Accompagne les transitions de vie par la respiration consciente et le rééquilibrage alimentaire.
+            </p>
+            <div class="diplomas"><span>Naturopathie ISUPNAT</span><span>Yoga RYT-500</span></div>
+            <a class="card-link" href="#">Lire le profil →</a>
+          </article>
+
+          <article class="card">
+            <div class="num">ii.</div>
+            <div class="portrait">
+              <svg viewBox="0 0 200 250" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                  <radialGradient id="p2" cx=".5" cy=".3">
+                    <stop offset="0" stop-color="#E8C9A0" />
+                    <stop offset="1" stop-color="#8B5A3C" />
+                  </radialGradient>
+                </defs>
+                <rect width="200" height="250" fill="url(#p2)" />
+                <ellipse cx="100" cy="90" rx="40" ry="46" fill="#2B1810" opacity=".5" />
+                <path d="M40 250 Q40 160 100 155 Q160 160 160 250Z" fill="#2B1810" opacity=".5" />
+              </svg>
+            </div>
+            <h3>Joly <em>Karine</em></h3>
+            <div class="job">Naturothérapie holistique</div>
+            <p class="bio">
+              Approche intégrative où la plante, le toucher et la parole travaillent en triangulation lente.
+            </p>
+            <div class="diplomas"><span>Herboristerie</span><span>Réflexologie plantaire</span></div>
+            <a class="card-link" href="#">Lire le profil →</a>
+          </article>
+
+          <article class="card">
+            <div class="num">iii.</div>
+            <div class="portrait">
+              <svg viewBox="0 0 200 250" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                  <radialGradient id="p3" cx=".5" cy=".3">
+                    <stop offset="0" stop-color="#C5B294" />
+                    <stop offset="1" stop-color="#3F4B2E" />
+                  </radialGradient>
+                </defs>
+                <rect width="200" height="250" fill="url(#p3)" />
+                <ellipse cx="100" cy="92" rx="36" ry="42" fill="#1E2414" opacity=".6" />
+                <path d="M40 250 Q40 162 100 158 Q160 162 160 250Z" fill="#1E2414" opacity=".6" />
+              </svg>
+            </div>
+            <h3>Périqué <em>Sandrine</em></h3>
+            <div class="job">Énergétique · Traditions anciennes</div>
+            <p class="bio">
+              Pose les mains sur ce que les mots n'arrivent pas encore à dire. Travaille en cabinet et en nature.
+            </p>
+            <div class="diplomas"><span>Reiki Usui</span><span>Fleurs de Bach</span></div>
+            <a class="card-link" href="#">Lire le profil →</a>
+          </article>
+        </div>
+      </section>
+
+      <!-- FEATURED ARTICLE -->
+      <section class="section">
+        <div class="featured">
+          <div class="featured-img">
+            <span class="leaf">Planche — Achillea millefolium</span>
+          </div>
+          <div class="featured-body">
+            <span class="tag">Journal · Dossier du mois</span>
+            <h2>Ce que les plantes sauvages <em>ont à nous dire</em> sur nos saisons intérieures.</h2>
+            <p>
+              Trois thérapeutes du cercle se sont retrouvés pendant une semaine en Bourgogne pour documenter la
+              cueillette de printemps. Un carnet de terrain sur l'attention, la lenteur, et ce moment précis où une
+              plante cesse d'être un décor pour redevenir un allié.
+            </p>
+            <a class="btn-read" href="#">
+              Lire le dossier
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none" stroke="currentColor" stroke-width="1.4">
+                <path d="M1 6h15m0 0L11 1m5 5l-5 5" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer>
+        <div class="col-brand">
+          <h4>JuniverSanté naturelle</h4>
+          <p>
+            Un cercle de thérapeutes indépendants, relié autour d'une charte commune et d'un engagement pour une santé
+            reliée au vivant.
+          </p>
+        </div>
+        <div>
+          <h4>Cercle</h4>
+          <ul>
+            <li><a href="#">Charte</a></li>
+            <li><a href="#">Thérapeutes</a></li>
+            <li><a href="#">Rejoindre</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Pratique</h4>
+          <ul>
+            <li><a href="#">Ateliers</a></li>
+            <li><a href="#">Formations</a></li>
+            <li><a href="#">Calendrier</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:contact@juniversante.fr">contact@juniversante.fr</a></li>
+            <li>Bourgogne, France</li>
+          </ul>
+        </div>
+        <div class="foot-bottom">
+          <span>© 2026 JuniverSanté — Tous droits réservés.</span>
+          <span>Mentions légales · Confidentialité</span>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      /* Rhizome — réseau organique façon botanique / mycélium */
+      (() => {
+        const c = document.getElementById('rhizome');
+        const ctx = c.getContext('2d');
+        let w,
+          h,
+          dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const colors = { line: 'rgba(81,107,74,0.22)', node: 'rgba(184,99,42,0.6)', nodeSoft: 'rgba(81,107,74,0.45)' };
+        const NODES = 70;
+        const nodes = [];
+        function resize() {
+          w = c.width = innerWidth * dpr;
+          h = c.height = innerHeight * dpr;
+          c.style.width = innerWidth + 'px';
+          c.style.height = innerHeight + 'px';
+        }
+        resize();
+        addEventListener('resize', () => {
+          resize();
+          build();
+        });
+        function build() {
+          nodes.length = 0;
+          for (let i = 0; i < NODES; i++) {
+            nodes.push({
+              x: Math.random() * w,
+              y: Math.random() * h,
+              vx: (Math.random() - 0.5) * 0.12 * dpr,
+              vy: (Math.random() - 0.5) * 0.12 * dpr,
+              r: (Math.random() * 1.6 + 0.6) * dpr,
+              s: Math.random(),
+            });
+          }
+        }
+        build();
+        const maxDist = 170 * dpr;
+        function frame(t) {
+          ctx.clearRect(0, 0, w, h);
+          // connections
+          for (let i = 0; i < nodes.length; i++) {
+            const a = nodes[i];
+            a.x += a.vx;
+            a.y += a.vy;
+            if (a.x < 0 || a.x > w) a.vx *= -1;
+            if (a.y < 0 || a.y > h) a.vy *= -1;
+            for (let j = i + 1; j < nodes.length; j++) {
+              const b = nodes[j];
+              const dx = a.x - b.x,
+                dy = a.y - b.y;
+              const d = Math.hypot(dx, dy);
+              if (d < maxDist) {
+                const o = (1 - d / maxDist) * 0.6;
+                ctx.strokeStyle = `rgba(81,107,74,${o * 0.55})`;
+                ctx.lineWidth = 0.6 * dpr;
+                ctx.beginPath();
+                // légère courbure organique — rhizome
+                const mx = (a.x + b.x) / 2 + Math.sin(t / 2000 + i) * 6 * dpr;
+                const my = (a.y + b.y) / 2 + Math.cos(t / 2000 + j) * 6 * dpr;
+                ctx.moveTo(a.x, a.y);
+                ctx.quadraticCurveTo(mx, my, b.x, b.y);
+                ctx.stroke();
+              }
+            }
+          }
+          // nodes
+          for (const n of nodes) {
+            const pulse = 0.6 + 0.4 * Math.sin(t / 1400 + n.s * 6);
+            ctx.fillStyle = n.s > 0.88 ? colors.node : colors.nodeSoft;
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, n.r * pulse, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          requestAnimationFrame(frame);
+        }
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          requestAnimationFrame(frame);
+        } else {
+          // static fallback
+          frame(0);
+        }
+      })();
+    </script>
+  </body>
+</html>

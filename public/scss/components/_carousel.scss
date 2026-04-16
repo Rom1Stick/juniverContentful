@@ -1,119 +1,144 @@
-@use '../abstracts/variables' as *;
+@use "../abstracts/variables" as v;
 
-h2 {
-  font-size: 1.2rem;
-  color: $secondary-color;
-  margin-bottom: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-align: center;
+.therapists-top {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+  align-items: flex-start;
 }
 
+.carousel-nav {
+  display: flex;
+  gap: 12px;
+}
+
+.carousel-nav button,
+#prev-profile,
+#next-profile {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: v.$cream-warm;
+  border: 1px solid v.$rule;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  color: v.$moss;
+  font-size: 20px;
+  line-height: 1;
+  transition:
+    background 0.25s,
+    color 0.25s,
+    transform 0.25s;
+}
+
+.carousel-nav button:hover,
+#prev-profile:hover,
+#next-profile:hover {
+  background: v.$moss;
+  color: v.$cream;
+  transform: translateY(-1px);
+}
+
+/* Marquee infini — défilement automatique */
 .carousel-container {
   position: relative;
+  overflow: hidden;
+  margin-inline: calc(-1 * clamp(16px, 4vw, 32px));
+  padding-inline: clamp(16px, 4vw, 32px);
+
+  /* Fondus latéraux pour masquer l'entrée/sortie des cards */
+  /* stylelint-disable-next-line property-no-vendor-prefix */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 3%,
+    black 97%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%);
+}
+
+.carousel-track {
+  --carousel-duration: 30s;
+  --carousel-nudge: 0px;
+
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 350px;
-  margin: 2rem auto;
-  perspective: 1000px;
+  gap: 20px;
+  width: max-content;
+  animation: carousel-scroll var(--carousel-duration) linear infinite;
+  transform: translateX(var(--carousel-nudge));
 
-  .carousel-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(46, 139, 87, 0.7);
-    color: white;
-    border: 2px solid rgba(46, 139, 87, 0.9);
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5rem;
-    transition: background 0.3s ease, transform 0.3s ease;
-
-    &:hover {
-      background: rgba(46, 139, 87, 0.9);
-    }
-  }
-
-  #prev-profile {
-    left: 5%;
-  }
-
-  #next-profile {
-    right: 5%;
-  }
-
-  .profile-card {
-    position: absolute;
-    transition: transform 1s ease-in-out, opacity 1s ease-in-out;
-    opacity: 0;
-    transform: translateX(100%) scale(0.8);
-    z-index: 0;
-    width: 70%;
-    max-width: 300px;
-    text-align: center;
-    background: white;
-    padding: 1.5rem;
-    border-radius: $border-radius;
-    box-shadow: $box-shadow;
-
-    &.active {
-      opacity: 1;
-      transform: translateX(0) scale(1);
-      z-index: 2;
-    }
-
-    &.prev {
-      opacity: 0.7;
-      transform: translateX(-120%) scale(0.9);
-      z-index: 1;
-    }
-
-    &.next {
-      opacity: 0.7;
-      transform: translateX(120%) scale(0.9);
-      z-index: 1;
-    }
-
-    img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    h3 {
-      font-size: 1.2rem;
-      color: $secondary-color;
-      margin-bottom: 0.5rem;
-    }
-
-    p {
-      font-size: 1rem;
-      color: $text-color;
-      margin-bottom: 1rem;
-    }
-
-    a {
-      text-decoration: none;
-      font-weight: bold;
-      color: $primary-color;
-      transition: color 0.3s ease;
-
-      &:hover {
-        color: $secondary-color;
-      }
-    }
+  &.is-paused {
+    animation-play-state: paused;
+    transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
 }
 
+.carousel-container:hover .carousel-track,
+.carousel-container:focus-within .carousel-track {
+  animation-play-state: paused;
+}
 
+/* Respect des préférences système "reduce motion" */
+@media (prefers-reduced-motion: reduce) {
+  .carousel-track {
+    animation: none;
+    transform: none;
+    flex-wrap: nowrap;
+  }
 
+  .carousel-container {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    mask-image: none;
+  }
 
+  .t-card {
+    scroll-snap-align: start;
+  }
+}
 
+@keyframes carousel-scroll {
+  from {
+    transform: translateX(var(--carousel-nudge));
+  }
+
+  to {
+    transform: translateX(calc(-50% + var(--carousel-nudge)));
+  }
+}
+
+/* Largeur fixe des cards dans le track (sinon flex squeeze) */
+.carousel-track .t-card {
+  flex: 0 0 280px;
+  width: 280px;
+}
+
+@media (width >= 640px) {
+  .carousel-track .t-card {
+    flex: 0 0 300px;
+    width: 300px;
+  }
+}
+
+@media (width >= 1000px) {
+  .therapists-top {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: end;
+    margin-bottom: 32px;
+    gap: 24px;
+  }
+}
+
+.carousel-empty {
+  text-align: center;
+  color: v.$ink-soft;
+  padding: 24px 0;
+}
+
+#profiles-carousel {
+  margin-top: 0;
+}

@@ -1,629 +1,278 @@
-@use '../abstracts/variables' as *;
+@use "../abstracts/variables" as v;
 
-/* Conteneur principal */
 .calendar-main {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 0;
+}
+
+#upcoming-events,
+#past-events-section {
+  margin-bottom: 48px;
+}
+
+#upcoming-events h2,
+#past-events-section h2,
+#calendar-container h2 {
+  font-family: v.$font-display;
+  font-weight: 400;
+  font-size: clamp(26px, 4.4vw, 42px);
+  color: v.$moss-deep;
+  margin: 0 0 20px;
+  letter-spacing: -0.01em;
+}
+
+#event-list,
+#past-event-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  
-  /* Section des événements */
-  #upcoming-events, #past-events-section {
-    background: white;
-    padding: 1.5rem;
-    border-radius: $border-radius;
-    box-shadow: $box-shadow;
-    
-    h2 {
-      margin-bottom: 1rem;
-      color: $primary-color;
-    }
-  }
-  
-  #event-list, #past-event-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    
-    li {
-      background: $background-color;
-      border: 1px solid hsl(0, 0%, 84%);
-      border-radius: 5px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      transition: box-shadow 0.3s ease;
-      
-      &:hover {
-        box-shadow: $box-shadow;
-      }
-      
-      h3 {
-        font-size: 1.2rem;
-        color: $primary-color;
-        margin-bottom: 0.5rem;
-      }
-    }
-  }
-  
-  /* Bouton pour afficher les événements passés */
-  #toggle-past-events {
-    display: block;
-    margin: 0 auto;
-    background: $primary-color;
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    border-radius: $border-radius;
+  gap: 14px;
+}
+
+#event-list li,
+#past-event-list li {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  margin: 0;
+}
+
+#toggle-past-events {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 24px 0;
+  padding: 10px 18px;
+  background: v.$cream-warm;
+  border: 1px solid v.$rule;
+  border-radius: v.$radius-pill;
+  color: v.$moss;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background 0.25s,
+    color 0.25s;
+}
+
+#toggle-past-events:hover {
+  background: v.$moss;
+  color: v.$cream;
+}
+
+#calendar {
+  background: v.$cream-warm;
+  border-radius: v.$radius-lg;
+  border: 1px solid v.$rule;
+  padding: 24px;
+  margin-top: 32px;
+}
+
+#calendar .calendar-header {
+  text-align: center;
+  font-family: v.$font-display;
+  font-size: 22px;
+  font-weight: 400;
+  color: v.$moss-deep;
+  padding: 0 0 14px;
+  border-bottom: 1px solid v.$rule;
+  background: transparent;
+  margin-bottom: 16px;
+}
+
+#calendar .calendar-navigation {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 0 14px;
+}
+
+#calendar .calendar-navigation button {
+  background: v.$cream;
+  color: v.$moss;
+  border: 1px solid v.$rule;
+  border-radius: v.$radius-pill;
+  padding: 8px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background 0.25s,
+    color 0.25s;
+}
+
+#calendar .calendar-navigation button:hover {
+  background: v.$moss;
+  color: v.$cream;
+}
+
+#calendar .calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  padding: 0;
+}
+
+#calendar .calendar-cell {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: v.$cream;
+  color: v.$ink;
+  cursor: pointer;
+  position: relative;
+  font-size: 13px;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+#calendar .calendar-cell:hover {
+  background: #fff;
+}
+
+#calendar .calendar-cell.empty {
+  background: transparent;
+  cursor: default;
+}
+
+#calendar .calendar-cell.has-event {
+  font-weight: 600;
+  background: rgba(v.$honey, 0.18);
+  cursor: pointer;
+}
+
+#calendar .calendar-cell.has-event:hover {
+  background: rgba(v.$honey, 0.32);
+  transform: scale(1.04);
+}
+
+#calendar .calendar-cell.has-event:focus-visible {
+  outline: 2px solid v.$honey;
+  outline-offset: 2px;
+}
+
+#calendar .calendar-cell.has-event::before {
+  content: "";
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  background: v.$clay;
+  border-radius: 50%;
+}
+
+#calendar .calendar-cell.today {
+  background: v.$moss;
+  color: v.$cream;
+}
+
+.event-badge {
+  display: none;
+}
+
+/* Rendre chaque évènement de la liste cliquable */
+.calendar-page .ev {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 16px;
+  background: v.$cream-warm;
+  border: 1px solid v.$rule;
+  border-radius: v.$radius-md;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &.is-clickable {
     cursor: pointer;
-    transition: background 0.3s ease;
-    
-    &:hover {
-      background: $secondary-color;
+
+    &:hover,
+    &:focus-visible {
+      border-color: v.$honey;
+      transform: translateY(-1px);
+      box-shadow: v.$shadow-soft;
+      outline: none;
     }
   }
-  
-  /* Calendrier */
-  #calendar {
-    background: white;
-    border-radius: $border-radius;
-    box-shadow: $box-shadow;
-    
-    .calendar-header {
-      text-align: center;
-      background: $primary-color;
-      color: white;
-      padding: 1rem;
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-    
-    .calendar-navigation {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.5rem 1rem;
-      
-      button {
-        background: $primary-color;
-        color: white;
-        border: none;
-        border-radius: $border-radius;
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: background 0.3s ease;
-        
-        &:hover {
-          background: $secondary-color;
-        }
-      }
-    }
-    
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr); // 7 colonnes pour les jours
-      gap: 0.5rem;
-      padding: 1rem;
-      
-      .calendar-cell {
-        background: #f0f0f0;
-        color: $text-color;
-        border-radius: 5px;
-        text-align: center;
-        position: relative;
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        transition: transform 0.2s ease, background 0.3s ease;
-        
-        &:hover {
-          transform: scale(1.05);
-          background: lighten($primary-color, 40%);
-        }
-        
-        &.empty {
-          background: transparent;
-          cursor: default;
-        }
-        
-        &.has-event {
-          position: relative;
-          font-weight: bold;
-          
-          &::before {
-            content: '';
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            width: 10px;
-            height: 10px;
-            background-color: #ff5722; // Pastille rouge
-            border-radius: 50%;
-            z-index: 1;
-          }
-        }
-      }
-    }
-  }
-}
-  
-  /* Responsive Design */
-  @media (max-width: 480px) {
-    .calendar-grid {
-      gap: 0.2rem;
-  }
 
-  .calendar-cell {
-    padding: 0.5rem;
-    font-size: 0.8rem;
-  }
-
-  #event-list li, #past-event-list li {
-    font-size: 0.9rem;
-    padding: 0.8rem;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1023px) {
-  .calendar-cell {
-    font-size: 1rem;
-    padding: 0.8rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  #calendar {
-    max-width: 70%;
-    margin: 0 auto;
-  }
-
-  .calendar-grid {
-    gap: 0.8rem;
-  }
-
-  .calendar-cell {
-    padding: 1rem;
-    font-size: 1rem;
-  }
-
-  #event-list li, #past-event-list li {
-    font-size: 1rem;
-  }
-}
-
-.calendar-layout {
-    display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-.calendar-content {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-}
-
-.pricing-section {
-    background: $light-background;
-    padding: 1.5rem;
-    border-radius: $border-radius;
-    height: fit-content;
-    position: sticky;
-    top: 2rem;
-
-    h2 {
-        text-align: center;
-        margin-bottom: 1.5rem;
-        color: $text-color;
-        font-size: 1.8rem;
-    }
-}
-
-.pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1rem;
-    margin-top: 1.5rem;
-}
-
-.pricing-card {
-    background: $light-background;
-    border-radius: $border-radius;
-    padding: 1.2rem;
-    box-shadow: $box-shadow;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-
-    &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    &.featured {
-        border: 2px solid $primary-color;
-        background: lighten($primary-color, 45%);
-    }
-
-    h3 {
-        color: $text-color;
-        font-size: 1.1rem;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-    }
-}
-
-.price-details {
-    margin: 1rem 0;
-    padding: 0.5rem 0;
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.price-member,
-.price-non-member {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.4rem 0;
-    
-    .label {
-        font-size: 0.9rem;
-        color: $text-color;
-        font-weight: 500;
-    }
-
-    .price {
-        font-size: 1.3rem;
-        font-weight: bold;
-        color: $primary-color;
-    }
-}
-
-.price-non-member .price {
-    color: darken($primary-color, 10%); // Légèrement plus foncé pour différencier
-}
-
-.features {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-
-    li {
-        padding: 0.4rem 0;
-        font-size: 0.9rem;
-        color: $light-gray;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        display: flex;
-        align-items: center;
-        gap: 0.3rem;
-
-        &::before {
-            content: '✓';
-            color: $primary-color;
-            font-weight: bold;
-        }
-
-        &:last-child {
-            border-bottom: none;
-        }
-    }
-}
-
-@media (max-width: 1024px) {
-    .calendar-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .pricing-section {
-        position: static;
-        margin-top: 2rem;
-    }
-}
-
-/* Bouton des tarifs */
-.pricing-button {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: $primary-color;
-    color: $text-colorSecondary;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: $border-radius;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 1rem 0;
-    box-shadow: $box-shadow;
-    
-    &:hover {
-        background: $secondary-color;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-}
-
-/* Modal des tarifs */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    overflow: auto;
-    animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.modal-content {
-    background: $text-colorSecondary;
-    margin: 5% auto;
-    padding: 2rem;
-    border-radius: $border-radius;
-    width: 92%;
-    max-width: 700px;
-    position: relative;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    animation: slideIn 0.3s ease;
-
-    h2 {
-        text-align: center;
-        margin-bottom: 1.5rem;
-        color: $text-color;
-        font-size: 1.6rem;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-    }
-}
-
-@keyframes slideIn {
-    from { transform: translateY(-50px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-.close-modal {
-    position: absolute;
-    right: 1.5rem;
-    top: 1rem;
-    font-size: 2rem;
-    font-weight: bold;
-    color: $text-color;
-    cursor: pointer;
-    transition: color 0.3s ease;
-    
-    &:hover {
-        color: $primary-color;
-    }
-}
-
-.pricing-options, .pricing-option, .option-details, 
-.price-category, .featured-badge, .features {
-    // Ces styles seront supprimés
-}
-
-.tarif-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    margin-bottom: 1.5rem;
-    font-family: $font-family;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-    border-radius: $border-radius;
-    overflow: hidden;
-    border: 1px solid rgba(0,0,0,0.05);
-    
-    th, td {
-        padding: 1rem 1.2rem;
-        text-align: center;
-        position: relative;
-    }
-    
-    th {
-        background: linear-gradient(135deg, $primary-color, darken($primary-color, 10%));
-        color: white;
-        font-weight: 600;
-        font-size: 1.05rem;
-        letter-spacing: 0.3px;
-        text-transform: uppercase;
-        border-bottom: 3px solid darken($primary-color, 15%);
-        
-        &:first-child {
-            text-align: left;
-            border-top-left-radius: $border-radius - 1px;
-        }
-        
-        &:last-child {
-            border-top-right-radius: $border-radius - 1px;
-        }
-    }
-    
-    tr {
-        background-color: white;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        
-        &:nth-child(even) {
-            background-color: rgba($light-background, 0.4);
-        }
-        
-        &:last-child td {
-            border-bottom: none;
-            
-            &:first-child {
-                border-bottom-left-radius: $border-radius - 1px;
-            }
-            
-            &:last-child {
-                border-bottom-right-radius: $border-radius - 1px;
-            }
-        }
-        
-        &:hover {
-            background-color: lighten($primary-color, 48%);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            z-index: 1;
-            position: relative;
-        }
-    }
-    
-    td {
-        border-bottom: 1px solid rgba(0,0,0,0.08);
-        font-size: 1.15rem;
-        color: $text-color;
-        
-        &:first-child {
-            text-align: left;
-            font-weight: 600;
-            position: relative;
-            border-left: 1px solid transparent;
-        }
-    }
-    
-    .highlight-row {
-        background: linear-gradient(to right, rgba($primary-color, 0.1), rgba($primary-color, 0.05));
-        border-left: 4px solid $primary-color;
-        position: relative;
-        
-        td {
-            font-weight: 600;
-            color: darken($text-color, 10%);
-            
-            &:not(:first-child) {
-                color: darken($primary-color, 8%);
-            }
-        }
-        
-        &:hover {
-            background: linear-gradient(to right, rgba($primary-color, 0.15), rgba($primary-color, 0.08));
-            transform: translateY(-2px) scale(1.01);
-        }
-    }
-    
-    .recommended {
-        display: inline-block;
-        position: absolute;
-        top: 0;
-        right: 0;
-        background: linear-gradient(135deg, $primary-color, darken($primary-color, 10%));
-        color: white;
-        font-size: 0.7rem;
-        font-weight: 700;
-        padding: 0.25rem 0.6rem;
-        border-radius: 0 0 0 5px;
-        transform: translateY(-50%);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
-}
-
-.pricing-note {
+  .date {
     text-align: center;
-    font-size: 0.9rem;
-    color: rgba(0, 0, 0, 0.6);
-    background: $light-background;
-    padding: 0.8rem 1rem;
-    border-radius: $border-radius;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    border: 1px solid rgba(0,0,0,0.05);
-    margin-top: 1rem;
-    
-    p {
-        margin: 0;
-    }
-}
+    min-width: 46px;
 
-@media (max-width: 768px) {
-    .modal-content {
-        width: 95%;
-        margin: 10% auto;
-        padding: 1.5rem;
-        
-        h2 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
-        }
+    .d {
+      font-family: v.$font-display;
+      font-size: 1.6rem;
+      color: v.$moss-deep;
+      line-height: 1;
     }
-    
-    .tarif-table {
-        th, td {
-            padding: 0.7rem 0.5rem;
-        }
-        
-        th {
-            font-size: 0.9rem;
-        }
-        
-        td {
-            font-size: 0.95rem;
-        }
-        
-        .recommended {
-            font-size: 0.6rem;
-            padding: 0.15rem 0.4rem;
-        }
+
+    .m {
+      font-size: 0.75rem;
+      color: v.$clay;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
     }
-}
+  }
 
-// Style pour la section d'adhésion
-.adhesion-section {
-    margin-top: 2rem;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.8rem;
-}
+  .info h5 {
+    margin: 0;
+    font-family: v.$font-display;
+    font-size: 1.05rem;
+    color: v.$moss-deep;
+    font-weight: 400;
+  }
 
-.adhesion-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.8rem;
-    background: linear-gradient(135deg, $secondary-color, darken($secondary-color, 10%));
-    color: white;
+  .info .loc {
+    font-size: 0.85rem;
+    color: v.$ink-soft;
+    margin-top: 2px;
+  }
+
+  .info .see-details {
+    font-size: 0.78rem;
+    color: v.$moss;
+    margin-top: 6px;
+    font-weight: 500;
+  }
+
+  .cta {
+    padding: 8px 14px;
+    background: v.$moss;
+    color: v.$cream;
+    border-radius: v.$radius-pill;
     text-decoration: none;
-    font-weight: 600;
-    font-size: 1.1rem;
-    padding: 0.9rem 1.8rem;
-    border-radius: $border-radius;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border: none;
-    cursor: pointer;
-    
-    i {
-        font-size: 1.2rem;
-    }
-    
+    font-size: 0.85rem;
+    white-space: nowrap;
+    transition: background 0.2s ease;
+
     &:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-        background: linear-gradient(135deg, darken($secondary-color, 5%), darken($secondary-color, 15%));
+      background: v.$moss-deep;
     }
-    
-    &:active {
-        transform: translateY(-1px);
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-    }
+  }
 }
 
-.adhesion-info {
-    font-size: 0.9rem;
-    color: rgba(0, 0, 0, 0.6);
-    margin: 0;
+@media (width <= 640px) {
+  .calendar-page .ev {
+    grid-template-columns: auto 1fr;
+    row-gap: 10px;
+
+    .cta {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+  }
 }
 
+@media (width >= 1001px) {
+  .calendar-main-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 0.9fr;
+    gap: 48px;
+    align-items: start;
+  }
+}

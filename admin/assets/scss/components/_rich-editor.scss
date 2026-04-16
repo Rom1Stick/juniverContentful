@@ -1,0 +1,189 @@
+@use "../abstracts/tokens" as v;
+
+body.admin-shell .rich-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1.5px solid v.$rule;
+  border-radius: v.$radius-sm;
+  background: v.$cream;
+  overflow: hidden;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:focus-within {
+    border-color: v.$honey;
+    box-shadow: 0 0 0 3px rgba(v.$honey, 0.18);
+  }
+}
+
+body.admin-shell .rich-editor__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+  background: v.$cream-warm;
+  border-bottom: 1px solid v.$rule;
+}
+
+body.admin-shell .rich-editor .re-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  font-family: v.$font-body;
+  font-size: 0.9rem;
+  color: v.$ink;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background: rgba(v.$moss, 0.12);
+    color: v.$moss-deep;
+  }
+
+  &.is-active {
+    background: rgba(v.$honey, 0.25);
+    color: v.$moss-deep;
+  }
+
+  &.is-loading {
+    background: rgba(v.$honey, 0.2);
+    cursor: wait;
+  }
+
+  &[disabled] {
+    opacity: 0.8;
+    pointer-events: none;
+  }
+
+  sub {
+    font-size: 0.65em;
+    margin-left: 1px;
+  }
+}
+
+body.admin-shell .rich-editor .re-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(v.$moss, 0.25);
+  border-top-color: v.$moss;
+  border-radius: 50%;
+  display: inline-block;
+  animation: re-spin 0.7s linear infinite;
+}
+
+@keyframes re-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+body.admin-shell .rich-editor .re-sep {
+  width: 1px;
+  height: 22px;
+  background: v.$rule;
+  margin: 0 4px;
+}
+
+body.admin-shell .rich-editor__palette {
+  display: flex;
+  gap: 6px;
+  padding: 6px 10px;
+  background: v.$cream-warm;
+  border-bottom: 1px solid v.$rule;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+body.admin-shell .rich-editor .re-color-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid v.$cream;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px v.$rule;
+  transition: transform 0.15s ease;
+
+  &:hover {
+    transform: scale(1.15);
+  }
+}
+
+body.admin-shell .rich-editor__area {
+  min-height: 220px;
+  max-height: 50vh;
+  padding: 14px 16px;
+  font-family: v.$font-body;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: v.$ink;
+  background: v.$cream;
+  overflow-y: auto;
+  outline: none;
+
+  &:empty::before {
+    content: attr(data-placeholder);
+    color: rgba(v.$ink-soft, 0.7);
+    font-style: italic;
+  }
+
+  h2 {
+    font-family: v.$font-display;
+    font-size: 1.5rem;
+    color: v.$moss-deep;
+    margin: 1.2rem 0 0.5rem;
+    font-weight: 400;
+  }
+
+  h3 {
+    font-family: v.$font-display;
+    font-size: 1.2rem;
+    color: v.$moss;
+    margin: 1rem 0 0.4rem;
+    font-weight: 400;
+  }
+
+  p {
+    margin: 0 0 0.7rem;
+  }
+
+  ul,
+  ol {
+    padding-left: 1.4rem;
+    margin: 0 0 0.7rem;
+  }
+
+  blockquote {
+    margin: 0.8rem 0;
+    padding: 0.5rem 1rem;
+    border-left: 3px solid v.$honey;
+    color: v.$ink-soft;
+    font-family: v.$font-script;
+    font-size: 1.05rem;
+  }
+
+  a {
+    color: v.$moss;
+    text-decoration: underline;
+    text-decoration-color: rgba(v.$honey, 0.7);
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    margin: 0.6rem 0;
+    border-radius: v.$radius-sm;
+  }
+}

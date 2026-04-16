@@ -2,50 +2,59 @@ import { fetchContent } from './contentful.js';
 import { displayArticles } from './articles.js';
 
 let allArticles = [];
+let lastIncludes = null;
 
 export async function fetchCategories() {
-    return await fetchContent('category');
+  return fetchContent('category');
 }
 
-export async function displayCategories(articles, containerId = 'category-list') {
-    allArticles = articles; // Stocke les articles pour les filtres
-    const categories = await fetchCategories();
-    const categoryList = document.getElementById(containerId);
+export async function displayCategories(articles, containerId = 'category-list', includes = null) {
+  allArticles = articles;
+  lastIncludes = includes;
+  const categories = await fetchCategories();
+  const list = document.getElementById(containerId);
+  if (!list) return;
 
-    categoryList.innerHTML = "";
+  list.innerHTML = '';
 
-    if (categories.length === 0) {
-        categoryList.innerHTML = "<p>Aucune catégorie disponible.</p>";
-        return;
-    }
+  // Bouton "Tous"
+  const allBtn = document.createElement('button');
+  allBtn.type = 'button';
+  allBtn.className = 'active';
+  allBtn.textContent = 'Tous';
+  allBtn.addEventListener('click', () => {
+    setActive(allBtn);
+    displayArticles(allArticles, 'content', lastIncludes);
+  });
+  list.appendChild(allBtn);
 
-    categories.forEach(category => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <button data-category-id="${category.sys.id}">${category.fields.name}</button>
-        `;
-        categoryList.appendChild(li);
+  if (!categories.length) return;
+
+  categories.forEach((cat) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.dataset.categoryId = cat.sys.id;
+    btn.textContent = cat.fields.name;
+    btn.addEventListener('click', () => {
+      setActive(btn);
+      displayArticles(filterByCategory(cat.sys.id), 'content', lastIncludes);
     });
+    list.appendChild(btn);
+  });
 
-    // Ajoute des événements pour filtrer les articles
-    document.querySelectorAll(`#${containerId} button`).forEach(button => {
-        button.addEventListener('click', (e) => {
-            const categoryId = e.target.getAttribute('data-category-id');
-            const filteredArticles = filterArticlesByCategory(categoryId);
-            displayArticles(filteredArticles);
-        });
-    });
-
-    // Bouton pour réinitialiser les filtres
-    const resetButton = document.createElement('button');
-    resetButton.textContent = "Tous les articles";
-    resetButton.addEventListener('click', () => displayArticles(allArticles));
-    categoryList.appendChild(resetButton);
+  function setActive(target) {
+    list.querySelectorAll('button').forEach((b) => b.classList.remove('active'));
+    target.classList.add('active');
+  }
 }
 
 export function filterArticlesByCategory(categoryId) {
-    return allArticles.filter(article => {
-        const categories = article.fields.category || [];
-        return categories.some(cat => cat.sys.id === categoryId);
-    });
+  return filterByCategory(categoryId);
+}
+
+function filterByCategory(categoryId) {
+  return allArticles.filter((article) => {
+    const cats = article.fields.category || [];
+    return cats.some((c) => c.sys.id === categoryId);
+  });
 }

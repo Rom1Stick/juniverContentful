@@ -1,0 +1,146 @@
+@use "../abstracts/tokens" as v;
+
+.admin-shell input[type="text"],
+.admin-shell input[type="email"],
+.admin-shell input[type="password"],
+.admin-shell input[type="tel"],
+.admin-shell input[type="url"],
+.admin-shell input[type="number"],
+.admin-shell input[type="datetime-local"],
+.admin-shell input[type="date"],
+.admin-shell input[type="time"],
+.admin-shell input[type="search"],
+.admin-shell select,
+.admin-shell textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background: v.$cream;
+  border: 1.5px solid v.$rule;
+  border-radius: v.$radius-sm;
+  font-family: v.$font-body;
+  font-size: 15px;
+  color: v.$ink;
+  transition:
+    border-color 0.25s v.$ease,
+    box-shadow 0.25s v.$ease,
+    background 0.25s v.$ease;
+}
+
+.admin-shell input[type="text"]:focus,
+.admin-shell input[type="email"]:focus,
+.admin-shell input[type="password"]:focus,
+.admin-shell input[type="tel"]:focus,
+.admin-shell input[type="url"]:focus,
+.admin-shell input[type="number"]:focus,
+.admin-shell input[type="datetime-local"]:focus,
+.admin-shell input[type="date"]:focus,
+.admin-shell input[type="time"]:focus,
+.admin-shell input[type="search"]:focus,
+.admin-shell select:focus,
+.admin-shell textarea:focus {
+  outline: none;
+  border-color: v.$honey;
+  box-shadow: 0 0 0 3px rgba(227, 184, 79, 18%);
+  background: v.$cream-warm;
+}
+
+.admin-shell textarea {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.admin-shell input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  background: v.$cream-warm;
+  border: 1.5px dashed v.$rule;
+  border-radius: v.$radius-sm;
+  color: v.$ink-soft;
+  cursor: pointer;
+  transition: border-color 0.25s v.$ease;
+}
+
+.admin-shell input[type="file"]:hover {
+  border-color: v.$honey;
+}
+
+.admin-shell input[type="checkbox"],
+.admin-shell input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: v.$moss;
+  cursor: pointer;
+}
+
+.admin-shell form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.admin-shell form .form-group,
+.admin-shell form .form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-shell form button[type="submit"],
+.admin-shell form .submit-btn {
+  align-self: flex-start;
+  margin-top: 8px;
+  padding: 14px 28px;
+  background: v.$moss;
+  color: v.$cream;
+  border: 0;
+  border-radius: v.$radius-pill;
+  font-family: v.$font-body;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    background 0.25s v.$ease,
+    transform 0.25s v.$ease,
+    box-shadow 0.25s v.$ease;
+}
+
+.admin-shell form button[type="submit"]:hover,
+.admin-shell form .submit-btn:hover {
+  background: v.$moss-deep;
+  transform: translateY(-1px);
+  box-shadow: v.$shadow-soft;
+}
+
+/* Retour en haut — préservé pour admin.js / admin_profiles.js */
+.admin-shell #back-to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  background: v.$moss;
+  color: v.$cream;
+  border: 0;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.3s v.$ease,
+    transform 0.3s v.$ease;
+  box-shadow: v.$shadow-lift;
+  z-index: 50;
+}
+
+.admin-shell #back-to-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.admin-shell #back-to-top:hover {
+  background: v.$clay;
+  transform: translateY(-2px);
+}

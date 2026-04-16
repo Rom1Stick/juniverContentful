@@ -1,0 +1,218 @@
+@use "../abstracts/tokens" as v;
+
+.admin-shell.workshops-page main {
+  padding: clamp(20px, 4vw, 40px) clamp(16px, 4vw, 40px);
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.admin-shell.workshops-page .section-lead {
+  margin: 4px 0 0;
+  color: v.$ink-soft;
+  font-family: v.$font-body;
+  font-size: 0.95rem;
+  max-width: 60ch;
+}
+
+.admin-shell.workshops-page .page-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.admin-shell.workshops-page #workshops-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (width >= 720px) {
+  .admin-shell.workshops-page #workshops-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width >= 1100px) {
+  .admin-shell.workshops-page #workshops-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.admin-shell .workshop-card {
+  background: v.$cream-warm;
+  border: 1px solid v.$rule;
+  border-radius: v.$radius-md;
+  padding: 18px;
+  box-shadow: v.$shadow-soft;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition:
+    border-color 0.25s v.$ease,
+    transform 0.25s v.$ease;
+}
+
+.admin-shell .workshop-card:hover {
+  border-color: rgba(v.$honey, 0.4);
+  transform: translateY(-1px);
+}
+
+.admin-shell .workshop-card__head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-shell .workshop-card h3 {
+  font-family: v.$font-display;
+  font-size: 1.15rem;
+  color: v.$moss-deep;
+  margin: 0;
+  font-weight: 400;
+}
+
+.admin-shell .workshop-card__rec {
+  font-family: v.$font-script;
+  font-size: 1.05rem;
+  color: v.$clay;
+}
+
+.admin-shell .workshop-card__animators {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+}
+
+.admin-shell .workshop-card__animators .chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background: rgba(v.$leaf, 0.15);
+  color: v.$moss-deep;
+  border-radius: v.$radius-pill;
+  font-size: 0.78rem;
+  line-height: 1.2;
+}
+
+/* Modale détail atelier */
+.admin-shell .workshop-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-shell .workshop-detail__meta {
+  margin: 0;
+  font-size: 0.92rem;
+  color: v.$ink;
+
+  strong {
+    color: v.$moss-deep;
+    margin-right: 0.4rem;
+  }
+}
+
+.admin-shell .workshop-detail__body {
+  margin-top: 0.3rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: v.$ink-soft;
+
+  h2 {
+    font-family: v.$font-display;
+    font-size: 1.2rem;
+    color: v.$moss-deep;
+    margin: 0.8rem 0 0.3rem;
+    font-weight: 400;
+  }
+
+  h3 {
+    font-family: v.$font-display;
+    font-size: 1.05rem;
+    color: v.$moss;
+    margin: 0.6rem 0 0.3rem;
+    font-weight: 400;
+  }
+
+  p {
+    margin: 0 0 0.6rem;
+  }
+
+  ul,
+  ol {
+    padding-left: 1.3rem;
+    margin: 0 0 0.6rem;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: v.$radius-sm;
+    margin: 0.5rem 0;
+  }
+
+  blockquote {
+    margin: 0.6rem 0;
+    padding: 0.5rem 0.9rem;
+    border-left: 3px solid v.$honey;
+    font-style: italic;
+  }
+
+  a {
+    color: v.$moss;
+    text-decoration: underline;
+  }
+}
+
+.admin-shell .workshop-card__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+/* Cases à cocher animateurs (utilisé dans la modale) */
+.admin-shell .checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+@media (width >= 640px) {
+  .admin-shell .checkbox-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.admin-shell .checkbox-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: v.$cream;
+  border: 1px solid v.$rule;
+  border-radius: v.$radius-sm;
+  font-size: 0.9rem;
+  color: v.$ink;
+  cursor: pointer;
+  transition:
+    border-color 0.2s v.$ease,
+    background 0.2s v.$ease;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.admin-shell .checkbox-item:hover {
+  border-color: v.$honey;
+  background: rgba(v.$honey, 0.08);
+}
+
+.admin-shell .checkbox-item:has(input:checked) {
+  border-color: v.$moss;
+  background: rgba(v.$leaf, 0.1);
+}

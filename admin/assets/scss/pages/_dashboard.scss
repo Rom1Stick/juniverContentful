@@ -1,0 +1,119 @@
+@use "../abstracts/tokens" as v;
+
+.admin-shell.dashboard .admin-main {
+  padding: clamp(24px, 5vw, 60px) clamp(16px, 4vw, 40px);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.admin-shell.dashboard .admin-navigation {
+  text-align: center;
+}
+
+.admin-shell.dashboard .admin-navigation h2 {
+  font-family: v.$font-display;
+  font-size: clamp(24px, 4vw, 34px);
+  color: v.$moss-deep;
+  margin-bottom: 8px;
+}
+
+.admin-shell.dashboard .admin-navigation .sub {
+  display: block;
+  font-family: v.$font-script;
+  color: v.$clay;
+  font-size: 20px;
+  margin-bottom: 32px;
+}
+
+.admin-shell.dashboard .admin-services {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  margin-top: 24px;
+}
+
+@media (width >= 640px) {
+  .admin-shell.dashboard .admin-services {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (width >= 1000px) {
+  .admin-shell.dashboard .admin-services {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+}
+
+.admin-shell.dashboard .admin-service {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 170px;
+  padding: 28px 20px;
+  background: v.$cream-warm;
+  border: 1px solid v.$rule;
+  border-radius: v.$radius-lg;
+  color: v.$moss-deep;
+  text-decoration: none;
+  text-align: center;
+  box-shadow: v.$shadow-soft;
+  transition:
+    transform 0.25s v.$ease,
+    box-shadow 0.25s v.$ease,
+    border-color 0.25s v.$ease,
+    background 0.25s v.$ease;
+  width: auto;
+  height: auto;
+}
+
+.admin-shell.dashboard .admin-service i {
+  font-size: 2.2rem;
+  color: v.$moss;
+  margin-bottom: 4px;
+  transition:
+    color 0.25s v.$ease,
+    transform 0.25s v.$ease;
+}
+
+.admin-shell.dashboard .admin-service span {
+  font-family: v.$font-display;
+  font-size: 16px;
+  font-weight: 400;
+  color: v.$moss-deep;
+  letter-spacing: -0.01em;
+}
+
+.admin-shell.dashboard .admin-service-count {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 4px 10px;
+  font-family: v.$font-body;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: v.$moss;
+  background: rgba(v.$leaf, 0.18);
+  border-radius: v.$radius-pill;
+  letter-spacing: 0.01em;
+
+  &.is-empty {
+    color: v.$clay;
+    background: rgba(v.$honey, 0.18);
+    font-style: italic;
+  }
+}
+
+.admin-shell.dashboard .admin-service:hover {
+  transform: translateY(-3px);
+  box-shadow: v.$shadow-lift;
+  border-color: rgba(227, 184, 79, 50%);
+  background: v.$cream;
+}
+
+.admin-shell.dashboard .admin-service:hover i {
+  color: v.$honey;
+  transform: scale(1.08);
+}

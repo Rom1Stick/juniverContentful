@@ -1,171 +1,177 @@
-@use '../abstracts/variables' as *;
+@use "../abstracts/variables" as v;
 
-.header-website {
-  position: fixed;
+/* Header Symbiose — sticky crème, logo SVG en feuille + graine */
+header.site-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px clamp(22px, 4vw, 56px);
+  position: sticky;
   top: 0;
+  z-index: 30;
+  background: rgba(247, 241, 224, 85%);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid v.$rule;
+  margin: 0 calc(-1 * clamp(22px, 4vw, 56px));
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: v.$font-display;
+  font-size: clamp(20px, 2.6vw, 24px);
+  color: v.$moss;
+  text-decoration: none;
+}
+
+.brand .mark {
+  width: 34px;
+  height: 34px;
+  position: relative;
+  flex: 0 0 34px;
+}
+
+.brand .mark svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Menu burger (mobile first) */
+.nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: v.$cream-warm;
+  border: 1px solid v.$rule;
+  color: v.$moss;
+  cursor: pointer;
+}
+
+.nav-toggle .bar {
+  width: 18px;
+  height: 1.6px;
+  background: v.$moss;
+  position: relative;
+  display: block;
+}
+
+.nav-toggle .bar::before,
+.nav-toggle .bar::after {
+  content: "";
+  position: absolute;
   left: 0;
-  width: 100vw;
-  z-index: 1000;
-  background-color: rgba(252, 252, 252, 0.97);
-  box-shadow: 0 4px 30px rgba(15, 82, 87, 0.08);
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  width: 18px;
+  height: 1.6px;
+  background: v.$moss;
+  transition: transform 0.3s;
+}
 
-  .nav-bar {
+.nav-toggle .bar::before {
+  top: -6px;
+}
+
+.nav-toggle .bar::after {
+  top: 6px;
+}
+
+.nav-drawer {
+  position: fixed;
+  inset: 0;
+  background: rgba(247, 241, 224, 98%);
+  backdrop-filter: blur(10px);
+  z-index: 40;
+  display: none;
+  flex-direction: column;
+  padding: 96px 28px 40px;
+  gap: 22px;
+  overflow-y: auto;
+}
+
+.nav-drawer.open {
+  display: flex;
+}
+
+.nav-drawer a {
+  font-family: v.$font-display;
+  font-size: 26px;
+  color: v.$moss-deep;
+  text-decoration: none;
+  padding: 10px 0;
+  border-bottom: 1px dashed v.$rule;
+}
+
+.nav-drawer a.cta {
+  margin-top: 8px;
+  text-align: center;
+  padding: 14px 22px;
+  background: v.$moss;
+  color: v.$cream;
+  border-radius: v.$radius-pill;
+  border-bottom: 0;
+  font-family: v.$font-body;
+  font-size: 15px;
+}
+
+.nav-drawer .nav-close {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: v.$cream-warm;
+  border: 1px solid v.$rule;
+  color: v.$moss;
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* Desktop nav */
+nav.primary {
+  display: none;
+  gap: 26px;
+  align-items: center;
+  font-size: 14px;
+  font-family: v.$font-body;
+}
+
+nav.primary a {
+  color: v.$ink;
+  text-decoration: none;
+  transition: color 0.25s;
+}
+
+nav.primary a:hover {
+  color: v.$clay;
+}
+
+nav.primary .cta {
+  padding: 11px 22px;
+  background: v.$moss;
+  color: v.$cream;
+  border-radius: v.$radius-pill;
+  font-weight: 500;
+  transition:
+    background 0.3s,
+    transform 0.3s;
+}
+
+nav.primary .cta:hover {
+  background: v.$clay;
+  color: v.$cream;
+  transform: translateY(-1px);
+}
+
+@media (width >= 1001px) {
+  nav.primary {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 90px;
-    padding: 0 2rem;
-    width: 100%;
-    max-width: none;
-    
-    .logo {
-      display: flex;
-      align-items: center;
-      z-index: 101;
-      
-      .logo-text {
-        font-family: 'Playfair Display', serif;
-        font-size: 1.6rem;
-        font-weight: 500;
-        color: #0f5257;
-        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-      }
-      
-      &::after {
-        content: '';
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        background-color: #dbc588;
-        border-radius: 50%;
-        margin-left: 0.5rem;
-      }
-    }
-    
-    .menu {
-      position: relative;
-      
-      .menu-input {
-        display: none;
+  }
 
-        &:checked ~ .nav-links {
-          right: 0;
-        }
-
-        &:checked ~ label.btn.btn-secondary .menu-icon {
-          display: none;
-        }
-
-        &:checked ~ label.btn.btn-secondary .close-icon {
-          display: block;
-        }
-      }
-
-      label.btn.btn-secondary {
-        display: none;
-        width: 48px;
-        height: 48px;
-        justify-content: center;
-        align-items: center;
-        background-color: #0f5257;
-        color: #fafafa;
-        border-radius: 50%;
-        border: none;
-        cursor: pointer;
-        z-index: 100;
-        box-shadow: 0 5px 15px rgba(15, 82, 87, 0.15);
-
-        .menu-icon, .close-icon {
-          font-size: 1.2rem;
-        }
-
-        .close-icon {
-          display: none;
-        }
-      }
-
-      .nav-links {
-        display: flex;
-        gap: 2.5rem;
-
-        .nav-link {
-          display: inline-block;
-
-          a {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 500;
-            font-size: 1rem;
-            padding: 0.4rem 0;
-            color: #1a2a2d;
-            position: relative;
-            letter-spacing: 0.05em;
-            text-decoration: none;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-
-            &::before {
-              content: '';
-              position: absolute;
-              bottom: 0;
-              left: 0;
-              width: 0;
-              height: 2px;
-              background-color: #dbc588;
-              transition: width 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            }
-
-            &:hover {
-              color: #0f5257;
-              
-              &::before {
-                width: 100%;
-              }
-            }
-          }
-        }
-      }
-    }
-
-    @media (max-width: 768px) {
-      height: 70px;
-      padding: 0 1.5rem;
-      
-      .logo .logo-text {
-        font-size: 1.4rem;
-      }
-      
-      .menu {
-        label.btn.btn-secondary {
-          display: flex;
-        }
-
-        .nav-links {
-          position: fixed;
-          top: 0;
-          right: -100%;
-          width: 80%;
-          height: 100vh;
-          background-color: #fcfcfc;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 2.5rem;
-          transition: right 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-          box-shadow: -5px 0 20px rgba(15, 82, 87, 0.15);
-
-          .nav-link a {
-            font-size: 1.1rem;
-          }
-        }
-      }
-    }
-
-    @media (min-width: 768px) and (max-width: 992px) {
-      height: 80px;
-      padding: 0 1.5rem;
-    }
+  .nav-toggle {
+    display: none;
   }
 }

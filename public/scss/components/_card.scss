@@ -1,14 +1,403 @@
-@use '../abstracts/variables' as *;
+@use "../abstracts/variables" as v;
 
-.card {
-  background: white;
-  border-radius: $border-radius;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+/* Article card — listing journal + accueil */
+.art {
+  background: v.$cream-warm;
+  border-radius: v.$radius-md;
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid v.$rule;
+  display: flex;
+  flex-direction: column;
+  transition:
+    transform 0.4s,
+    box-shadow 0.4s;
+  text-decoration: none;
+  color: inherit;
+}
 
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+.art:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px -18px rgba(30, 42, 28, 20%);
+}
+
+.art .cover {
+  aspect-ratio: 16 / 10;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #6f9054, #c4ae7a);
+}
+
+.art .cover--visual {
+  background: none;
+}
+
+.art .cover .article-visual {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.art .cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.art .cover .cat {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: v.$cream;
+  padding: 4px 12px;
+  border-radius: v.$radius-pill;
+  font-size: 11px;
+  font-weight: 500;
+  color: v.$moss;
+}
+
+.art .body {
+  padding: 22px 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.art h5 {
+  font-family: v.$font-display;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.2;
+  margin: 0;
+  color: v.$moss-deep;
+}
+
+.art .sum {
+  font-size: 14px;
+  color: v.$ink-soft;
+  line-height: 1.55;
+  flex: 1;
+}
+
+.art .foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: v.$ink-soft;
+  margin-top: 8px;
+}
+
+.art .foot .read {
+  color: v.$clay;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+/* Thérapeute card (carousel + grille about) */
+.t-card {
+  background: v.$cream-warm;
+  border-radius: v.$radius-lg;
+  padding: 20px 22px 28px;
+  border: 1px solid v.$rule;
+  transition:
+    transform 0.4s v.$ease,
+    box-shadow 0.4s;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.t-card:hover {
+  transform: translateY(-6px);
+  box-shadow: v.$shadow-lift;
+}
+
+.t-card .portrait {
+  aspect-ratio: 1;
+  width: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  background: linear-gradient(135deg, #c8b48f, #708f5b);
+  position: relative;
+}
+
+.t-card .portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.t-card .portrait .leaf-tag {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: v.$cream;
+  padding: 4px 10px;
+  border-radius: v.$radius-pill;
+  font-size: 11px;
+  color: v.$moss;
+  font-weight: 500;
+}
+
+.t-card h4 {
+  font-family: v.$font-display;
+  font-weight: 400;
+  font-size: 22px;
+  margin: 0 0 4px;
+  line-height: 1.1;
+  color: v.$moss-deep;
+}
+
+.t-card .role {
+  font-size: 13px;
+  color: v.$clay;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.t-card .bio {
+  font-size: 14px;
+  color: v.$ink-soft;
+  line-height: 1.55;
+  margin-bottom: 14px;
+}
+
+.t-card .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.t-card .tags span {
+  font-size: 11px;
+  padding: 4px 10px;
+  background: v.$cream;
+  border-radius: v.$radius-pill;
+  color: v.$ink-soft;
+}
+
+.t-card .see {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  color: v.$moss;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.t-card .see:hover {
+  color: v.$clay;
+}
+
+.t-card .contact-line {
+  display: block;
+  font-size: 13px;
+  color: v.$ink-soft;
+  margin-top: 4px;
+}
+
+.t-card .contact-line a {
+  color: v.$moss;
+  text-decoration: none;
+}
+
+/* Workshop card */
+.w-card {
+  background: rgba(247, 241, 224, 6%);
+  border: 1px solid rgba(247, 241, 224, 12%);
+  border-radius: v.$radius-lg;
+  padding: 28px 26px;
+  position: relative;
+  overflow: hidden;
+  transition:
+    background 0.3s,
+    transform 0.3s;
+  color: v.$cream;
+}
+
+.w-card:hover {
+  background: rgba(247, 241, 224, 10%);
+  transform: translateY(-4px);
+}
+
+.w-card .num {
+  font-family: v.$font-display;
+  font-size: 52px;
+  line-height: 1;
+  color: v.$honey;
+  opacity: 0.5;
+  margin-bottom: 20px;
+}
+
+.w-card h4 {
+  font-family: v.$font-display;
+  font-size: 26px;
+  margin: 0 0 10px;
+  color: v.$cream;
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.w-card p {
+  font-size: 14px;
+  color: rgba(247, 241, 224, 75%);
+  line-height: 1.55;
+  margin: 0 0 18px;
+}
+
+.w-card .detail {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid rgba(247, 241, 224, 15%);
+  font-size: 12px;
+  color: rgba(247, 241, 224, 70%);
+}
+
+.w-card .detail strong {
+  color: v.$honey;
+  font-weight: 500;
+}
+
+.w-card .sprout {
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 120px;
+  height: 120px;
+  opacity: 0.25;
+}
+
+.w-card .w-profiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 4px;
+}
+
+.w-card .w-profiles .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: v.$radius-pill;
+  background: rgba(247, 241, 224, 8%);
+  color: v.$cream;
+}
+
+.w-card .w-profiles .chip img {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Event card */
+.ev {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 24px;
+  align-items: center;
+  padding: 22px 24px;
+  background: v.$cream-warm;
+  border-radius: v.$radius-md;
+  border: 1px solid v.$rule;
+  transition:
+    background 0.25s,
+    transform 0.25s;
+  text-decoration: none;
+  color: inherit;
+}
+
+.ev:hover {
+  background: v.$cream;
+  transform: translateX(6px);
+}
+
+.ev .date {
+  text-align: center;
+}
+
+.ev .date .d {
+  font-family: v.$font-display;
+  font-size: 38px;
+  line-height: 0.9;
+  color: v.$clay;
+}
+
+.ev .date .m {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: v.$ink-soft;
+  margin-top: 6px;
+}
+
+.ev .info h5 {
+  font-family: v.$font-display;
+  font-weight: 400;
+  font-size: 20px;
+  margin: 0 0 4px;
+  color: v.$moss-deep;
+  line-height: 1.2;
+}
+
+.ev .info .loc {
+  font-size: 13px;
+  color: v.$ink-soft;
+}
+
+.ev .info .loc::before {
+  content: "◦ ";
+  color: v.$leaf;
+}
+
+.ev .cta {
+  padding: 8px 16px;
+  border-radius: v.$radius-pill;
+  background: v.$honey;
+  color: v.$moss-deep;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+@media (width <= 640px) {
+  .ev {
+    grid-template-columns: 64px 1fr;
+    gap: 14px;
   }
+
+  .ev .cta {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 10px;
+  }
+}
+
+/* Compat legacy card */
+.card {
+  background: v.$cream-warm;
+  border-radius: v.$radius-md;
+  border: 1px solid v.$rule;
+  overflow: hidden;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: v.$shadow-lift;
 }

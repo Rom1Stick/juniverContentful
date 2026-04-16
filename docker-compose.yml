@@ -1,0 +1,38 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: juniversante-web
+    ports:
+      - "8088:80"
+    volumes:
+      - ./public:/usr/share/nginx/html/public:ro
+      - ./admin:/usr/share/nginx/html/admin:ro
+      - ./config:/usr/share/nginx/html/config:ro
+      - ./assets:/usr/share/nginx/html/assets:ro
+      - ./_redirects:/usr/share/nginx/html/_redirects:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:80/public/index.html || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+    networks:
+      - app-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  app-network:
+    driver: bridge

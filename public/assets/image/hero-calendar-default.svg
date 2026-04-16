@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Calendrier du cercle JuniverSanté">
+  <defs>
+    <linearGradient id="c1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f7f1e0"/>
+      <stop offset="100%" stop-color="#efe6cd"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="300" fill="url(#c1)"/>
+  <g fill="none" stroke-linecap="round">
+    <path d="M-20 80 Q120 50 260 85 Q400 120 620 75" stroke="#8ab0b8" stroke-width="2.2" opacity="0.55"/>
+    <path d="M-20 140 Q130 110 280 145 Q430 175 620 130" stroke="#8ab0b8" stroke-width="2.6" opacity="0.65"/>
+    <path d="M-20 200 Q150 170 310 205 Q450 230 620 195" stroke="#8ab0b8" stroke-width="3" opacity="0.75"/>
+    <path d="M-20 250 Q170 225 340 255 Q460 275 620 245" stroke="#2e4a2b" stroke-width="3.2" opacity="0.55"/>
+  </g>
+  <g>
+    <path d="M100 90 Q140 78 155 100 Q142 115 100 108 Z" fill="#e3b84f" opacity="0.85"/>
+    <path d="M280 140 Q320 125 338 150 Q318 164 280 155 Z" fill="#7ba05b" opacity="0.9"/>
+    <path d="M440 200 Q478 188 494 215 Q472 228 440 218 Z" fill="#b97a3a" opacity="0.8"/>
+  </g>
+  <circle cx="500" cy="60" r="30" fill="#e3b84f" opacity="0.75"/>
+  <circle cx="500" cy="60" r="48" fill="#e3b84f" opacity="0.2"/>
+</svg>
