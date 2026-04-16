@@ -1,89 +1,64 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>À propos - Juniver Santé</title>
-    <link rel="stylesheet" href="../assets/styles/main.min.css">
-</head>
-<body>
-    <header class="header-website">
-        <nav class="nav-bar">
-          <div class="logo">
-            <!-- <img src="./assets/images/logo.png" alt="logo du site"> -->
-            <span class="logo-text">JuniverSanté Naturelle</span>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JuniverSanté — Le cercle des thérapeutes</title>
+    <meta
+      name="description"
+      content="Découvrez le cercle JuniverSanté : douze thérapeutes indépendants en Bourgogne, médecines douces, savoirs botaniques et accompagnement du vivant."
+    />
+    <link rel="stylesheet" href="/public/assets/styles/main.min.css" />
+  </head>
+  <body class="about-page">
+    <div data-slot="ambient"></div>
+    <div class="wrap">
+      <div data-slot="header"></div>
+
+      <main class="about-main">
+        <section>
+          <div class="sec-head">
+            <span class="sec-eyebrow" data-editable="about-page.eyebrow">Le cercle des thérapeutes</span>
+            <h2>
+              <span data-editable="about-page.title.before">Douze praticiens,</span>
+              <span class="hand" data-editable="about-page.title.hand">une même</span>
+              <span data-editable="about-page.title.after">attention au vivant.</span>
+            </h2>
           </div>
-      
-          <div class="menu">
-            <input type="checkbox" id="menu-toggle" class="menu-input">
-            <label for="menu-toggle" class="btn btn-secondary">
-              <i class="fa-solid fa-bars menu-icon"></i>
-              <i class="fa-solid fa-times close-icon"></i>
-            </label>
-      
-            <ul class="nav-links">
-              <li class="nav-link">
-                <a href="../index.html">Accueil</a>
-              </li>
-
-              <li class="nav-link">
-                <a href="./calendar.html">Programme formation</a>
-              </li>
-
-              <li class="nav-link">
-                <a href="./workshop.html">Nos Ateliers</a>
-              </li>
-              
-              <li class="nav-link">
-                <a href="./contact.html">Contact</a>
-              </li>
-
-            </ul>
+          <img
+            class="page-hero-illustration"
+            src="/public/assets/image/hero-about-default.svg"
+            alt="Illustration du cercle"
+            data-editable-image="about.page.illustration"
+          />
+          <div class="about-info">
+            <p data-editable="about-page.intro1">
+              JuniverSanté est une association de thérapeutes indépendants réunis autour d'une même conviction : relier
+              médecines douces, savoirs botaniques et accompagnement du quotidien.
+            </p>
+            <p>
+              <strong data-editable="about-page.intro2.strong1">Chaque membre</strong>
+              <span data-editable="about-page.intro2.middle"
+                >exerce dans son propre cabinet, mais partage les outils, les formations et l'écoute du cercle.</span
+              >
+              <strong data-editable="about-page.intro2.strong2">En complément</strong>
+              <span data-editable="about-page.intro2.after">de la médecine conventionnelle, jamais à sa place.</span>
+            </p>
           </div>
-        </nav>
-    </header>
-
-    <main class="about-main">
-        <!-- Nouvelle section informant sur le cercle des thérapeutes et l'idée de Juniversanté -->
-        <section class="about-info">
-            <h2>Pourquoi le cercle des thérapeutes ?</h2>
-            <p>
-                En 2023, suite à la projection du film « <em>Suspendus, soignants entre deux mondes</em> »,
-                des thérapeutes ont eu envie de se rassembler pour relayer et venir en aide en complément de
-                la médecine conventionnelle dont le système est en crise depuis maintenant plusieurs années.
-                Le cercle des thérapeutes était né.
-            </p>
-            <p>
-                Le but : Se rencontrer entre thérapeutes, apprendre à se connaître, partager, travailler 
-                ensemble et proposer ensemble un réseau d’action et d’entraide.
-            </p>
-
-            <h2>L’idée de Juniversanté est née</h2>
-            <p>
-                L’idée étant de rassembler des thérapeutes ayant une envie de partager et de transmettre 
-                des informations et outils simples pouvant aider à améliorer l’hygiène de vie au quotidien.
-                Il s’agit de permettre au plus grand nombre de mieux se connaitre et d’être acteur de sa santé 
-                en privilégiant les moyens présents dans l’environnement et à la portée de chacun.
-            </p>
-            <p>
-                Ceci en complément de la médecine conventionnelle et non à la place de celle-ci.
-            </p>
         </section>
 
-        <!-- Le profil spécifique sera injecté ici -->
-        <section id="profile-content">
-            <!-- Profils affichés dynamiquement -->
+        <section>
+          <div class="sec-head">
+            <span class="sec-eyebrow" data-editable="about-page.grid.eyebrow">Nos praticiens</span>
+            <h2 data-editable="about-page.grid.title">Rencontrer le cercle.</h2>
+          </div>
+          <div id="profile-content"></div>
         </section>
-    </main>
+      </main>
 
-    <footer>
-        <p>
-            <a href="./privacy.html">Politique de confidentialité</a> | 
-            <a href="./legal.html">Mentions légales</a>
-        </p>
-        <p>© 2024 Juniver Santé - Tous droits réservés</p>
-    </footer>
+      <div data-slot="footer"></div>
+    </div>
 
-    <script type="module" src="/public/js/views/about.js"></script>
-</body>
+    <script type="module" src="/public/js/views/about.js?v=symbiose-7"></script>
+  </body>
 </html>

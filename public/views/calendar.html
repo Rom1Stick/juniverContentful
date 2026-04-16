@@ -1,75 +1,65 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendrier des Événements</title>
-    <link rel="stylesheet" href="../assets/styles/main.min.css">
-</head>
-<body>
-    <header class="header-website">
-        <nav class="nav-bar">
-          <div class="logo">
-            <!-- <img src="./assets/images/logo.png" alt="logo du site"> -->
-            <span class="logo-text">JuniverSanté Naturelle</span>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JuniverSanté — Programme & calendrier</title>
+    <meta
+      name="description"
+      content="Calendrier des évènements du cercle JuniverSanté : ateliers, rencontres et temps forts à venir en Bourgogne."
+    />
+    <link rel="stylesheet" href="/public/assets/styles/main.min.css" />
+  </head>
+  <body class="calendar-page">
+    <div data-slot="ambient"></div>
+    <div class="wrap">
+      <div data-slot="header"></div>
+
+      <main class="calendar-main">
+        <section>
+          <div class="sec-head">
+            <span class="sec-eyebrow" data-editable="calendar-page.eyebrow">Programme formation</span>
+            <h2>
+              <span data-editable="calendar-page.title.before">Les</span>
+              <span class="hand" data-editable="calendar-page.title.hand">saisons</span>
+              <span data-editable="calendar-page.title.after">qui viennent.</span>
+            </h2>
+            <p data-editable="calendar-page.lede">
+              Quelques rendez-vous publics, d'autres sur inscription. Le calendrier vit au rythme du cercle.
+            </p>
           </div>
-      
-          <div class="menu">
-            <input type="checkbox" id="menu-toggle" class="menu-input">
-            <label for="menu-toggle" class="btn btn-secondary">
-              <i class="fa-solid fa-bars menu-icon"></i>
-              <i class="fa-solid fa-times close-icon"></i>
-            </label>
-      
-            <ul class="nav-links">
-              <li class="nav-link">
-                <a href="../index.html">Accueil</a>
-              </li>
+          <img
+            class="page-hero-illustration"
+            src="/public/assets/image/hero-calendar-default.svg"
+            alt="Illustration calendrier"
+            data-editable-image="calendar.page.illustration"
+          />
 
-              <li class="nav-link">
-                <a href="./about.html">A propos</a>
-              </li>
+          <div class="calendar-main-grid">
+            <div>
+              <div id="upcoming-events">
+                <h2 data-editable="calendar-page.upcoming">À venir</h2>
+                <ul id="event-list"></ul>
+              </div>
 
-              <li class="nav-link">
-                <a href="./workshop.html">Nos Ateliers</a>
-              </li>
-              
-              <li class="nav-link">
-                <a href="./contact.html">Contact</a>
-              </li>
+              <button id="toggle-past-events" type="button">← Afficher les événements passés</button>
 
-            </ul>
+              <div id="past-events-section" style="display: none">
+                <h2 data-editable="calendar-page.past">Déjà passés</h2>
+                <ul id="past-event-list"></ul>
+              </div>
+            </div>
+
+            <div id="calendar-container">
+              <div id="calendar"></div>
+            </div>
           </div>
-        </nav>
-    </header>
-
-    <main class="calendar-main">
-        <!-- Section pour la liste des événements à venir -->
-        <section id="upcoming-events">
-            <h2>Événements à venir</h2>
-            <ul id="event-list"></ul>
         </section>
+      </main>
 
-        <!-- Bouton pour afficher les événements passés -->
-        <section id="past-events-section" style="display: none;">
-            <h2>Événements Passés</h2>
-            <ul id="past-event-list"></ul>
-        </section>
-        <button id="toggle-past-events" style="display: none;">Afficher les événements passés</button>
+      <div data-slot="footer"></div>
+    </div>
 
-        <!-- Calendrier -->
-        <section id="calendar-container">
-            <div id="calendar"></div>
-        </section>
-    </main>
-
-    <footer>
-        <p>
-            <a href="/public/views/privacy.html">Politique de confidentialité</a> | 
-            <a href="/public/views/legal.html">Mentions légales</a></p>
-        <p>© 2024 Juniver Santé - Tous droits réservés</p>
-    </footer>
-
-    <script type="module" src="/public/js/views/calendar.js"></script>
-</body>
+    <script type="module" src="/public/js/views/calendar.js?v=symbiose-7"></script>
+  </body>
 </html>

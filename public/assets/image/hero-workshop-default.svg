@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Ateliers — cercle JuniverSanté">
+  <defs>
+    <linearGradient id="w1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#efe6cd"/>
+      <stop offset="70%" stop-color="#f7f1e0"/>
+      <stop offset="100%" stop-color="#a3c380" stop-opacity="0.35"/>
+    </linearGradient>
+    <radialGradient id="w2" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#e3b84f"/>
+      <stop offset="70%" stop-color="#e3b84f" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#e3b84f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="300" fill="url(#w1)"/>
+  <circle cx="470" cy="110" r="150" fill="url(#w2)"/>
+  <circle cx="470" cy="110" r="52" fill="#e3b84f"/>
+  <g stroke="#e3b84f" stroke-width="2" stroke-linecap="round" opacity="0.6">
+    <line x1="470" y1="20" x2="470" y2="50"/>
+    <line x1="540" y1="60" x2="525" y2="75"/>
+    <line x1="560" y1="110" x2="540" y2="110"/>
+    <line x1="400" y1="60" x2="415" y2="75"/>
+    <line x1="380" y1="110" x2="400" y2="110"/>
+  </g>
+  <g transform="translate(120 50)">
+    <path d="M60 240 Q55 150 75 60 Q80 30 70 0" stroke="#2e4a2b" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M70 60 Q30 55 15 30 Q35 25 75 50 Z" fill="#7ba05b" opacity="0.9"/>
+    <path d="M68 110 Q120 105 140 85 Q115 75 68 100 Z" fill="#7ba05b" opacity="0.9"/>
+    <path d="M62 170 Q15 175 0 155 Q20 145 62 160 Z" fill="#a3c380" opacity="0.85"/>
+  </g>
+  <path d="M0 270 Q150 258 300 270 Q450 282 600 265 L600 300 L0 300 Z" fill="#2e4a2b" opacity="0.18"/>
+</svg>

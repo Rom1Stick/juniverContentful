@@ -1,216 +1,258 @@
-import { fetchContent } from '../../js/contentful.js';
+import '../chrome.js';
+import '../mycel.js';
+import '../siteCopy.js';
+import { fetchContent } from '../contentful.js';
+import { openPublicModal } from '../publicModal.js';
+import { sanitizeRichHTML, escapeText } from '../contentSanitize.js';
+
+const MOIS_COURT = [
+  'Jan',
+  'Fév',
+  'Mar',
+  'Avr',
+  'Mai',
+  'Juin',
+  'Juil',
+  'Août',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Déc',
+];
 
 let pastEvents = [];
 let upcomingEvents = [];
+let allEvents = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log("Chargement des événements...");
+  try {
+    const events = await fetchEvents();
+    const now = new Date();
+    upcomingEvents = events.filter((e) => e.date >= now).sort((a, b) => a.date - b.date);
+    pastEvents = events.filter((e) => e.date < now).sort((a, b) => b.date - a.date);
+    allEvents = events;
 
-    try {
-        const events = await fetchEvents();
-        const currentDate = new Date();
-
-        // Séparer les événements passés et futurs
-        upcomingEvents = events.filter(event => event.date >= currentDate);
-        pastEvents = events.filter(event => event.date < currentDate);
-
-        // Trier les événements par date (ascendant)
-        upcomingEvents.sort((a, b) => a.date - b.date);
-        pastEvents.sort((a, b) => b.date - a.date); // Passés triés en descendant
-
-        // Afficher les événements à venir
-        displayUpcomingEvents(upcomingEvents);
-
-        // Initialiser le calendrier
-        displayCalendar(upcomingEvents, currentDate);
-
-        // Ajouter un gestionnaire pour afficher/masquer les événements passés
-        setupPastEventsButton();
-    } catch (error) {
-        console.error("Erreur lors du chargement des événements :", error);
-    }
+    renderEvents(upcomingEvents, 'event-list');
+    renderCalendar(new Date());
+    setupPastToggle();
+  } catch (err) {
+    console.error('Erreur chargement événements :', err);
+  }
 });
 
-// Fonction pour récupérer les événements depuis Contentful
 async function fetchEvents() {
-    try {
-        const events = await fetchContent('event');
-        return events.map(event => ({
-            id: event.sys.id,
-            title: event.fields.title || 'Sans titre',
-            description: event.fields.description || '',
-            date: new Date(event.fields.date),
-            location: event.fields.location || 'Lieu non spécifié'
-        }));
-    } catch (error) {
-        console.error("Erreur lors de la récupération des événements :", error);
-        return [];
-    }
+  const items = await fetchContent('event');
+  return items.map((e) => {
+    const assets = e.includes?.Asset || [];
+    const ref = e.fields.image?.sys?.id;
+    const asset = ref ? assets.find((a) => a.sys.id === ref) : null;
+    const imageUrl = asset?.fields?.file?.url ? `https:${asset.fields.file.url}` : null;
+    return {
+      id: e.sys.id,
+      title: e.fields.title || 'Sans titre',
+      description: e.fields.description || '',
+      date: new Date(e.fields.date),
+      location: e.fields.location || 'Lieu non précisé',
+      imageUrl,
+    };
+  });
 }
 
-// Fonction pour afficher la liste des événements à venir
-function displayUpcomingEvents(events) {
-    const eventList = document.getElementById('event-list');
-    eventList.innerHTML = '';
-
-    if (events.length === 0) {
-        eventList.innerHTML = '<li>Aucun événement à venir.</li>';
-        return;
-    }
-
-    events.forEach(event => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <h3>${event.title}</h3>
-            <p><strong>Date :</strong> ${event.date.toLocaleDateString()}</p>
-            <p><strong>Lieu :</strong> ${event.location}</p>
-            <p>${event.description}</p>
-        `;
-        eventList.appendChild(li);
-    });
-}
-
-// Fonction pour configurer le bouton des événements passés
-function setupPastEventsButton() {
-    const button = document.getElementById('toggle-past-events');
-    const pastEventsSection = document.getElementById('past-events-section');
-    const pastEventList = document.getElementById('past-event-list');
-
-    // Afficher le bouton uniquement si des événements passés existent
-    if (pastEvents.length > 0) {
-        button.style.display = 'block';
-
-        button.addEventListener('click', () => {
-            if (pastEventsSection.style.display === 'none') {
-                pastEventsSection.style.display = 'block';
-                button.textContent = 'Masquer les événements passés';
-
-                // Afficher les événements passés
-                pastEventList.innerHTML = pastEvents.map(event => `
-                    <li>
-                        <h3>${event.title}</h3>
-                        <p><strong>Date :</strong> ${event.date.toLocaleDateString()}</p>
-                        <p><strong>Lieu :</strong> ${event.location}</p>
-                        <p>${event.description}</p>
-                    </li>
-                `).join('');
-            } else {
-                pastEventsSection.style.display = 'none';
-                button.textContent = 'Afficher les événements passés';
-            }
-        });
-    }
-}
-
-// Fonction pour afficher le calendrier
-function displayCalendar(events, date) {
-    const calendar = document.getElementById('calendar');
-    if (!calendar) {
-        console.error("Conteneur du calendrier introuvable.");
-        return;
-    }
-
-    // Efface le contenu précédent
-    calendar.innerHTML = '';
-
-    // Création de l'en-tête du calendrier
-    const header = document.createElement('div');
-    header.classList.add('calendar-header');
-    header.textContent = `${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`;
-    calendar.appendChild(header);
-
-    // Ajout des boutons de navigation
-    const navigation = document.createElement('div');
-    navigation.classList.add('calendar-navigation');
-    navigation.innerHTML = `
-        <button id="prev-month" class="calendar-nav">&lt;</button>
-        <button id="next-month" class="calendar-nav">&gt;</button>
-    `;
-    calendar.appendChild(navigation);
-
-    // Ajout des jours de la semaine
-    const daysOfWeek = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
-    const grid = document.createElement('div');
-    grid.classList.add('calendar-grid');
-
-    daysOfWeek.forEach(day => {
-        const dayEl = document.createElement('div');
-        dayEl.classList.add('calendar-cell', 'calendar-header-cell');
-        dayEl.textContent = day;
-        grid.appendChild(dayEl);
-    });
-
-    // Calcul des dates du mois
-    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startDayOfWeek = firstDay.getDay();
-
-    // Ajout des cellules vides pour les jours avant le début du mois
-    for (let i = 0; i < startDayOfWeek; i++) {
-        const emptyCell = document.createElement('div');
-        emptyCell.classList.add('calendar-cell', 'empty');
-        grid.appendChild(emptyCell);
-    }
-
-    // Ajout des cellules pour les jours du mois
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dayCell = document.createElement('div');
-        dayCell.classList.add('calendar-cell');
-        dayCell.textContent = day;
-
-        // Vérifie s'il y a des événements pour ce jour
-        const dayDate = new Date(date.getFullYear(), date.getMonth(), day);
-        const eventsForDay = events.filter(event =>
-            event.date.toDateString() === dayDate.toDateString()
-        );
-
-        if (eventsForDay.length > 0) {
-            dayCell.classList.add('has-event');
-
-            // Ajoute une pastille (optionnelle)
-            const badge = document.createElement('span');
-            badge.classList.add('event-badge');
-            dayCell.appendChild(badge);
-
-            // Ajoute un gestionnaire de clic pour afficher les détails des événements
-            dayCell.addEventListener('click', () => showEventDetails(eventsForDay));
-        }
-
-        grid.appendChild(dayCell);
-    }
-
-    // Ajout de la grille au calendrier
-    calendar.appendChild(grid);
-
-    // Ajout des événements de navigation
-    document.getElementById('prev-month').addEventListener('click', () => {
-        const prevMonth = new Date(date.getFullYear(), date.getMonth() - 1, 1);
-        displayCalendar(events, prevMonth);
-    });
-
-    document.getElementById('next-month').addEventListener('click', () => {
-        const nextMonth = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-        displayCalendar(events, nextMonth);
-    });
-}
-
-// Fonction pour afficher les détails d'un ou plusieurs événements
-function showEventDetails(eventsForDay) {
-    const detailsContainer = document.getElementById('event-details');
-    if (!detailsContainer) {
-        console.error("Conteneur des détails des événements introuvable.");
-        return;
-    }
-
-    detailsContainer.innerHTML = eventsForDay.map(event => `
-        <div class="event-detail">
-            <h3>${event.title}</h3>
-            <p><strong>Date :</strong> ${event.date.toLocaleDateString()}</p>
-            <p><strong>Lieu :</strong> ${event.location}</p>
-            <p>${event.description}</p>
+function renderEvents(events, containerId) {
+  const list = document.getElementById(containerId);
+  if (!list) return;
+  list.innerHTML = '';
+  if (!events.length) {
+    list.innerHTML = '<li><p>Aucun événement.</p></li>';
+    return;
+  }
+  events.forEach((ev) => {
+    const li = document.createElement('li');
+    const day = String(ev.date.getDate()).padStart(2, '0');
+    const month = MOIS_COURT[ev.date.getMonth()];
+    li.innerHTML = `
+      <article class="ev is-clickable" data-id="${ev.id}" tabindex="0" role="button" aria-label="Voir les détails de ${escapeText(ev.title)}">
+        <div class="date">
+          <div class="d">${day}</div>
+          <div class="m">${month}</div>
         </div>
-    `).join('');
+        <div class="info">
+          <h5>${escapeText(ev.title)}</h5>
+          <div class="loc">${escapeText(ev.location)}</div>
+          <div class="see-details">Voir les détails →</div>
+        </div>
+        <a class="cta" href="/public/views/contact.html?event=${encodeURIComponent(ev.title)}" onclick="event.stopPropagation()">S'inscrire</a>
+      </article>
+    `;
+    const article = li.querySelector('.ev');
+    article.addEventListener('click', () => openEventDetail(ev));
+    article.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openEventDetail(ev);
+      }
+    });
+    list.appendChild(li);
+  });
+}
 
-    detailsContainer.classList.remove('hidden');
+export function openEventDetail(ev) {
+  const dateFormatter = new Intl.DateTimeFormat('fr-FR', {
+    dateStyle: 'full',
+    timeStyle: 'short',
+  });
+  const dateStr =
+    ev.date instanceof Date && !isNaN(ev.date.getTime())
+      ? dateFormatter.format(ev.date)
+      : 'Date à préciser';
+  const body = `
+    <div class="event-detail">
+      ${ev.imageUrl ? `<img class="event-detail__cover" src="${ev.imageUrl}" alt="${escapeText(ev.title)}">` : ''}
+      <p class="event-detail__when">📅 ${escapeText(dateStr)}</p>
+      <p class="event-detail__where">📍 ${escapeText(ev.location || 'Lieu à préciser')}</p>
+      ${ev.description ? `<div class="event-detail__body">${sanitizeRichHTML(ev.description)}</div>` : '<p class="event-detail__empty">Plus de détails bientôt disponibles.</p>'}
+      <a class="btn-primary event-detail__cta" href="/public/views/contact.html?event=${encodeURIComponent(ev.title)}">
+        Je souhaite m'inscrire →
+      </a>
+    </div>
+  `;
+  openPublicModal({ title: ev.title, bodyHTML: body });
+}
+
+function setupPastToggle() {
+  const btn = document.getElementById('toggle-past-events');
+  const section = document.getElementById('past-events-section');
+  if (!btn || !section) return;
+  if (!pastEvents.length) {
+    btn.style.display = 'none';
+    section.style.display = 'none';
+    return;
+  }
+  section.style.display = 'none';
+  btn.style.display = 'inline-flex';
+  btn.addEventListener('click', () => {
+    const visible = section.style.display !== 'none';
+    if (visible) {
+      section.style.display = 'none';
+      btn.textContent = '← Afficher les événements passés';
+    } else {
+      section.style.display = 'block';
+      renderEvents(pastEvents, 'past-event-list');
+      btn.textContent = 'Masquer les événements passés';
+    }
+  });
+}
+
+function renderCalendar(date) {
+  const calendar = document.getElementById('calendar');
+  if (!calendar) return;
+  calendar.innerHTML = '';
+
+  const header = document.createElement('div');
+  header.className = 'calendar-header';
+  header.textContent = `${date.toLocaleString('fr-FR', { month: 'long' })} ${date.getFullYear()}`;
+  calendar.appendChild(header);
+
+  const navigation = document.createElement('div');
+  navigation.className = 'calendar-navigation';
+  navigation.innerHTML =
+    '<button id="prev-month" aria-label="Mois précédent">‹</button><button id="next-month" aria-label="Mois suivant">›</button>';
+  calendar.appendChild(navigation);
+
+  const grid = document.createElement('div');
+  grid.className = 'calendar-grid';
+  const dow = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+  dow.forEach((d) => {
+    const cell = document.createElement('div');
+    cell.className = 'calendar-cell calendar-header-cell';
+    cell.textContent = d;
+    grid.appendChild(cell);
+  });
+
+  const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+  const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  const startDow = firstDay.getDay();
+
+  for (let i = 0; i < startDow; i += 1) {
+    const emptyCell = document.createElement('div');
+    emptyCell.className = 'calendar-cell empty';
+    grid.appendChild(emptyCell);
+  }
+
+  const today = new Date();
+  for (let day = 1; day <= lastDay.getDate(); day += 1) {
+    const cell = document.createElement('div');
+    cell.className = 'calendar-cell';
+    cell.textContent = day;
+    const cellDate = new Date(date.getFullYear(), date.getMonth(), day);
+
+    if (
+      cellDate.getFullYear() === today.getFullYear() &&
+      cellDate.getMonth() === today.getMonth() &&
+      cellDate.getDate() === today.getDate()
+    ) {
+      cell.classList.add('today');
+    }
+
+    const dayEvents = allEvents.filter((e) => e.date.toDateString() === cellDate.toDateString());
+    if (dayEvents.length) {
+      cell.classList.add('has-event');
+      cell.setAttribute('role', 'button');
+      cell.setAttribute('tabindex', '0');
+      cell.setAttribute(
+        'aria-label',
+        `${dayEvents.length} évènement${dayEvents.length > 1 ? 's' : ''} le ${day}`
+      );
+      cell.addEventListener('click', () => {
+        if (dayEvents.length === 1) openEventDetail(dayEvents[0]);
+        else showDayList(dayEvents, cellDate);
+      });
+      cell.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (dayEvents.length === 1) openEventDetail(dayEvents[0]);
+          else showDayList(dayEvents, cellDate);
+        }
+      });
+    }
+
+    grid.appendChild(cell);
+  }
+
+  calendar.appendChild(grid);
+  document.getElementById('prev-month')?.addEventListener('click', () => {
+    renderCalendar(new Date(date.getFullYear(), date.getMonth() - 1, 1));
+  });
+  document.getElementById('next-month')?.addEventListener('click', () => {
+    renderCalendar(new Date(date.getFullYear(), date.getMonth() + 1, 1));
+  });
+}
+
+function showDayList(events, cellDate) {
+  const dateStr = cellDate.toLocaleDateString('fr-FR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+  const items = events
+    .map(
+      (ev) => `
+    <li class="day-item" data-id="${ev.id}">
+      <strong>${escapeText(ev.title)}</strong>
+      <span class="day-item__meta">📍 ${escapeText(ev.location || 'Lieu à préciser')}</span>
+      <button type="button" class="btn-ghost day-item__open" data-id="${ev.id}">Voir →</button>
+    </li>`
+    )
+    .join('');
+  openPublicModal({
+    title: `Évènements du ${dateStr}`,
+    bodyHTML: `<ul class="day-list">${items}</ul>`,
+  });
+  document.querySelectorAll('.day-item__open').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const ev = events.find((e) => e.id === btn.dataset.id);
+      if (ev) openEventDetail(ev);
+    });
+  });
 }

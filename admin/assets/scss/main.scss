@@ -1,0 +1,31 @@
+// Entry point admin — compilé vers admin/assets/styles/admin.min.css
+// Tout est scopé sous body.admin-shell pour empêcher toute fuite vers le public.
+
+// abstracts (tokens forwardés depuis public)
+@use "abstracts/tokens";
+
+// base
+@use "base/reset";
+@use "base/typography";
+@use "base/layout";
+
+// components
+@use "components/button";
+@use "components/card";
+@use "components/form";
+@use "components/nav";
+@use "components/modal";
+@use "components/feedback";
+@use "components/rich-editor";
+
+// pages
+@use "pages/dashboard";
+@use "pages/profiles";
+@use "pages/events";
+@use "pages/articles";
+@use "pages/workshops";
+@use "pages/inline_editor";
+
+// Fonts externes — identiques au public pour cohérence typographique
+@import "https://fonts.googleapis.com/css2?family=Young+Serif&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Caveat:wght@500;600&display=swap";
+@import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css";

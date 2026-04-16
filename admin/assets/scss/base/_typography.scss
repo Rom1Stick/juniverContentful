@@ -1,0 +1,79 @@
+@use "../abstracts/tokens" as v;
+
+body.admin-shell {
+  background: v.$cream;
+  color: v.$ink;
+  font-family: v.$font-body;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 15% 0%, rgba(138, 176, 184, 12%), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 95% 20%, rgba(227, 184, 79, 10%), transparent 60%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+.admin-shell h1,
+.admin-shell h2,
+.admin-shell h3,
+.admin-shell h4,
+.admin-shell h5 {
+  font-family: v.$font-display;
+  font-weight: 400;
+  color: v.$moss-deep;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.admin-shell h1 {
+  font-size: clamp(24px, 4vw, 34px);
+}
+
+.admin-shell h2 {
+  font-size: clamp(20px, 3vw, 26px);
+}
+
+.admin-shell h3 {
+  font-size: clamp(17px, 2.4vw, 20px);
+}
+
+.admin-shell h4 {
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+
+.admin-shell p {
+  margin: 0;
+  color: v.$ink-soft;
+  line-height: 1.6;
+}
+
+.admin-shell a {
+  color: v.$moss;
+  text-decoration: none;
+  transition: color 0.25s;
+}
+
+.admin-shell a:hover {
+  color: v.$clay;
+}
+
+.admin-shell .script {
+  font-family: v.$font-script;
+  color: v.$clay;
+  font-weight: 500;
+}
+
+.admin-shell label {
+  display: block;
+  font-family: v.$font-body;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: v.$ink-soft;
+  font-weight: 500;
+  margin-bottom: 6px;
+}

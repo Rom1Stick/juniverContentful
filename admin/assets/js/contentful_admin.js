@@ -1,1109 +1,608 @@
-export const SPACE_ID = '2tb1ogfq4qw9'; // Space ID
-export const CMA_ACCESS_TOKEN = 'CFPAT-e33QxYbkITX3yz5GBZTZ_mPokzxgx3Qf8xx9DMCL0cE'; // Content Management API Token
-const BASE_CMA_URL = `https://api.contentful.com/spaces/${SPACE_ID}/environments/master/entries`;
-const BASE_UPLOAD_URL = `https://api.contentful.com/spaces/${SPACE_ID}/environments/master/assets`;
+// Client CMA côté admin — 100 % backend-gated.
+// Tous les appels passent par /api/cma (Netlify Function) qui injecte le token CMA serveur.
+// Le JWT admin (x-admin-token) est ajouté automatiquement par cmaFetch().
+//
+// Aucun secret Contentful dans ce fichier. Aucun hardcode.
+// Pour connaître SPACE_ID ou ACCESS_TOKEN (CDA public), importer depuis /public/js/contentful.js.
 
-// Fonction pour récupérer les profils
+import { SPACE_ID } from '/public/js/contentful.js';
+
+export { SPACE_ID };
+
+/* ───────────────────────── Helpers ───────────────────────── */
+
+const CMA_PREFIX = '/api/cma';
+
+/**
+ * Fetch wrapper — injecte le JWT, pointe vers le proxy CMA.
+ * `path` peut être un sous-chemin Contentful ("entries", "entries/:id", "assets/:id") — on préfixe /api/cma.
+ * Pour uploads binaires, utiliser `cmaUpload(file)` ci-dessous.
+ */
+export async function cmaFetch(path, init = {}) {
+  const token = typeof window !== 'undefined' && window.getAdminToken ? window.getAdminToken() : '';
+  const url = path.startsWith('/') ? path : `${CMA_PREFIX}/${path}`;
+  const headers = { ...(init.headers || {}) };
+  if (token) headers['x-admin-token'] = `Bearer ${token}`;
+  if (init.body && !headers['Content-Type'] && typeof init.body === 'string') {
+    headers['Content-Type'] = 'application/vnd.contentful.management.v1+json';
+  }
+  const resp = await fetch(url, { ...init, headers });
+  if (resp.status === 401) {
+    // Token expiré/invalide — purge session et relance le login.
+    if (typeof window !== 'undefined' && window.clearAdminSession) {
+      window.clearAdminSession();
+    }
+    throw new Error('Session expirée — reconnexion nécessaire.');
+  }
+  return resp;
+}
+
+async function cmaJson(path, init) {
+  const resp = await cmaFetch(path, init);
+  if (!resp.ok) {
+    const detail = await safeErrorDetail(resp);
+    throw new Error(`CMA ${init?.method || 'GET'} ${path} : ${resp.status} ${detail}`);
+  }
+  return resp.json();
+}
+
+async function safeErrorDetail(resp) {
+  try {
+    const j = await resp.json();
+    return j?.message || j?.error || j?.sys?.id || '';
+  } catch {
+    return '';
+  }
+}
+
+/* ─────────────────────── Assets / Upload ─────────────────────── */
+
+const ALLOWED_IMAGE_MIME = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+const ALLOWED_DOC_MIME = ['application/pdf'];
+const ALLOWED_ASSET_MIME = [...ALLOWED_IMAGE_MIME, ...ALLOWED_DOC_MIME];
+// Limite stricte : Netlify Functions classiques ont un cap sync ~5 Mo body
+const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
+const ASSET_POLL_INTERVAL_MS = 1500;
+const ASSET_POLL_MAX_TRIES = 20;
+
+/**
+ * Upload d'un fichier (image ou PDF) via le proxy.
+ * Retourne { id, url, contentType, fileName }.
+ */
+export async function uploadAsset(file) {
+  validateAssetFile(file);
+  const uploadId = await stepUploadRaw(file);
+  const created = await stepCreateAsset(file, uploadId);
+  await stepTriggerProcess(created.sys.id);
+  const ready = await stepWaitForAsset(created.sys.id);
+  const published = await stepPublishAsset(ready);
+  const fileField = published.fields?.file?.['en-US'];
+  const url = fileField?.url ? `https:${fileField.url}` : '';
+  return {
+    id: published.sys.id,
+    url,
+    contentType: fileField?.contentType || file.type,
+    fileName: fileField?.fileName || file.name,
+  };
+}
+
+export function isImageMime(mime) {
+  return ALLOWED_IMAGE_MIME.includes(mime);
+}
+
+export async function publishAsset(assetOrId) {
+  const asset = typeof assetOrId === 'string' ? await fetchAssetFresh(assetOrId) : assetOrId;
+  return stepPublishAsset(asset);
+}
+
+function validateAssetFile(file) {
+  if (!file) throw new Error('Aucun fichier sélectionné.');
+  if (!ALLOWED_ASSET_MIME.includes(file.type)) {
+    throw new Error(
+      `Format non supporté (${file.type || 'inconnu'}). Utilisez JPEG, PNG, GIF, WebP ou PDF.`
+    );
+  }
+  if (file.size === 0) throw new Error('Le fichier est vide.');
+  if (file.size > MAX_UPLOAD_BYTES) {
+    throw new Error(
+      `Fichier trop volumineux (${(file.size / 1024 / 1024).toFixed(1)} Mo) — 5 Mo max ` +
+        `(limite Netlify Functions).`
+    );
+  }
+}
+
+async function stepUploadRaw(file) {
+  const buffer = await file.arrayBuffer();
+  if (buffer.byteLength === 0) throw new Error('Fichier vide (0 octet).');
+  const resp = await cmaFetch(`${CMA_PREFIX}/uploads`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/octet-stream' },
+    body: new Blob([buffer], { type: 'application/octet-stream' }),
+  });
+  if (!resp.ok) {
+    const detail = await safeErrorDetail(resp);
+    throw new Error(`Upload (étape 1/4 — envoi brut) : ${resp.status} ${detail}`);
+  }
+  const data = await resp.json();
+  return data.sys.id;
+}
+
+async function stepCreateAsset(file, uploadId) {
+  const data = await cmaJson('assets', {
+    method: 'POST',
+    body: JSON.stringify({
+      fields: {
+        title: { 'en-US': file.name || 'asset' },
+        file: {
+          'en-US': {
+            contentType: file.type,
+            fileName: file.name || 'asset',
+            uploadFrom: { sys: { type: 'Link', linkType: 'Upload', id: uploadId } },
+          },
+        },
+      },
+    }),
+  }).catch((e) => {
+    throw new Error(`Upload (étape 2/4 — création asset) : ${e.message}`);
+  });
+  return data;
+}
+
+async function stepTriggerProcess(assetId) {
+  const resp = await cmaFetch(`assets/${assetId}/files/en-US/process`, { method: 'PUT' });
+  if (!resp.ok && resp.status !== 204) {
+    const detail = await safeErrorDetail(resp);
+    throw new Error(`Upload (étape 3/4 — traitement) : ${resp.status} ${detail}`);
+  }
+}
+
+async function stepWaitForAsset(assetId) {
+  for (let i = 0; i < ASSET_POLL_MAX_TRIES; i += 1) {
+    const asset = await fetchAssetFresh(assetId);
+    const fileField = asset.fields?.file?.['en-US'];
+    if (fileField?.url) return asset;
+    await sleep(ASSET_POLL_INTERVAL_MS);
+  }
+  throw new Error(
+    `Upload (étape 4/4 — traitement Contentful trop long) après ${
+      (ASSET_POLL_MAX_TRIES * ASSET_POLL_INTERVAL_MS) / 1000
+    } s.`
+  );
+}
+
+async function stepPublishAsset(asset) {
+  const resp = await cmaFetch(`assets/${asset.sys.id}/published`, {
+    method: 'PUT',
+    headers: { 'X-Contentful-Version': String(asset.sys.version) },
+  });
+  if (!resp.ok) {
+    const detail = await safeErrorDetail(resp);
+    throw new Error(`Publication asset : ${resp.status} ${detail}`);
+  }
+  return resp.json();
+}
+
+async function fetchAssetFresh(assetId) {
+  return cmaJson(`assets/${assetId}`);
+}
+
+function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+/* ─────────────────────── Profiles ─────────────────────── */
+
 export async function fetchAdminProfiles() {
-    const url = `${BASE_CMA_URL}?access_token=${CMA_ACCESS_TOKEN}&content_type=profile&include=2`;
+  const data = await cmaJson('entries?content_type=profile&limit=200');
+
+  // La CMA ne supporte pas include=N → on fetch les assets en lot.
+  const assetIds = Array.from(
+    new Set(data.items.map((it) => it.fields.image?.['en-US']?.sys?.id).filter(Boolean))
+  );
+  const assetMap = new Map();
+  if (assetIds.length) {
     try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
-        const data = await response.json();
-
-        const assets = data.includes?.Asset || [];
-        return data.items.map(item => {
-            const imageRef = item.fields.image?.['en-US']?.sys?.id;
-            const imageAsset = assets.find(asset => asset.sys.id === imageRef);
-            const imageUrl = imageAsset?.fields?.file?.url ? `https:${imageAsset.fields.file.url}` : './images/default-profile.jpg';
-
-            const diplomas = Array.isArray(item.fields.diplomas?.['en-US'])
-                ? item.fields.diplomas['en-US']
-                : [];
-
-            return {
-                id: item.sys.id,
-                name: item.fields.name?.['en-US'] || 'Nom non spécifié',
-                job: item.fields.job?.['en-US'] || 'Métier non spécifié',
-                email: item.fields.email?.['en-US'] || 'Email non spécifié',
-                phone: item.fields.phone?.['en-US'] || 'Non spécifié',
-                website: item.fields.website?.['en-US'] || 'Non spécifié',
-                description: item.fields.description?.['en-US'] || '',
-                diplomas: diplomas,
-                imageUrl: imageUrl,
-            };
-        });
-    } catch (error) {
-        console.error("Erreur lors de la récupération des profils :", error);
-        return [];
+      const aData = await cmaJson(
+        `assets?sys.id[in]=${assetIds.join(',')}&limit=${assetIds.length}`
+      );
+      (aData.items || []).forEach((a) => {
+        const fileField = a.fields?.file?.['en-US'] || a.fields?.file;
+        if (fileField?.url) assetMap.set(a.sys.id, `https:${fileField.url}`);
+      });
+    } catch (e) {
+      console.warn('[profiles] asset lookup failed', e);
     }
+  }
+
+  return data.items.map((item) => {
+    const imageRef = item.fields.image?.['en-US']?.sys?.id || null;
+    const imageUrl =
+      (imageRef && assetMap.get(imageRef)) || '/admin/assets/views/images/default-profile.jpg';
+
+    const diplomasRaw = item.fields.diplomas?.['en-US'];
+    const diplomas = Array.isArray(diplomasRaw)
+      ? diplomasRaw
+      : typeof diplomasRaw === 'string' && diplomasRaw.trim()
+        ? diplomasRaw
+            .split(',')
+            .map((d) => d.trim())
+            .filter(Boolean)
+        : [];
+
+    return {
+      id: item.sys.id,
+      name: item.fields.name?.['en-US'] || 'Nom non spécifié',
+      job: item.fields.job?.['en-US'] || 'Métier non spécifié',
+      email: item.fields.email?.['en-US'] || 'Email non spécifié',
+      phone: String(item.fields.phone?.['en-US'] ?? 'Non spécifié'),
+      website: item.fields.website?.['en-US'] || 'Non spécifié',
+      description: item.fields.description?.['en-US'] || '',
+      diplomas,
+      imageUrl,
+      imageId: imageRef,
+    };
+  });
 }
 
-// Fonction pour créer un profil
 export async function createAdminProfile(profileData) {
-    const url = BASE_CMA_URL;
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-        'Content-Type': 'application/vnd.contentful.management.v1+json',
-        'X-Contentful-Content-Type': 'profile',
+  const data = {
+    fields: {
+      name: { 'en-US': profileData.name },
+      job: { 'en-US': profileData.job },
+      email: { 'en-US': profileData.email },
+      phone: { 'en-US': parseInt(profileData.phone, 10) || 0 },
+      website: { 'en-US': profileData.website || '' },
+      description: { 'en-US': profileData.description || '' },
+      diplomas: {
+        'en-US': Array.isArray(profileData.diplomas)
+          ? profileData.diplomas.join(', ')
+          : profileData.diplomas || '',
+      },
+    },
+  };
+  if (profileData.imageId) {
+    data.fields.image = {
+      'en-US': { sys: { type: 'Link', linkType: 'Asset', id: profileData.imageId } },
     };
-
-    const data = {
-        fields: {
-            name: { 'en-US': profileData.name },
-            job: { 'en-US': profileData.job },
-            email: { 'en-US': profileData.email },
-            phone: { 'en-US': parseInt(profileData.phone, 10) || 0 }, // Convertir en entier
-            website: { 'en-US': profileData.website || '' },
-            description: { 'en-US': profileData.description || '' },
-            diplomas: { 
-                'en-US': Array.isArray(profileData.diplomas) 
-                    ? profileData.diplomas.join(', ') // Convertir en chaîne
-                    : (profileData.diplomas || '') 
-            },
-        },
-    };
-
-    if (profileData.imageId) {
-        data.fields.image = {
-            'en-US': {
-                sys: { type: 'Link', linkType: 'Asset', id: profileData.imageId },
-            },
-        };
-    }
-
-    try {
-        console.log("Données envoyées :", JSON.stringify(data, null, 2)); // Debug
-        const response = await fetch(url, {
-            method: 'POST',
-            headers,
-            body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Erreur lors de la création détaillée :", errorData);
-            throw new Error(`Erreur lors de la création du profil : ${response.status}`);
-        }
-
-        const createdProfile = await response.json();
-        console.log("Profil créé avec succès :", createdProfile);
-
-        await publishAdminProfile(createdProfile.sys.id);
-        console.log("Profil publié avec succès !");
-    } catch (error) {
-        console.error("Erreur lors de la création ou de la publication du profil :", error.message || error);
-        throw error;
-    }
+  }
+  const created = await cmaJson('entries', {
+    method: 'POST',
+    headers: { 'X-Contentful-Content-Type': 'profile' },
+    body: JSON.stringify(data),
+  });
+  await publishAdminProfile(created.sys.id);
+  return created;
 }
 
-// Fonction pour publier un profil
 export async function publishAdminProfile(profileId) {
-    const url = `${BASE_CMA_URL}/${profileId}/published`;
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-        'Content-Type': 'application/vnd.contentful.management.v1+json',
-    };
-
-    try {
-        const entryResponse = await fetch(`${BASE_CMA_URL}/${profileId}`, { method: 'GET', headers });
-        if (!entryResponse.ok) throw new Error(`Erreur lors de la récupération de l'entrée : ${entryResponse.status}`);
-        const entryData = await entryResponse.json();
-        const currentVersion = entryData.sys.version;
-
-        const response = await fetch(url, {
-            method: 'PUT',
-            headers: {
-                ...headers,
-                'X-Contentful-Version': currentVersion,
-            },
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Erreur lors de la publication détaillée :", errorData);
-            throw new Error(`Erreur lors de la publication du profil : ${response.status}`);
-        }
-
-        console.log("Profil publié avec succès !");
-    } catch (error) {
-        console.error("Erreur lors de la publication du profil :", error);
-        throw error;
-    }
+  const entry = await cmaJson(`entries/${profileId}`);
+  const resp = await cmaFetch(`entries/${profileId}/published`, {
+    method: 'PUT',
+    headers: { 'X-Contentful-Version': String(entry.sys.version) },
+  });
+  if (!resp.ok) {
+    const detail = await safeErrorDetail(resp);
+    throw new Error(`Publication profil : ${resp.status} ${detail}`);
+  }
 }
 
-// Fonction pour télécharger une image avec un titre
-export async function uploadProfileImage(file) {
-    const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    if (!allowedMimeTypes.includes(file.type)) {
-        throw new Error("Type de fichier non autorisé. Veuillez utiliser un fichier JPEG, PNG ou GIF.");
-    }
-
-    try {
-        console.log("Début de l'upload de l'image...");
-        const fileId = await uploadFileToContentful(file);
-
-        const createAssetResponse = await fetch(BASE_UPLOAD_URL, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-                'Content-Type': 'application/vnd.contentful.management.v1+json',
-            },
-            body: JSON.stringify({
-                fields: {
-                    title: { 'en-US': file.name }, // Ajout du titre (nom du fichier)
-                    file: {
-                        'en-US': {
-                            contentType: file.type,
-                            fileName: file.name,
-                            uploadFrom: {
-                                sys: {
-                                    type: 'Link',
-                                    linkType: 'Upload',
-                                    id: fileId,
-                                },
-                            },
-                        },
-                    },
-                },
-            }),
-        });
-
-        if (!createAssetResponse.ok) {
-            const errorData = await createAssetResponse.json();
-            console.error("Erreur lors de la création de l'asset :", errorData);
-            throw new Error(`Erreur lors de la création de l'asset : ${createAssetResponse.status}`);
-        }
-
-        const assetData = await createAssetResponse.json();
-        console.log("Asset créé :", assetData);
-
-        await processAsset(assetData.sys.id);
-        await publishAsset(assetData.sys.id);
-
-        console.log("Asset publié avec succès !");
-        return assetData.sys.id;
-    } catch (error) {
-        console.error("Erreur lors de l'upload de l'image :", error.message || error);
-        throw error;
-    }
-}
-
-// Fonction pour télécharger un fichier brut
-async function uploadFileToContentful(file) {
-    const url = `https://upload.contentful.com/spaces/${SPACE_ID}/uploads`;
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-        'Content-Type': 'application/octet-stream',
-    };
-
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers,
-            body: file,
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Erreur lors de l'upload du fichier :", errorData);
-            throw new Error(`Erreur lors de l'upload du fichier : ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log("Fichier uploadé :", data);
-        return data.sys.id;
-    } catch (error) {
-        console.error("Erreur lors de l'upload du fichier :", error.message || error);
-        throw error;
-    }
-}
-
-// Fonction pour traiter un asset
-async function processAsset(assetId) {
-    const url = `${BASE_UPLOAD_URL}/${assetId}/files/en-US/process`;
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-        'Content-Type': 'application/vnd.contentful.management.v1+json',
-    };
-
-    try {
-        console.log(`Traitement de l'asset ID : ${assetId}...`);
-        const response = await fetch(url, { method: 'PUT', headers });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Erreur lors du traitement de l'asset :", errorData);
-            throw new Error(`Erreur lors du traitement de l'asset : ${response.status}`);
-        }
-
-        console.log("Traitement de l'asset en cours...");
-        await waitForAssetProcessing(assetId);
-    } catch (error) {
-        console.error("Erreur lors du traitement de l'asset :", error.message || error);
-        throw error;
-    }
-}
-
-// Fonction pour attendre que l'asset soit traité
-async function waitForAssetProcessing(assetId) {
-    const url = `${BASE_UPLOAD_URL}/${assetId}`;
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-    };
-
-    let retries = 10;
-    while (retries > 0) {
-        const response = await fetch(url, { method: 'GET', headers });
-
-        if (!response.ok) throw new Error(`Erreur lors de la vérification de l'asset : ${response.status}`);
-
-        const assetData = await response.json();
-        const fileDetails = assetData.fields?.file?.['en-US'];
-
-        if (fileDetails && fileDetails.url && fileDetails.details?.image?.width) {
-            console.log("L'asset est prêt avec toutes les métadonnées !");
-            return;
-        }
-
-        console.log(`Asset non prêt. Réessai dans 2 secondes... (${retries} restantes)`);
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        retries--;
-    }
-
-    throw new Error("L'asset n'a pas été complètement traité dans le temps imparti.");
-}
-
-// Fonction pour publier un asset
-export async function publishAsset(assetId) {
-    const assetUrl = `${BASE_UPLOAD_URL}/${assetId}`;
-    const publishUrl = `${assetUrl}/published`;
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-        'Content-Type': 'application/vnd.contentful.management.v1+json',
-    };
-
-    try {
-        // Récupérer l'asset pour vérifier qu'il est prêt
-        const assetResponse = await fetch(assetUrl, { method: 'GET', headers });
-        if (!assetResponse.ok) throw new Error(`Erreur lors de la récupération de l'asset : ${assetResponse.status}`);
-        const assetData = await assetResponse.json();
-
-        // Vérifiez les métadonnées de l'asset
-        const fileDetails = assetData.fields?.file?.['en-US'];
-        if (!fileDetails || !fileDetails.url || !fileDetails.contentType || !fileDetails.details?.image) {
-            console.error("Métadonnées incomplètes :", fileDetails);
-            throw new Error("L'asset n'est pas complètement traité ou manque de métadonnées nécessaires.");
-        }
-
-        console.log("Métadonnées de l'asset :", fileDetails);
-
-        const currentVersion = assetData.sys.version;
-
-        // Publier l'asset
-        const response = await fetch(publishUrl, {
-            method: 'PUT',
-            headers: {
-                ...headers,
-                'X-Contentful-Version': currentVersion,
-            },
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Erreur détaillée lors de la publication de l'asset :", errorData);
-            throw new Error(`Erreur lors de la publication de l'asset : ${response.status}`);
-        }
-
-        console.log("Asset publié avec succès !");
-    } catch (error) {
-        console.error("Erreur lors de la publication de l'asset :", error.message || error);
-        throw error;
-    }
-}
-
-// Fonction pour supprimer un profil
 export async function deleteAdminProfile(profileId) {
-    const url = `${BASE_CMA_URL}/${profileId}`;
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-    };
-
-    try {
-        const getEntryResponse = await fetch(url, { headers });
-
-        if (!getEntryResponse.ok) throw new Error(`Erreur lors de la récupération de l'entrée : ${getEntryResponse.status}`);
-        const entryData = await getEntryResponse.json();
-        const isPublished = entryData.sys.publishedVersion !== undefined;
-
-        if (isPublished) {
-            const unpublishUrl = `${url}/published`;
-            const unpublishResponse = await fetch(unpublishUrl, {
-                method: 'DELETE',
-                headers,
-            });
-
-            if (!unpublishResponse.ok) throw new Error(`Erreur lors de l'annulation de la publication : ${unpublishResponse.status}`);
-        }
-
-        const deleteResponse = await fetch(url, {
-            method: 'DELETE',
-            headers,
-        });
-
-        if (!deleteResponse.ok) throw new Error(`Erreur lors de la suppression de l'entrée : ${deleteResponse.status}`);
-
-        console.log("Profil supprimé avec succès !");
-    } catch (error) {
-        console.error("Erreur lors de la suppression du profil :", error);
-    }
+  const entry = await cmaJson(`entries/${profileId}`);
+  if (entry.sys.publishedVersion !== undefined) {
+    const unpub = await cmaFetch(`entries/${profileId}/published`, { method: 'DELETE' });
+    if (!unpub.ok) throw new Error(`Dépublication profil : ${unpub.status}`);
+  }
+  const del = await cmaFetch(`entries/${profileId}`, { method: 'DELETE' });
+  if (!del.ok) throw new Error(`Suppression profil : ${del.status}`);
 }
 
-// Fonction pour mettre à jour un profil
 export async function updateAdminProfile(profileId, profileData) {
-    const url = `${BASE_CMA_URL}/${profileId}`;
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-        'Content-Type': 'application/vnd.contentful.management.v1+json',
+  const entry = await cmaJson(`entries/${profileId}`);
+  const updateData = {
+    fields: {
+      name: { 'en-US': profileData.name },
+      job: { 'en-US': profileData.job },
+      email: { 'en-US': profileData.email },
+      phone: { 'en-US': parseInt(profileData.phone, 10) || 0 },
+      website: { 'en-US': profileData.website },
+      diplomas: {
+        'en-US': Array.isArray(profileData.diplomas)
+          ? profileData.diplomas.join(', ')
+          : profileData.diplomas || '',
+      },
+      description: { 'en-US': profileData.description || '' },
+    },
+  };
+  if (profileData.imageId) {
+    updateData.fields.image = {
+      'en-US': { sys: { type: 'Link', linkType: 'Asset', id: profileData.imageId } },
     };
-
-    try {
-        const versionResponse = await fetch(url, { method: 'GET', headers });
-        if (!versionResponse.ok) throw new Error(`Erreur lors de la récupération de la version : ${versionResponse.status}`);
-        const versionData = await versionResponse.json();
-        const currentVersion = versionData.sys.version;
-
-        const updateData = {
-            fields: {
-                name: { 'en-US': profileData.name },
-                job: { 'en-US': profileData.job },
-                email: { 'en-US': profileData.email },
-                phone: { 'en-US': parseInt(profileData.phone, 10) || 0 }, // Conversion en nombre
-                website: { 'en-US': profileData.website },
-                diplomas: { 
-                    'en-US': Array.isArray(profileData.diplomas) 
-                        ? profileData.diplomas.join(', ') // Convertir en chaîne
-                        : (profileData.diplomas || '') 
-                },
-                description: { 'en-US': profileData.description || '' }, // Champ requis
-            },
-        };
-
-        if (profileData.imageId) {
-            updateData.fields.image = { 
-                'en-US': {
-                    sys: {
-                        type: 'Link',
-                        linkType: 'Asset',
-                        id: profileData.imageId
-                    }
-                }
-            };
-        }
-
-        const response = await fetch(url, {
-            method: 'PUT',
-            headers: { ...headers, 'X-Contentful-Version': currentVersion },
-            body: JSON.stringify(updateData),
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Erreur Contentful complète :', JSON.stringify({
-                request: { 
-                    url, 
-                    method: 'PUT',
-                    headers: headers, 
-                    body: updateData 
-                },
-                response: { 
-                    status: response.status, 
-                    body: errorData 
-                }
-            }, null, 2));
-            throw new Error(`Erreur ${response.status}: ${errorData.message}`);
-        }
-
-        console.log("Profil mis à jour avec succès !");
-        await publishAdminProfile(profileId);
-    } catch (error) {
-        console.error("Erreur lors de la mise à jour du profil :", error);
-        throw error;
-    }
+  }
+  const resp = await cmaFetch(`entries/${profileId}`, {
+    method: 'PUT',
+    headers: { 'X-Contentful-Version': String(entry.sys.version) },
+    body: JSON.stringify(updateData),
+  });
+  if (!resp.ok) {
+    const detail = await safeErrorDetail(resp);
+    throw new Error(`Maj profil : ${resp.status} ${detail}`);
+  }
+  await publishAdminProfile(profileId);
+  return resp.json();
 }
 
+/* ─────────────────────── Articles ─────────────────────── */
 
-// Articles Page 
-// Fonction pour créer un article
 export async function createArticle({ title, summary, content, imageFile }) {
-    const url = BASE_CMA_URL;
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-        'Content-Type': 'application/vnd.contentful.management.v1+json',
-        'X-Contentful-Content-Type': 'article',
-    };
-
-    const data = {
-        fields: {
-            title: { 'en-US': title },
-            summary: { 'en-US': summary },
-            content: { 'en-US': content },
-        },
-    };
-
-    try {
-        // Étape 1 : Télécharger l'image si elle existe
-        if (imageFile) {
-            const imageId = await uploadProfileImage(imageFile); // Réutilisation de la fonction pour télécharger une image
-            data.fields.image = {
-                'en-US': {
-                    sys: { type: 'Link', linkType: 'Asset', id: imageId },
-                },
-            };
-        }
-
-        // Étape 2 : Créer l'article
-        const response = await fetch(url, {
-            method: 'POST',
-            headers,
-            body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Erreur lors de la création de l'article :", errorData);
-            throw new Error(`Erreur HTTP : ${response.status}`);
-        }
-
-        const createdArticle = await response.json();
-
-        // Étape 3 : Publier l'article immédiatement
-        await publishArticle(createdArticle.sys.id);
-
-        return createdArticle;
-    } catch (error) {
-        console.error("Erreur lors de la création de l'article :", error.message || error);
-        throw error;
-    }
+  const data = {
+    fields: {
+      title: { 'en-US': title },
+      summary: { 'en-US': summary },
+      content: { 'en-US': content },
+    },
+  };
+  if (imageFile) {
+    const { id } = await uploadAsset(imageFile);
+    data.fields.image = { 'en-US': { sys: { type: 'Link', linkType: 'Asset', id } } };
+  }
+  const created = await cmaJson('entries', {
+    method: 'POST',
+    headers: { 'X-Contentful-Content-Type': 'article' },
+    body: JSON.stringify(data),
+  });
+  await publishEntry(created.sys.id);
+  return created;
 }
 
-
-
-// Fonction pour publier un article
-async function publishArticle(articleId) {
-    const url = `${BASE_CMA_URL}/${articleId}/published`;
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-        'Content-Type': 'application/vnd.contentful.management.v1+json',
-    };
-
-    try {
-        // Récupérer les métadonnées actuelles de l'article
-        const entryUrl = `${BASE_CMA_URL}/${articleId}`;
-        const entryResponse = await fetch(entryUrl, { method: 'GET', headers });
-        if (!entryResponse.ok) {
-            const errorData = await entryResponse.json();
-            console.error("Erreur lors de la récupération de l'article :", errorData);
-            throw new Error(`Erreur lors de la récupération de l'article : ${entryResponse.status}`);
-        }
-
-        const entryData = await entryResponse.json();
-        const currentVersion = entryData.sys.version; // Obtenir la version actuelle
-
-        // Publier l'article
-        const response = await fetch(url, {
-            method: 'PUT',
-            headers: {
-                ...headers,
-                'X-Contentful-Version': currentVersion, // Inclure la version correcte
-            },
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Erreur lors de la publication de l'article :", errorData);
-            throw new Error(`Erreur lors de la publication de l'article : ${response.status}`);
-        }
-
-        console.log("Article publié avec succès !");
-    } catch (error) {
-        console.error("Erreur lors de la publication de l'article :", error.message || error);
-        throw error;
-    }
-}
-
-export async function uploadImage(file) {
-    const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    if (!allowedMimeTypes.includes(file.type)) {
-        throw new Error("Type de fichier non autorisé. Veuillez utiliser un fichier JPEG, PNG ou GIF.");
-    }
-
-    try {
-        console.log("Début de l'upload de l'image...");
-
-        // Étape 1 : Uploader le fichier brut
-        const rawFileUploadResponse = await fetch(`https://upload.contentful.com/spaces/${SPACE_ID}/uploads`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-                'Content-Type': 'application/octet-stream',
-            },
-            body: file,
-        });
-
-        if (!rawFileUploadResponse.ok) {
-            throw new Error("Erreur lors de l'upload du fichier brut.");
-        }
-
-        const uploadData = await rawFileUploadResponse.json();
-
-        // Étape 2 : Créer un asset
-        const assetResponse = await fetch(`${BASE_UPLOAD_URL}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-                'Content-Type': 'application/vnd.contentful.management.v1+json',
-            },
-            body: JSON.stringify({
-                fields: {
-                    title: { 'en-US': file.name },
-                    file: {
-                        'en-US': {
-                            contentType: file.type,
-                            fileName: file.name,
-                            uploadFrom: {
-                                sys: { type: 'Link', linkType: 'Upload', id: uploadData.sys.id },
-                            },
-                        },
-                    },
-                },
-            }),
-        });
-
-        if (!assetResponse.ok) {
-            throw new Error("Erreur lors de la création de l'asset.");
-        }
-
-        const assetData = await assetResponse.json();
-
-        // Étape 3 : Attendre que l'asset soit traité
-        await waitForImageProcessing(assetData.sys.id);
-
-        // Étape 4 : Publier l'asset
-        await publishAsset(assetData.sys.id);
-
-        console.log("Image uploadée et publiée avec succès !");
-        return assetData.sys.id;
-    } catch (error) {
-        console.error("Erreur lors de l'upload de l'image :", error);
-        throw error;
-    }
-}
-
-// Nouvelle fonction dédiée à l'attente du traitement de l'image
-async function waitForImageProcessing(assetId) {
-    const url = `${BASE_UPLOAD_URL}/${assetId}`;
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-    };
-
-    let retries = 10;
-    while (retries > 0) {
-        const response = await fetch(url, { method: 'GET', headers });
-
-        if (!response.ok) throw new Error(`Erreur lors de la vérification de l'asset : ${response.status}`);
-
-        const assetData = await response.json();
-        const fileDetails = assetData.fields?.file?.['en-US'];
-
-        if (fileDetails && fileDetails.url && fileDetails.details?.image?.width) {
-            console.log("L'asset est prêt avec toutes les métadonnées !");
-            return;
-        }
-
-        console.log(`Asset non prêt. Réessai dans 2 secondes... (${retries} restantes)`);
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        retries--;
-    }
-
-    throw new Error("L'asset n'a pas été complètement traité dans le temps imparti.");
-}
-
-
-// Fonction pour mettre à jour un article
 export async function updateArticle(articleId, updatedData) {
-    const url = `${BASE_CMA_URL}/${articleId}`;
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-        'Content-Type': 'application/json',
-    };
-
-    // 1. Récupérer la version actuelle de l'article
-    const versionResponse = await fetch(url, { method: 'GET', headers });
-    if (!versionResponse.ok) {
-        const errorData = await versionResponse.json();
-        console.error("Erreur lors de la récupération de la version de l'article :", errorData);
-        throw new Error(`Erreur HTTP : ${versionResponse.status}`);
-    }
-    const versionData = await versionResponse.json();
-    const currentVersion = versionData.sys.version; // La version actuelle
-
-    // Construire l'objet data avec les nouvelles valeurs
-    const data = {
-        fields: {
-            title: { 'en-US': updatedData.title },
-            summary: { 'en-US': updatedData.summary },
-            content: { 'en-US': updatedData.content },
-        },
-    };
-
-    if (updatedData.imageFile) {
-        // Si on met à jour l'image, il faut d'abord l'upload et obtenir un imageId
-        const imageId = await uploadProfileImage(updatedData.imageFile);
-        data.fields.image = {
-            'en-US': {
-                sys: {
-                    type: 'Link',
-                    linkType: 'Asset',
-                    id: imageId,
-                },
-            },
-        };
-    }
-
-    // 2. Mettre à jour l'article avec la bonne version
-    const updateResponse = await fetch(url, {
-        method: 'PUT',
-        headers: {
-            ...headers,
-            'X-Contentful-Version': currentVersion
-        },
-        body: JSON.stringify(data),
-    });
-
-    if (!updateResponse.ok) {
-        const errorData = await updateResponse.json();
-        console.error("Erreur lors de la mise à jour de l'article :", errorData);
-        throw new Error(`Erreur HTTP : ${updateResponse.status}`);
-    }
-
-    console.log("Article mis à jour avec succès !");
-
-    // 3. Publier l'article après la mise à jour
-    await publishArticle(articleId);
-
-    return updateResponse.json();
+  const entry = await cmaJson(`entries/${articleId}`);
+  const data = {
+    fields: {
+      title: { 'en-US': updatedData.title },
+      summary: { 'en-US': updatedData.summary },
+      content: { 'en-US': updatedData.content },
+    },
+  };
+  // Préserve image existante si aucune nouvelle n'est fournie
+  if (updatedData.imageFile) {
+    const { id } = await uploadAsset(updatedData.imageFile);
+    data.fields.image = { 'en-US': { sys: { type: 'Link', linkType: 'Asset', id } } };
+  } else if (entry.fields.image) {
+    data.fields.image = entry.fields.image;
+  }
+  const resp = await cmaFetch(`entries/${articleId}`, {
+    method: 'PUT',
+    headers: { 'X-Contentful-Version': String(entry.sys.version) },
+    body: JSON.stringify(data),
+  });
+  if (!resp.ok) {
+    const detail = await safeErrorDetail(resp);
+    throw new Error(`Maj article : ${resp.status} ${detail}`);
+  }
+  await publishEntry(articleId);
+  return resp.json();
 }
 
-
-
-// Fonction pour supprimer un article
 export async function deleteArticle(articleId) {
-    const url = `${BASE_CMA_URL}/${articleId}`;
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-        'Content-Type': 'application/vnd.contentful.management.v1+json',
-    };
-
-    try {
-        const response = await fetch(url, { method: 'DELETE', headers });
-
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => null); // Empêche une erreur supplémentaire
-            console.error("Erreur lors de la suppression de l'article :", errorData || response.statusText);
-            throw new Error(`Erreur lors de la suppression de l'article : ${response.status}`);
-        }
-
-        console.log("Article supprimé avec succès !");
-        return true; // Retourne une confirmation de succès
-    } catch (error) {
-        console.error("Erreur lors de la suppression de l'article :", error);
-        throw error;
-    }
+  const resp = await cmaFetch(`entries/${articleId}`, { method: 'DELETE' });
+  if (!resp.ok) throw new Error(`Suppression article : ${resp.status}`);
+  return true;
 }
 
-
-// Fonction pour dépublier un article
 export async function unpublishArticle(articleId) {
-    const url = `${BASE_CMA_URL}/${articleId}/published`;
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-        'Content-Type': 'application/vnd.contentful.management.v1+json',
-    };
-
-    try {
-        const response = await fetch(url, { method: 'DELETE', headers });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Erreur lors de la dépublication de l'article :", errorData);
-            throw new Error(`Erreur lors de la dépublication de l'article : ${response.status}`);
-        }
-
-        console.log("Article dépublié avec succès !");
-    } catch (error) {
-        console.error("Erreur lors de la dépublication de l'article :", error);
-        throw error;
-    }
+  const resp = await cmaFetch(`entries/${articleId}/published`, { method: 'DELETE' });
+  if (!resp.ok) throw new Error(`Dépublication article : ${resp.status}`);
 }
 
-// Page Event 
-// Évènements (Events)// Évènements (Events)
+// Helper partagé — publie n'importe quelle entry
+async function publishEntry(entryId) {
+  const entry = await cmaJson(`entries/${entryId}`);
+  const resp = await cmaFetch(`entries/${entryId}/published`, {
+    method: 'PUT',
+    headers: { 'X-Contentful-Version': String(entry.sys.version) },
+  });
+  if (!resp.ok) {
+    const detail = await safeErrorDetail(resp);
+    throw new Error(`Publication entrée : ${resp.status} ${detail}`);
+  }
+}
+
+/* ─────────────────────── Events ─────────────────────── */
+
 export async function fetchEventsAdmin() {
-    const url = `${BASE_CMA_URL}?access_token=${CMA_ACCESS_TOKEN}&content_type=event&include=2`;
+  const data = await cmaJson('entries?content_type=event&limit=200');
+  // Enrichir l'image si présente (préservation upload-preserver)
+  const assetIds = Array.from(
+    new Set(data.items.map((it) => it.fields.image?.['en-US']?.sys?.id).filter(Boolean))
+  );
+  if (assetIds.length) {
     try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
-        const data = await response.json();
-        return data.items;
-    } catch (error) {
-        console.error("Erreur lors de la récupération des évènements :", error);
-        return [];
+      const aData = await cmaJson(
+        `assets?sys.id[in]=${assetIds.join(',')}&limit=${assetIds.length}`
+      );
+      const assetMap = new Map();
+      (aData.items || []).forEach((a) => {
+        const fileField = a.fields?.file?.['en-US'] || a.fields?.file;
+        if (fileField?.url) assetMap.set(a.sys.id, `https:${fileField.url}`);
+      });
+      data.items.forEach((it) => {
+        const id = it.fields.image?.['en-US']?.sys?.id;
+        if (id) it._imageUrl = assetMap.get(id) || null;
+      });
+    } catch (e) {
+      console.warn('[events] asset lookup failed', e);
     }
+  }
+  return data.items;
 }
 
-async function publishEvent(eventId) {
-    const url = `${BASE_CMA_URL}/${eventId}/published`;
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-        'Content-Type': 'application/vnd.contentful.management.v1+json',
-    };
-
-    const entryUrl = `${BASE_CMA_URL}/${eventId}`;
-    const entryResponse = await fetch(entryUrl, { method: 'GET', headers });
-    if (!entryResponse.ok) throw new Error(`Erreur lors de la récupération de l'entrée : ${entryResponse.status}`);
-    const entryData = await entryResponse.json();
-    const currentVersion = entryData.sys.version;
-
-    const response = await fetch(url, {
-        method: 'PUT',
-        headers: {
-            ...headers,
-            'X-Contentful-Version': currentVersion,
-        },
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Erreur lors de la publication de l'évènement :", errorData);
-        throw new Error(`Erreur lors de la publication : ${response.status}`);
-    }
-
-    console.log("Évènement publié avec succès !");
-}
-
-export async function createEvent({ title, date, location, description }) {
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-        'Content-Type': 'application/vnd.contentful.management.v1+json',
-        'X-Contentful-Content-Type': 'event',
-    };
-
-    const data = {
-        fields: {
-            title: { 'en-US': title },
-            date: { 'en-US': date },
-            location: { 'en-US': location },
-            description: { 'en-US': description },
-        },
-    };
-
-    console.log("Données envoyées (createEvent) :", JSON.stringify(data, null, 2));
-    const response = await fetch(BASE_CMA_URL, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Erreur lors de la création de l'évènement :", errorData);
-        if (errorData.details) {
-            console.log("Détails de l'erreur (createEvent) :", JSON.stringify(errorData.details, null, 2));
-        }
-        throw new Error(`Erreur HTTP : ${response.status}`);
-    }
-
-    const createdEvent = await response.json();
-    await publishEvent(createdEvent.sys.id);
-    return createdEvent;
+export async function createEvent({ title, date, location, description, imageFile }) {
+  const data = {
+    fields: {
+      title: { 'en-US': title },
+      date: { 'en-US': date },
+      location: { 'en-US': location },
+      description: { 'en-US': description },
+    },
+  };
+  if (imageFile) {
+    const { id } = await uploadAsset(imageFile);
+    data.fields.image = { 'en-US': { sys: { type: 'Link', linkType: 'Asset', id } } };
+  }
+  const created = await cmaJson('entries', {
+    method: 'POST',
+    headers: { 'X-Contentful-Content-Type': 'event' },
+    body: JSON.stringify(data),
+  });
+  await publishEntry(created.sys.id);
+  return created;
 }
 
 export async function updateEvent(eventId, updatedData) {
-    const entryUrl = `${BASE_CMA_URL}/${eventId}`;
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-        'Content-Type': 'application/json',
-    };
-
-    const versionResponse = await fetch(entryUrl, { method: 'GET', headers });
-    if (!versionResponse.ok) throw new Error(`Erreur lors de la récupération de la version : ${versionResponse.status}`);
-    const versionData = await versionResponse.json();
-    const currentVersion = versionData.sys.version;
-
-    const data = {
-        fields: {
-            title: { 'en-US': updatedData.title },
-            date: { 'en-US': updatedData.date },
-            location: { 'en-US': updatedData.location },
-            description: { 'en-US': updatedData.description },
-        },
-    };
-
-    console.log("Données envoyées (updateEvent) :", JSON.stringify(data, null, 2));
-    const response = await fetch(entryUrl, {
-        method: 'PUT',
-        headers: {
-            ...headers,
-            'X-Contentful-Version': currentVersion
-        },
-        body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Erreur lors de la mise à jour de l'évènement :", errorData);
-        if (errorData.details) {
-            console.log("Détails de l'erreur (updateEvent) :", JSON.stringify(errorData.details, null, 2));
-        }
-        throw new Error(`Erreur HTTP : ${response.status}`);
-    }
-
-    await publishEvent(eventId);
-    console.log("Évènement mis à jour et publié avec succès !");
+  const entry = await cmaJson(`entries/${eventId}`);
+  const data = {
+    fields: {
+      title: { 'en-US': updatedData.title },
+      date: { 'en-US': updatedData.date },
+      location: { 'en-US': updatedData.location },
+      description: { 'en-US': updatedData.description },
+    },
+  };
+  if (updatedData.imageFile) {
+    const { id } = await uploadAsset(updatedData.imageFile);
+    data.fields.image = { 'en-US': { sys: { type: 'Link', linkType: 'Asset', id } } };
+  } else if (entry.fields.image) {
+    data.fields.image = entry.fields.image;
+  }
+  const resp = await cmaFetch(`entries/${eventId}`, {
+    method: 'PUT',
+    headers: { 'X-Contentful-Version': String(entry.sys.version) },
+    body: JSON.stringify(data),
+  });
+  if (!resp.ok) {
+    const detail = await safeErrorDetail(resp);
+    throw new Error(`Maj évènement : ${resp.status} ${detail}`);
+  }
+  await publishEntry(eventId);
 }
 
 export async function deleteEvent(eventId) {
-    const url = `${BASE_CMA_URL}/${eventId}`;
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-        'Content-Type': 'application/vnd.contentful.management.v1+json',
-    };
-
-    const response = await fetch(url, { method: 'DELETE', headers });
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        console.error("Erreur lors de la suppression de l'évènement :", errorData || response.statusText);
-        throw new Error(`Erreur lors de la suppression : ${response.status}`);
-    }
-
-    console.log("Évènement supprimé avec succès !");
-    return true;
+  const resp = await cmaFetch(`entries/${eventId}`, { method: 'DELETE' });
+  if (!resp.ok) throw new Error(`Suppression évènement : ${resp.status}`);
+  return true;
 }
 
 export async function unpublishEvent(eventId) {
-    const url = `${BASE_CMA_URL}/${eventId}/published`;
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-        'Content-Type': 'application/vnd.contentful.management.v1+json',
-    };
-
-    const response = await fetch(url, { method: 'DELETE', headers });
-    if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Erreur lors de la dépublication de l'évènement :", errorData);
-        throw new Error(`Erreur lors de la dépublication : ${response.status}`);
-    }
-
-    console.log("Évènement dépublié avec succès !");
+  const resp = await cmaFetch(`entries/${eventId}/published`, { method: 'DELETE' });
+  if (!resp.ok) throw new Error(`Dépublication évènement : ${resp.status}`);
 }
 
-// Workshop Management Functions
+/* ─────────────────────── Workshops ─────────────────────── */
+
 export async function fetchWorkshopsAdmin() {
-    const url = `${BASE_CMA_URL}?content_type=workshop&include=2`;
+  const data = await cmaJson('entries?content_type=workshop&limit=200');
+  const assetIds = Array.from(
+    new Set(data.items.map((it) => it.fields.image?.['en-US']?.sys?.id).filter(Boolean))
+  );
+  const assetMap = new Map();
+  if (assetIds.length) {
     try {
-        const response = await fetch(url, {
-            headers: getCMAHeaders()
-        });
-
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-        const data = await response.json();
-        return data.items.map(item => ({
-            id: item.sys.id,
-            title: item.fields.title?.['en-US'] || 'Sans titre',
-            description: item.fields.description?.['en-US'] || '',
-            recurrence: item.fields.recurrence?.['en-US'] || 'Non spécifiée',
-            profiles: item.fields.profiles?.['en-US']?.map(p => p.sys.id) || [],
-            version: item.sys.version
-        }));
-    } catch (error) {
-        console.error('fetchWorkshopsAdmin error:', error);
-        throw error;
+      const aData = await cmaJson(
+        `assets?sys.id[in]=${assetIds.join(',')}&limit=${assetIds.length}`
+      );
+      (aData.items || []).forEach((a) => {
+        const fileField = a.fields?.file?.['en-US'] || a.fields?.file;
+        if (fileField?.url) assetMap.set(a.sys.id, `https:${fileField.url}`);
+      });
+    } catch (e) {
+      console.warn('[workshops] asset lookup failed', e);
     }
-}
-
-
-
-
-export async function updateWorkshop(workshopId, workshopData) {
-    try {
-        // 🔹 Récupérer la version actuelle de l'atelier
-        const getUrl = `${BASE_CMA_URL}/${workshopId}`;
-        const getResponse = await fetch(getUrl, { headers: getCMAHeaders() });
-
-        if (!getResponse.ok) throw new Error(`HTTP GET ${getResponse.status}`);
-
-        const currentData = await getResponse.json();
-        const version = currentData.sys.version;
-
-        // Vérifier que recurrence est un tableau
-        const recurrenceValue = Array.isArray(workshopData.recurrence) 
-            ? workshopData.recurrence 
-            : [workshopData.recurrence]; 
-
-        // 🔹 Préparation des nouvelles données
-        const updateData = {
-            fields: {
-                title: { 'en-US': workshopData.title },
-                description: { 'en-US': workshopData.description },
-                recurrence: { 'en-US': recurrenceValue },
-                profiles: {
-                    'en-US': workshopData.profiles.map(id => ({
-                        sys: { type: 'Link', linkType: 'Entry', id }
-                    }))
-                }
-            }
-        };
-
-        // 🔹 Envoyer la mise à jour avec la version correcte
-        const updateResponse = await fetch(getUrl, {
-            method: 'PUT',
-            headers: {
-                ...getCMAHeaders(),
-                'X-Contentful-Version': version
-            },
-            body: JSON.stringify(updateData)
-        });
-
-        if (!updateResponse.ok) {
-            const errorData = await updateResponse.json();
-            console.error('Erreur mise à jour:', JSON.stringify(errorData, null, 2));
-            throw new Error(`HTTP PUT ${updateResponse.status}: ${errorData.message}`);
-        }
-
-        const result = await updateResponse.json();
-
-        // 🔹 Récupérer la dernière version AVANT publication
-        await publishEntry(workshopId);
-
-        return result;
-
-    } catch (error) {
-        console.error('updateWorkshop error:', error);
-        throw error;
-    }
+  }
+  return data.items.map((item) => {
+    const imageRef = item.fields.image?.['en-US']?.sys?.id || null;
+    const imageUrl = (imageRef && assetMap.get(imageRef)) || null;
+    return {
+      id: item.sys.id,
+      title: item.fields.title?.['en-US'] || 'Sans titre',
+      description: item.fields.description?.['en-US'] || '',
+      recurrence: item.fields.recurrence?.['en-US'] || 'Non spécifiée',
+      profiles: item.fields.profiles?.['en-US']?.map((p) => p.sys.id) || [],
+      imageUrl,
+      imageId: imageRef,
+      version: item.sys.version,
+    };
+  });
 }
 
 export async function createWorkshop(workshopData) {
-    try {
-        // Vérifier que recurrence est un tableau
-        const recurrenceValue = Array.isArray(workshopData.recurrence) 
-            ? workshopData.recurrence 
-            : [workshopData.recurrence];
+  const recurrenceValue = Array.isArray(workshopData.recurrence)
+    ? workshopData.recurrence
+    : [workshopData.recurrence];
+  const payload = {
+    fields: {
+      title: { 'en-US': workshopData.title },
+      description: { 'en-US': workshopData.description },
+      recurrence: { 'en-US': recurrenceValue },
+      profiles: {
+        'en-US': (workshopData.profiles || []).map((id) => ({
+          sys: { type: 'Link', linkType: 'Entry', id },
+        })),
+      },
+    },
+  };
+  if (workshopData.imageFile) {
+    const { id } = await uploadAsset(workshopData.imageFile);
+    payload.fields.image = { 'en-US': { sys: { type: 'Link', linkType: 'Asset', id } } };
+  }
+  const created = await cmaJson('entries', {
+    method: 'POST',
+    headers: { 'X-Contentful-Content-Type': 'workshop' },
+    body: JSON.stringify(payload),
+  });
+  await publishEntry(created.sys.id);
+  return created;
+}
 
-        const payload = {
-            fields: {
-                title: { 'en-US': workshopData.title },
-                description: { 'en-US': workshopData.description },
-                recurrence: { 'en-US': recurrenceValue }, // Correction ici
-                profiles: {
-                    'en-US': workshopData.profiles?.map(id => ({
-                        sys: { type: 'Link', linkType: 'Entry', id: id }
-                    })) || []
-                }
-            }
-        };
-
-        const response = await fetch(BASE_CMA_URL, {
-            method: 'POST',
-            headers: getCMAHeaders('workshop'),
-            body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Erreur Contentful:', JSON.stringify(errorData, null, 2));
-            throw new Error(`Erreur ${response.status}: ${errorData.message}`);
-        }
-
-        const result = await response.json();
-        await publishEntry(result.sys.id);
-        return result;
-
-    } catch (error) {
-        console.error('createWorkshop error:', error);
-        throw new Error(`Erreur création: ${error.message}`);
-    }
+export async function updateWorkshop(workshopId, workshopData) {
+  const entry = await cmaJson(`entries/${workshopId}`);
+  const recurrenceValue = Array.isArray(workshopData.recurrence)
+    ? workshopData.recurrence
+    : [workshopData.recurrence];
+  const data = {
+    fields: {
+      title: { 'en-US': workshopData.title },
+      description: { 'en-US': workshopData.description },
+      recurrence: { 'en-US': recurrenceValue },
+      profiles: {
+        'en-US': (workshopData.profiles || []).map((id) => ({
+          sys: { type: 'Link', linkType: 'Entry', id },
+        })),
+      },
+    },
+  };
+  if (workshopData.imageFile) {
+    const { id } = await uploadAsset(workshopData.imageFile);
+    data.fields.image = { 'en-US': { sys: { type: 'Link', linkType: 'Asset', id } } };
+  } else if (entry.fields.image) {
+    data.fields.image = entry.fields.image;
+  }
+  const resp = await cmaFetch(`entries/${workshopId}`, {
+    method: 'PUT',
+    headers: { 'X-Contentful-Version': String(entry.sys.version) },
+    body: JSON.stringify(data),
+  });
+  if (!resp.ok) {
+    const detail = await safeErrorDetail(resp);
+    throw new Error(`Maj atelier : ${resp.status} ${detail}`);
+  }
+  await publishEntry(workshopId);
+  return resp.json();
 }
 
 export async function deleteWorkshop(workshopId) {
-    try {
-        // Dépublier d'abord
-        await fetch(`${BASE_CMA_URL}/${workshopId}/published`, {
-            method: 'DELETE',
-            headers: getCMAHeaders()
-        });
-
-        // Supprimer l'atelier
-        const response = await fetch(`${BASE_CMA_URL}/${workshopId}`, {
-            method: 'DELETE',
-            headers: getCMAHeaders()
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`HTTP ${response.status}: ${errorData.message}`);
-        }
-
-        return true;
-
-    } catch (error) {
-        console.error('deleteWorkshop error:', error);
-        throw new Error(`Échec suppression: ${error.message}`);
-    }
-}
-
-async function publishEntry(entryId) {
-    try {
-        // Récupérer la dernière version de l'entrée
-        const getUrl = `${BASE_CMA_URL}/${entryId}`;
-        const getResponse = await fetch(getUrl, { headers: getCMAHeaders() });
-
-        if (!getResponse.ok) throw new Error(`HTTP GET ${getResponse.status}`);
-
-        const currentData = await getResponse.json();
-        const latestVersion = currentData.sys.version;
-
-        // 🔹 Publier avec la version correcte
-        const publishUrl = `${BASE_CMA_URL}/${entryId}/published`;
-
-        const response = await fetch(publishUrl, {
-            method: 'PUT',
-            headers: {
-                ...getCMAHeaders(),
-                'X-Contentful-Version': latestVersion
-            }
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Erreur publication:', JSON.stringify(errorData, null, 2));
-            throw new Error(`Publication failed: HTTP ${response.status}`);
-        }
-
-    } catch (error) {
-        console.error('publishEntry error:', error);
-        throw error;
-    }
-}
-
-function getCMAHeaders(contentType = null) {
-    const headers = {
-        'Authorization': `Bearer ${CMA_ACCESS_TOKEN}`,
-        'Content-Type': 'application/vnd.contentful.management.v1+json'
-    };
-
-    if (contentType) headers['X-Contentful-Content-Type'] = contentType;
-    return headers;
+  // Tente dépublication (ignore l'échec si pas publié)
+  await cmaFetch(`entries/${workshopId}/published`, { method: 'DELETE' }).catch(() => {});
+  const resp = await cmaFetch(`entries/${workshopId}`, { method: 'DELETE' });
+  if (!resp.ok) throw new Error(`Suppression atelier : ${resp.status}`);
+  return true;
 }

@@ -1,110 +1,101 @@
-import { fetchProfilesWithAssets } from '../../js/contentful.js';
+import '../chrome.js';
+import '../mycel.js';
+import '../siteCopy.js';
+import { fetchProfilesWithAssets, asText } from '../contentful.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log("Chargement des profils...");
-
-    try {
-        const profiles = await fetchProfilesWithAssets();
-        if (profiles && profiles.length > 0) {
-            displayAllProfiles(profiles);
-        } else {
-            document.getElementById('profile-content').innerHTML = "<p>Aucun profil disponible pour le moment.</p>";
-        }
-    } catch (error) {
-        console.error("Erreur lors du chargement des profils :", error);
-        document.getElementById('profile-content').innerHTML = "<p>Une erreur est survenue lors du chargement des profils.</p>";
+  try {
+    const profiles = await fetchProfilesWithAssets();
+    const container = document.getElementById('profile-content');
+    if (!container) return;
+    if (!profiles?.length) {
+      container.innerHTML = '<p>Aucun profil disponible pour le moment.</p>';
+      return;
     }
+    renderProfiles(container, profiles);
+  } catch (err) {
+    console.error('Erreur chargement profils :', err);
+  }
 });
 
-function displayAllProfiles(profiles) {
-    const container = document.getElementById('profile-content');
-    if (!container) {
-        console.error("Conteneur introuvable pour afficher les profils.");
-        return;
-    }
-
-    container.innerHTML = profiles.map(profile => {
-        const imageUrl = typeof profile.imageUrl === 'string' ? profile.imageUrl.trim() : '';
-        const name = typeof profile.name === 'string' ? profile.name.trim() : '';
-        const job = typeof profile.job === 'string' ? profile.job.trim() : '';
-        const email = typeof profile.email === 'string' ? profile.email.trim() : '';
-        const phone = typeof profile.phone === 'string' ? profile.phone.trim() : '';
-        const website = typeof profile.website === 'string' ? profile.website.trim() : '';
-        const description = typeof profile.description === 'string' ? profile.description.trim() : '';
-
-        // Afficher l'image uniquement s'il existe une URL non vide
-        const imageHtml = (imageUrl && imageUrl.length > 0)
-            ? `<img src="${imageUrl}" alt="${name}" class="profile-image">`
-            : '';
-
-        const nameHtml = name ? `<h3>${name}</h3>` : '';
-        const jobHtml = job ? `<p><strong>Métier :</strong> ${job}</p>` : '';
-        const emailHtml = email ? `<p><strong>Email :</strong> <a href="mailto:${email}">${email}</a></p>` : '';
-        const phoneHtml = phone ? `<p><strong>Téléphone :</strong> <a href="tel:${phone}">${phone}</a></p>` : '';
-        const websiteHtml = website ? `<p><strong>Site web :</strong> <a href="${website}" target="_blank">${website}</a></p>` : '';
-
-        let descriptionHtml = '';
-        if (description && description.length > 0) {
-            const truncatedDesc = truncateDescription(description, 200);
-            const showToggle = description.length > 200;
-            descriptionHtml = `
-                <div class="profile-description">
-                    <strong>Description :</strong>
-                    <span class="short-description">${truncatedDesc}</span>
-                    <span class="full-description hidden">${description}</span>
-                    ${showToggle 
-                        ? `<div class="description-btn-container"><button class="toggle-description">Lire la suite</button></div>` 
-                        : ''}
-                </div>`;
-        }
-
-        const diplomasArray = Array.isArray(profile.diplomas)
-            ? profile.diplomas.map(d => typeof d === 'string' ? d.trim() : '').filter(d => d !== '')
-            : [];
-
-        const diplomasHtml = (diplomasArray.length > 0)
-            ? `<div class="degrees">${diplomasArray.map(degree => `<span class="tag">${degree}</span>`).join('')}</div>`
-            : '';
-
-        return `
-            <div class="profile-card">
-                ${imageHtml}
-                ${nameHtml}
-                ${jobHtml}
-                ${emailHtml}
-                ${phoneHtml}
-                ${websiteHtml}
-                ${descriptionHtml}
-                ${diplomasHtml}
-            </div>
-        `;
-    }).join('');
-
-    addDescriptionToggle();
+function truncate(str, n) {
+  if (!str || str.length <= n) return str;
+  return `${str.slice(0, n)}…`;
 }
 
-function truncateDescription(description, maxLength) {
-    if (!description || description.length <= maxLength) return description;
-    return description.slice(0, maxLength) + '...';
-}
+function renderProfiles(container, profiles) {
+  container.innerHTML = profiles
+    .map((p) => {
+      const name = asText(p.name);
+      const job = asText(p.job);
+      const email = asText(p.email);
+      const phone = asText(p.phone);
+      const website = asText(p.website);
+      const description = asText(p.description);
+      const imageUrl = asText(p.imageUrl);
+      const diplomas = Array.isArray(p.diplomas)
+        ? p.diplomas.filter(Boolean)
+        : typeof p.diplomas === 'string' && p.diplomas.trim()
+          ? p.diplomas
+              .split(',')
+              .map((d) => d.trim())
+              .filter(Boolean)
+          : [];
 
-function addDescriptionToggle() {
-    document.querySelectorAll('.toggle-description').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const descriptionContainer = e.target.closest('.profile-description');
-            const shortDesc = descriptionContainer.querySelector('.short-description');
-            const fullDesc = descriptionContainer.querySelector('.full-description');
-            const isExpanded = !fullDesc.classList.contains('hidden');
+      const imgHtml = imageUrl ? `<img src="${imageUrl}" alt="${name}">` : '';
+      const hasPhone = phone && phone !== '0' && phone !== 'Non spécifié';
+      const hasWebsite = website && website !== 'Non spécifié' && /^https?:\/\//i.test(website);
+      const contactHtml = [
+        email ? `<span class="contact-line">✉ <a href="mailto:${email}">${email}</a></span>` : '',
+        hasPhone ? `<span class="contact-line">☎ <a href="tel:${phone}">${phone}</a></span>` : '',
+        hasWebsite
+          ? `<span class="contact-line">↗ <a href="${website}" target="_blank" rel="noopener">Site web</a></span>`
+          : '',
+      ]
+        .filter(Boolean)
+        .join('');
 
-            if (isExpanded) {
-                shortDesc.style.display = 'inline';
-                fullDesc.classList.add('hidden');
-                e.target.textContent = 'Lire la suite';
-            } else {
-                shortDesc.style.display = 'none';
-                fullDesc.classList.remove('hidden');
-                e.target.textContent = 'Lire moins';
-            }
-        });
+      const descHtml = description
+        ? `
+          <div class="profile-description">
+            <p class="short-description">${truncate(description, 160)}</p>
+            <p class="full-description hidden">${description}</p>
+            ${description.length > 160 ? '<button class="toggle-description">Lire la suite</button>' : ''}
+          </div>`
+        : '';
+
+      const tagsHtml = diplomas.length
+        ? `<div class="degrees">${diplomas.map((d) => `<span class="tag">${d}</span>`).join('')}</div>`
+        : '';
+
+      return `
+        <article class="profile-card">
+          ${imgHtml}
+          <h3>${name}</h3>
+          ${job ? `<div class="role">${job}</div>` : ''}
+          ${contactHtml}
+          ${descHtml}
+          ${tagsHtml}
+        </article>
+      `;
+    })
+    .join('');
+
+  container.querySelectorAll('.toggle-description').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const wrap = e.target.closest('.profile-description');
+      const shortEl = wrap.querySelector('.short-description');
+      const fullEl = wrap.querySelector('.full-description');
+      const expanded = !fullEl.classList.contains('hidden');
+      if (expanded) {
+        shortEl.classList.remove('hidden');
+        fullEl.classList.add('hidden');
+        e.target.textContent = 'Lire la suite';
+      } else {
+        shortEl.classList.add('hidden');
+        fullEl.classList.remove('hidden');
+        e.target.textContent = 'Lire moins';
+      }
     });
+  });
 }

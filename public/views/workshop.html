@@ -1,70 +1,48 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ateliers Hebdomadaires</title>
-    <link rel="stylesheet" href="../assets/styles/main.min.css">
-</head>
-<body>
-    <header class="header-website">
-        <nav class="nav-bar">
-          <div class="logo">
-            <!-- <img src="./assets/images/logo.png" alt="logo du site"> -->
-            <span class="logo-text">JuniverSanté Naturelle</span>
-          </div>
-      
-          <div class="menu">
-            <input type="checkbox" id="menu-toggle" class="menu-input">
-            <label for="menu-toggle" class="btn btn-secondary">
-              <i class="fa-solid fa-bars menu-icon"></i>
-              <i class="fa-solid fa-times close-icon"></i>
-            </label>
-      
-            <ul class="nav-links">
-              <li class="nav-link">
-                <a href="../index.html">Accueil</a>
-              </li>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JuniverSanté — Nos ateliers hebdomadaires</title>
+    <meta
+      name="description"
+      content="Ateliers du cercle JuniverSanté : médecines douces, plantes, soins naturels — animés par nos thérapeutes en Bourgogne."
+    />
+    <link rel="stylesheet" href="/public/assets/styles/main.min.css" />
+  </head>
+  <body class="workshop-page">
+    <div data-slot="ambient"></div>
+    <div class="wrap">
+      <div data-slot="header"></div>
 
-              <li class="nav-link">
-                <a href="./about.html">A propos</a>
-              </li>
-
-              <li class="nav-link">
-                <a href="./calendar.html">Programme formation</a>
-              </li>
-              
-              <li class="nav-link">
-                <a href="./contact.html">Contact</a>
-              </li>
-
-            </ul>
-          </div>
-        </nav>
-    </header>
-    
-    <main>
-        <section id="hero">
-            <div class="hero-content">
-                <h2>Découvrez Nos Ateliers Hebdomadaires</h2>
-                <p>Explorez les activités, rencontrez nos animateurs, et inscrivez-vous dès aujourd'hui pour une expérience enrichissante.</p>
-            </div>
-        </section>
-        <section id="workshop-list">
-            <h2>Nos Ateliers</h2>
-            <!-- Les ateliers seront injectés ici -->
+      <main class="workshop-main">
+        <section class="workshop-hero">
+          <span class="sec-eyebrow" data-editable="workshop-page.eyebrow">Ateliers hebdomadaires</span>
+          <h1>
+            <span data-editable="workshop-page.title.before">Chaque semaine,</span>
+            <span class="hand" data-editable="workshop-page.title.hand">on se rassemble</span><br />
+            <span data-editable="workshop-page.title.after">pour apprendre avec le vivant.</span>
+          </h1>
+          <p data-editable="workshop-page.lede">
+            Petits groupes, cadres accueillants. Cueillette, respiration, cuisine vivante, lecture de paysage — les
+            ateliers du cercle sont pensés pour être accessibles et reproduits chez soi.
+          </p>
+          <img
+            class="page-hero-illustration"
+            src="/public/assets/image/hero-workshop-default.svg"
+            alt="Illustration ateliers"
+            data-editable-image="workshop.page.illustration"
+          />
         </section>
 
-    </main>
-    <footer>
-        <p>
-            <a class="footer" href="/public/views/privacy.htm">Politique de confidentialité</a> | 
-            <a href="/public/views/legal.htm">Mentions légales</a>
-        </p>
-        <p>© 2024 Juniver Santé - Tous droits réservés</p>
-    </footer>
+        <section>
+          <div id="workshop-list"></div>
+        </section>
+      </main>
 
-    
-    <script type="module" src="../js/views/workshop.js"></script>
-</body>
+      <div data-slot="footer"></div>
+    </div>
+
+    <script type="module" src="/public/js/views/workshop.js?v=symbiose-7"></script>
+  </body>
 </html>

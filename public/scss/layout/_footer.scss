@@ -1,38 +1,127 @@
-@use '../abstracts/variables' as *;
+@use "../abstracts/variables" as v;
 
-footer {
-  text-align: center;
-  background-color: $primary-color;
-  color: white;
-  padding: 1.5rem 0;
-  margin-top: 3%;
-  border-top: 5px solid $secondary-color;
-  font-size: 1rem;
+footer.site-foot {
+  margin-top: clamp(60px, 10vh, 100px);
+  padding: 48px 0 28px;
+  border-top: 1px solid v.$rule;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
 
-  a {
-    color: hsl(0, 0%, 100%);
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
+footer.site-foot .col-brand .brand {
+  margin-bottom: 12px;
+}
 
-    &:hover {
-      color: $text-colorSecondary;
-    }
+footer.site-foot .col-brand p {
+  font-size: 14px;
+  color: v.$ink-soft;
+  max-width: 32ch;
+  line-height: 1.6;
+}
+
+footer.site-foot .col-brand .socials {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+footer.site-foot .col-brand .socials a {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: v.$cream-warm;
+  display: grid;
+  place-items: center;
+  color: v.$moss;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+footer.site-foot h4 {
+  font-family: v.$font-display;
+  font-weight: 400;
+  font-size: 18px;
+  margin: 0 0 14px;
+  color: v.$moss-deep;
+}
+
+footer.site-foot ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+  color: v.$ink-soft;
+}
+
+footer.site-foot ul li {
+  padding: 4px 0;
+}
+
+footer.site-foot ul a {
+  color: inherit;
+  text-decoration: none;
+}
+
+footer.site-foot ul a:hover {
+  color: v.$clay;
+}
+
+.foot-bottom {
+  grid-column: 1/-1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 24px;
+  border-top: 1px solid v.$rule;
+  font-size: 12px;
+  color: v.$ink-soft;
+  letter-spacing: 0.02em;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.foot-bottom .links a {
+  color: v.$ink;
+  text-decoration: none;
+  margin-left: 18px;
+}
+
+.foot-bottom .links a:hover {
+  color: v.$clay;
+}
+
+@media (width >= 700px) {
+  footer.site-foot {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 32px;
   }
 
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    font-size: 0.9rem;
-    padding: 1rem 0;
+  footer.site-foot .col-brand {
+    grid-column: 1/-1;
+  }
+}
+
+@media (width >= 1001px) {
+  footer.site-foot {
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    gap: 40px;
   }
 
-  @media (min-width: 768px) and (max-width: 1024px) {
-    font-size: 1rem;
-    padding: 1.2rem 0;
+  footer.site-foot .col-brand {
+    grid-column: auto;
+  }
+}
+
+@media (width <= 640px) {
+  .foot-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 
-  @media (min-width: 1024px) {
-    font-size: 1.1rem;
-    padding: 1.5rem 0;
+  .foot-bottom .links a {
+    margin-left: 0;
+    margin-right: 14px;
   }
 }

@@ -1,19 +1,35 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Message envoyé</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JuniverSanté — Merci pour votre message</title>
+    <meta
+      name="description"
+      content="Confirmation : votre message est bien parti vers le cercle JuniverSanté. Nous reviendrons vers vous rapidement."
+    />
+    <meta name="robots" content="noindex" />
+    <link rel="stylesheet" href="/public/assets/styles/main.min.css" />
+  </head>
+  <body class="succes-page">
+    <div data-slot="ambient"></div>
+    <div class="wrap">
+      <div data-slot="header"></div>
 
-    <link rel="stylesheet" href="../assets/styles/main.min.css">
-</head>
-<body>
-    <header>
-        <h1>Merci pour votre message !</h1>
-    </header>
-    <main>
-        <p>Nous avons bien reçu votre message et nous vous répondrons dans les plus brefs délais.</p>
-        <a class="succesPageLink" href="/public/index.html">Retour à l'accueil</a>
-    </main>
-</body>
+      <main class="succes-main">
+        <h1 data-editable="succes.title">Merci — votre message est tissé au cercle.</h1>
+        <p data-editable="succes.body">
+          Un(e) praticien(ne) du cercle vous répondra sous quelques jours. D'ici là, vous pouvez parcourir les ateliers
+          ou rencontrer le cercle.
+        </p>
+        <a class="succesPageLink" href="/public/index.html" data-editable="succes.cta">← Retour à l'accueil</a>
+      </main>
+
+      <div data-slot="footer"></div>
+    </div>
+
+    <script type="module" src="/public/js/chrome.js"></script>
+    <script type="module" src="/public/js/mycel.js"></script>
+    <script type="module" src="/public/js/siteCopy.js"></script>
+  </body>
 </html>

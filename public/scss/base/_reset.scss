@@ -1,18 +1,45 @@
-@import '../abstracts/variables';
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  min-width: 0;
+}
 
+html,
 body {
-  font-family: $font-family;
   margin: 0;
   padding: 0;
-  line-height: 1.8;
-  background-color: $background-color;
-  color: $text-color;
-  width: 100%;
-  margin: 0 auto;
+  max-width: 100%;
 }
 
-h1, h2, h3 {
-  margin: 0;
+html {
+  overflow-x: clip;
+  scroll-behavior: smooth;
 }
 
+body {
+  overflow-x: clip;
+}
 
+img,
+svg,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}

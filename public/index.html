@@ -1,102 +1,229 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Juniver Santé</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JuniverSanté — Le cercle des thérapeutes</title>
+    <meta
+      name="description"
+      content="Un cercle de thérapeutes indépendants. Médecines douces, savoirs botaniques, accompagnement du vivant."
+    />
+    <link rel="stylesheet" href="/public/assets/styles/main.min.css" />
+  </head>
+  <body class="index-page">
+    <div data-slot="ambient"></div>
+    <div class="wrap">
+      <div data-slot="header"></div>
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
-            integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
-            crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-        <link rel="stylesheet" href="./assets/styles/styleBeks.css">
-        <link rel="stylesheet" href="./assets/styles/main.min.css">
-    </head>
-    <body class="index-page">
-        <canvas id="neuro"></canvas>
-
-        <header class="header-website">
-            <nav class="nav-bar">
-              <div class="logo">
-                <!-- <img src="./assets/images/logo.png" alt="logo du site"> -->
-                <span class="logo-text">JuniverSanté Naturelle</span>
+      <main class="index-main">
+        <!-- HERO -->
+        <section class="hero">
+          <div class="hero-grid">
+            <div>
+              <div class="tag-row">
+                <span class="seed" data-editable="hero.badge">Cercle des thérapeutes · actif</span>
+                <span data-editable="hero.subbadge">Bourgogne · depuis 2023</span>
               </div>
-          
-              <div class="menu">
-                <input type="checkbox" id="menu-toggle" class="menu-input">
-                <label for="menu-toggle" class="btn btn-secondary">
-                  <i class="fa-solid fa-bars menu-icon"></i>
-                  <i class="fa-solid fa-times close-icon"></i>
-                </label>
-          
-                <ul class="nav-links">
-                  <li class="nav-link">
-                    <a href="index.html">Accueil</a>
-                  </li>
-          
-                  <li class="nav-link">
-                    <a href="./views/about.html">À propos</a>
-                  </li>
-
-                  <li class="nav-link">
-                    <a href="./views/calendar.html">Programme formation</a>
-                  </li>
-
-                  <li class="nav-link">
-                    <a href="./views/workshop.html">Nos Ateliers</a>
-                  </li>
-                  
-                  <li class="nav-link">
-                    <a href="./views/contact.html">Contact</a>
-                  </li>
-
-                </ul>
+              <h1>
+                <span data-editable="hero.title.l1">Prendre soin,</span>
+                <span class="script" data-editable="hero.title.script">ensemble,</span><br />
+                <span data-editable="hero.title.l2">à l'écoute du</span>
+                <span class="underline" data-editable="hero.title.underline">vivant.</span>
+              </h1>
+              <p class="hero-lede">
+                <span data-editable="hero.lede.before">JuniverSanté réunit</span>
+                <strong data-editable="hero.lede.strong">un cercle de thérapeutes indépendants</strong>
+                <span data-editable="hero.lede.after"
+                  >qui partagent une même attention : relier médecines douces, savoirs botaniques et accompagnement du
+                  quotidien. Un réseau de soin, tissé comme un mycélium — discret, solidaire, vivant.</span
+                >
+              </p>
+              <div class="hero-actions">
+                <a class="btn-primary" href="#therapists" data-editable="hero.cta1">Rencontrer le cercle →</a>
+                <a class="btn-ghost" href="/public/views/workshop.html" data-editable="hero.cta2">Voir les ateliers</a>
+                <span class="hero-handnote" data-editable="hero.note">↬ ou lire la charte</span>
               </div>
-            </nav>
-        </header>
-          
-    <main class="index-main">
-
-        <section id="presentation">
-            <h2></h2>
-            <p id="presentation-text">
-                <!-- La présentation serat injecté ici -->
-            </p>
-        </section>
-
-        <section id="featured-article">
-            <!-- L'article 6GPaVLTj72gg4kuCDFUdMU sera injecté ici -->
-        </section>
-        
-
-        <section id="profiles-carousel">
-            <h2 class="team">Rencontrez notre équipe</h2>
-            <div class="carousel-container">
-                <button id="prev-profile" class="carousel-nav">&#8249;</button>
-                <button id="next-profile" class="carousel-nav">&#8250;</button>
-                <!-- Les profils seront injectés ici -->
             </div>
-        </section>        
-        
-        <aside id="filters">
-            <h3>Filtres</h3>
-            <ul id="category-list"></ul>
-        </aside>
-
-        <section id="content">
-            <!-- Articles seront injectés ici -->
+            <div class="hero-visual" aria-hidden="true">
+              <div class="ring r1"></div>
+              <div class="ring r2"></div>
+              <div class="ring r3"></div>
+              <div class="center">
+                <svg viewBox="0 0 100 100" fill="none" stroke="rgba(247,241,224,.9)" stroke-width="1.2">
+                  <path d="M50 15 Q55 40 50 50 Q45 40 50 15Z" fill="rgba(247,241,224,.5)" />
+                  <path d="M50 50 Q65 55 85 50 Q65 45 50 50Z" fill="rgba(247,241,224,.3)" />
+                  <path d="M50 50 Q55 75 50 90 Q45 75 50 50Z" fill="rgba(247,241,224,.5)" />
+                  <path d="M50 50 Q35 55 15 50 Q35 45 50 50Z" fill="rgba(247,241,224,.3)" />
+                  <circle cx="50" cy="50" r="3" fill="#E3B84F" />
+                </svg>
+              </div>
+              <svg class="leaf l1" viewBox="0 0 100 100">
+                <path d="M50 10 Q85 35 80 70 Q70 90 50 85 Q30 80 25 55 Q30 30 50 10Z" fill="#7BA05B" opacity=".8" />
+                <path d="M50 15 Q50 55 55 80" stroke="#2E4A2B" stroke-width="1.2" fill="none" />
+              </svg>
+              <svg class="leaf l2" viewBox="0 0 100 100">
+                <path d="M20 50 Q45 15 75 25 Q90 50 75 75 Q45 85 20 50Z" fill="#E3B84F" opacity=".75" />
+                <path d="M25 52 Q50 45 80 50" stroke="#B97A3A" stroke-width="1.2" fill="none" />
+              </svg>
+              <svg class="leaf l3" viewBox="0 0 100 100">
+                <path d="M50 10 Q75 40 70 75 Q50 90 30 75 Q25 40 50 10Z" fill="#8AB0B8" opacity=".7" />
+              </svg>
+              <div class="stat s1">
+                <div class="big" data-editable="hero.stat1.value">12</div>
+                <span data-editable="hero.stat1.label">thérapeutes</span>
+              </div>
+              <div class="stat s2">
+                <div class="big" data-editable="hero.stat2.value">34+</div>
+                <span data-editable="hero.stat2.label">ateliers / an</span>
+              </div>
+            </div>
+          </div>
         </section>
-    </main>
 
-    <footer>
-        <p>
-            <a href="/public/views/privacy.html">Politique de confidentialité</a> | 
-            <a href="/public/views/legal.html">Mentions légales</a></p>
-        <p>© 2024 Juniver Santé - Tous droits réservés</p>
-    </footer>
+        <!-- PROCHAINS ÉVÈNEMENTS (injecté par JS) — juste sous le hero pour maximiser la visibilité -->
+        <section id="home-upcoming" class="home-upcoming">
+          <div class="sec-head">
+            <span class="sec-eyebrow" data-editable="upcoming.eyebrow">Prochains rendez-vous</span>
+            <h2>
+              <span data-editable="upcoming.title.before">Les</span>
+              <span class="hand" data-editable="upcoming.title.hand">moments</span>
+              <span data-editable="upcoming.title.after">qui viennent.</span>
+            </h2>
+          </div>
+          <ul id="home-upcoming-list" class="home-upcoming__list"></ul>
+          <a class="btn-ghost home-upcoming__all" href="/public/views/calendar.html">Voir tout le calendrier →</a>
+        </section>
 
-    <script src="js/main.js" type="module"></script>
-    <script src="/public/js/details.js"></script>
-    <script src="/public/js/style/styleScript.js"></script>
-</body>
+        <!-- PRÉSENTATION (injectée par JS) — après upcoming pour plus de visibilité sur les évènements -->
+        <section id="presentation"></section>
+
+        <!-- ARTICLE VEDETTE -->
+        <section class="section-featured">
+          <div class="sec-head">
+            <span class="sec-eyebrow" data-editable="featured.eyebrow">Article vedette</span>
+            <h2>
+              <span data-editable="featured.title.before">Ce qu'on appelle</span>
+              <em data-editable="featured.title.em">la santé</em
+              ><span data-editable="featured.title.after">, au fond.</span>
+            </h2>
+          </div>
+          <div id="featured-article"></div>
+        </section>
+
+        <!-- THÉRAPEUTES CAROUSEL -->
+        <section id="profiles-carousel">
+          <div class="therapists-top">
+            <div class="sec-head" style="margin-bottom: 0">
+              <span class="sec-eyebrow" data-editable="therapists.eyebrow">Le cercle · II</span>
+              <h2 class="team">
+                <span data-editable="therapists.title.l1">Douze praticiens,</span><br />
+                <span class="hand" data-editable="therapists.title.hand">une même</span>
+                <span data-editable="therapists.title.l2">attention au vivant.</span>
+              </h2>
+            </div>
+            <div class="carousel-nav">
+              <button id="prev-profile" aria-label="Précédent">‹</button>
+              <button id="next-profile" aria-label="Suivant">›</button>
+            </div>
+          </div>
+          <div class="carousel-container"></div>
+        </section>
+
+        <!-- JOURNAL + FILTRES -->
+        <section id="journal">
+          <div class="sec-head">
+            <span class="sec-eyebrow" data-editable="journal.eyebrow">V · Journal du cercle</span>
+            <h2>
+              <span data-editable="journal.title.before">Lire,</span>
+              <span class="hand" data-editable="journal.title.hand">au rythme</span>
+              <span data-editable="journal.title.after">des saisons.</span>
+            </h2>
+          </div>
+          <aside id="filters" class="journal-head">
+            <ul id="category-list" class="filters"></ul>
+          </aside>
+          <div id="content" class="articles"></div>
+        </section>
+
+        <!-- À PROPOS (bloc cercle) -->
+        <section id="about-cercle">
+          <div class="about-circle">
+            <div class="about-txt">
+              <span class="script-kicker" data-editable="about.kicker">↬ Notre histoire</span>
+              <h2>
+                <span data-editable="about.title.before">Pourquoi un</span>
+                <em data-editable="about.title.em">cercle</em>
+                <span data-editable="about.title.after">de thérapeutes ?</span>
+              </h2>
+              <p>
+                <span data-editable="about.p1.before">En 2023, après la projection du film</span>
+                <em data-editable="about.p1.em">« Suspendus, soignants entre deux mondes »</em
+                ><span data-editable="about.p1.after"
+                  >, une dizaine de thérapeutes ont eu envie de se rassembler — se rencontrer, se connaître, travailler
+                  ensemble.</span
+                >
+              </p>
+              <p>
+                <strong data-editable="about.p2.strong">Le cercle est né comme ça</strong
+                ><span data-editable="about.p2.after">
+                  : l'idée de mettre en commun nos outils simples, pour que chacun puisse devenir acteur de sa santé, en
+                  privilégiant les moyens présents dans l'environnement et à la portée de tous.</span
+                >
+              </p>
+              <p>
+                <span data-editable="about.p3.before">Ceci</span>
+                <strong data-editable="about.p3.strong">en complément</strong>
+                <span data-editable="about.p3.after">de la médecine conventionnelle, et non à sa place.</span>
+              </p>
+              <a class="btn-primary" style="margin-top: 16px" href="/public/views/about.html" data-editable="about.cta"
+                >Lire la charte complète →</a
+              >
+            </div>
+            <div class="about-viz" aria-hidden="true">
+              <svg viewBox="0 0 400 400" fill="none">
+                <defs>
+                  <radialGradient id="av1" cx=".5" cy=".5">
+                    <stop offset="0" stop-color="#E3B84F" stop-opacity=".4" />
+                    <stop offset="1" stop-color="#E3B84F" stop-opacity="0" />
+                  </radialGradient>
+                </defs>
+                <circle cx="200" cy="200" r="180" fill="url(#av1)" />
+                <circle
+                  cx="200"
+                  cy="200"
+                  r="150"
+                  stroke="#7BA05B"
+                  stroke-width="1"
+                  stroke-dasharray="3 4"
+                  fill="none"
+                  opacity=".6"
+                />
+                <circle cx="200" cy="200" r="100" stroke="#B97A3A" stroke-width="1" fill="none" opacity=".5" />
+                <g fill="#2E4A2B">
+                  <circle cx="200" cy="60" r="6" />
+                  <circle cx="340" cy="170" r="6" />
+                  <circle cx="300" cy="320" r="6" />
+                  <circle cx="130" cy="340" r="6" />
+                  <circle cx="50" cy="220" r="6" />
+                  <circle cx="80" cy="90" r="6" />
+                </g>
+                <g stroke="#2E4A2B" stroke-width="1" opacity=".35">
+                  <path d="M200 60 L340 170 L300 320 L130 340 L50 220 L80 90 Z" />
+                  <path d="M200 60 L300 320 M340 170 L130 340 M80 90 L50 220 M200 60 L50 220" />
+                </g>
+                <circle cx="200" cy="200" r="24" fill="#E3B84F" />
+                <text x="200" y="205" font-family="Young Serif" font-size="14" fill="#2E4A2B" text-anchor="middle">
+                  cercle
+                </text>
+              </svg>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <div data-slot="footer"></div>
+    </div>
+
+    <script type="module" src="/public/js/main.js?v=symbiose-7"></script>
+  </body>
 </html>

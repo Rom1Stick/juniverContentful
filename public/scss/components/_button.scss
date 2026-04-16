@@ -1,80 +1,98 @@
-@use '../abstracts/variables' as *;
+@use "../abstracts/variables" as v;
 
-.button {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: $border-radius;
-  font-size: 1rem;
-  font-weight: bold;
+.btn-primary {
+  padding: 15px 28px;
+  background: v.$moss;
+  color: v.$cream;
+  border-radius: v.$radius-pill;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition:
+    background 0.3s,
+    transform 0.3s,
+    color 0.3s;
+  border: 0;
   cursor: pointer;
-  text-align: center;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  text-decoration: none; /* Pour éviter les soulignements sur les liens */
+}
 
-  &:hover {
-    transform: translateY(-2px);
-  }
+.btn-primary:hover {
+  background: v.$clay;
+  color: v.$cream;
+  transform: translateY(-2px);
+}
 
-  &:focus {
-    outline: 2px solid lighten($primary-color, 40%);
-    outline-offset: 2px;
-  }
+.btn-ghost {
+  padding: 15px 26px;
+  border: 1.5px solid v.$moss;
+  color: v.$moss;
+  background: transparent;
+  border-radius: v.$radius-pill;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition:
+    background 0.3s,
+    color 0.3s;
+  cursor: pointer;
+}
 
-  &-primary {
-    background-color: $primary-color;
-    color: white;
+.btn-ghost:hover {
+  background: v.$moss;
+  color: v.$cream;
+}
 
-    &:hover {
-      background-color: lighten($primary-color, 10%);
-    }
-  }
+.btn-ghost.honey {
+  border-color: v.$honey;
+  color: v.$honey;
+}
 
-  &-secondary {
-    background-color: $secondary-color;
-    color: white;
+.btn-ghost.honey:hover {
+  background: v.$honey;
+  color: v.$moss-deep;
+}
 
-    &:hover {
-      background-color: lighten($secondary-color, 10%);
-    }
-  }
+.btn-past {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  font-size: 13px;
+  color: v.$moss;
+  text-decoration: none;
+  border-bottom: 1px dashed v.$moss;
+  padding-bottom: 2px;
+  background: transparent;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+}
 
-  &-info {
-    background-color: $info-color; 
-    color: white;
+/* Compat boutons anciens */
+.button,
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: v.$radius-pill;
+  background: v.$moss;
+  color: v.$cream;
+  border: 0;
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s;
+}
 
-    &:hover {
-      background-color: lighten($info-color, 10%);
-    }
-  }
-
-  &-outline-primary {
-    background-color: transparent;
-    border: 2px solid $primary-color;
-    color: $primary-color;
-
-    &:hover {
-      background-color: $primary-color;
-      color: white;
-    }
-  }
-
-  &-outline-secondary {
-    background-color: transparent;
-    border: 2px solid $secondary-color;
-    color: $secondary-color;
-
-    &:hover {
-      background-color: $secondary-color;
-      color: white;
-    }
-  }
-
-  &-disabled {
-    background-color: $light-gray;
-    color: white;
-    cursor: not-allowed;
-    pointer-events: none;
-    opacity: 0.6;
-  }
+.button:hover,
+.btn:hover {
+  background: v.$clay;
+  color: v.$cream;
 }

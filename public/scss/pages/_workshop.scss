@@ -1,237 +1,321 @@
-@use '../abstracts/variables' as *;
+@use "../abstracts/variables" as v;
 
-main
-/* Section Hero */
-#hero {
-  background: url('../../../assets/image/nature.jpg') center/cover no-repeat;
-  color: white;
-  text-align: center;
-  padding: 3rem 1rem;
+/* Section hero simple pour la page workshop */
+.workshop-hero {
+  padding: 60px 0 40px;
+  text-align: left;
+  max-width: 760px;
+}
+
+.workshop-hero h1 {
+  font-family: v.$font-display;
+  font-weight: 400;
+  font-size: clamp(36px, 7vw, 72px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: v.$moss-deep;
+  margin: 0 0 20px;
+}
+
+.workshop-hero h1 .hand {
+  font-family: v.$font-script;
+  color: v.$clay;
+  font-weight: 500;
+}
+
+.workshop-hero p {
+  font-size: 17px;
+  color: v.$ink-soft;
+  line-height: 1.65;
+  max-width: 55ch;
+}
+
+/* Grille */
+#workshop-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+@media (width >= 700px) {
+  #workshop-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (width >= 1001px) {
+  #workshop-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Workshop card publique (fond cream, pas moss-deep comme sur l'accueil) */
+#workshop-list .workshop-card {
+  background: v.$cream-warm;
+  border: 1px solid v.$rule;
+  border-radius: v.$radius-lg;
+  padding: 28px 26px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s,
+    border-color 0.3s;
+  color: v.$ink;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+}
+
+#workshop-list .workshop-card:hover,
+#workshop-list .workshop-card:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: v.$shadow-lift;
+  border-color: v.$honey;
+  outline: none;
+}
+
+#workshop-list .workshop-card h3 {
+  font-family: v.$font-display;
+  font-size: 26px;
+  margin: 0 0 10px;
+  color: v.$moss-deep;
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+#workshop-list .workshop-card .recurrence {
+  display: inline-flex;
   align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: v.$radius-pill;
+  background: v.$cream;
+  border: 1px solid v.$rule;
+  font-size: 12px;
+  color: v.$clay;
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+
+#workshop-list .workshop-card p.description {
+  font-size: 14px;
+  color: v.$ink-soft;
+  line-height: 1.6;
+  margin: 0 0 18px;
+}
+
+#workshop-list .workshop-card .profiles {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 16px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid v.$rule;
+}
+
+#workshop-list .workshop-card .profile-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+#workshop-list .workshop-card .profile-container img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: 0 0 48px;
+}
+
+#workshop-list .workshop-card .profile-details {
+  font-size: 13px;
+  color: v.$ink-soft;
+  line-height: 1.4;
+}
+
+#workshop-list .workshop-card .profile-details h5 {
+  font-family: v.$font-display;
+  font-size: 16px;
+  color: v.$moss-deep;
+  margin: 0 0 2px;
+}
+
+#workshop-list .workshop-card .profile-details a {
+  color: v.$moss;
+  text-decoration: none;
+}
+
+#workshop-list .workshop-card .profile-details a:hover {
+  color: v.$clay;
+}
+
+#workshop-list .workshop-card__cover {
+  margin: -28px -26px 18px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: v.$cream;
+}
+
+#workshop-list .workshop-card__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.workshop-modal__cover {
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
+  border-radius: v.$radius-md;
+}
+
+/* Bouton "Voir le détail" */
+#workshop-list .workshop-card .workshop-open {
+  align-self: flex-start;
+  margin-top: 16px;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1.5px solid v.$moss;
+  color: v.$moss;
+  border-radius: v.$radius-pill;
+  font-family: v.$font-body;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.25s,
+    color 0.25s;
+
+  &:hover {
+    background: v.$moss;
+    color: v.$cream;
+  }
+}
+
+.workshop-empty {
+  padding: 32px;
+  text-align: center;
+  color: v.$ink-soft;
+  font-style: italic;
+  background: v.$cream-warm;
+  border: 1px dashed v.$rule;
+  border-radius: v.$radius-md;
+}
+
+/* Modale de détail atelier */
+.workshop-modal {
+  display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.workshop-modal__rec {
+  margin: 0;
+  padding: 6px 14px;
+  background: v.$cream-warm;
+  border-radius: v.$radius-pill;
+  color: v.$clay;
+  font-family: v.$font-body;
+  font-size: 0.88rem;
+  align-self: flex-start;
+}
+
+.workshop-modal__profiles {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  background: v.$cream-warm;
+  border-radius: v.$radius-md;
+}
+
+.workshop-modal__profile {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex: 0 0 44px;
+  }
+
+  strong {
+    display: block;
+    font-family: v.$font-display;
+    font-weight: 400;
+    font-size: 1rem;
+    color: v.$moss-deep;
+  }
+
+  span {
+    display: block;
+    font-size: 0.82rem;
+    color: v.$ink-soft;
+  }
+}
+
+.workshop-modal__body {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: v.$ink-soft;
 
   h2 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    color: hsl(0, 0%, 100%);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    font-family: v.$font-display;
+    font-size: 1.25rem;
+    color: v.$moss;
+    margin: 1rem 0 0.4rem;
+    font-weight: 400;
+  }
+
+  h3 {
+    font-family: v.$font-display;
+    font-size: 1.1rem;
+    color: v.$moss;
+    margin: 0.8rem 0 0.4rem;
+    font-weight: 400;
   }
 
   p {
-    font-size: 1.2rem;
-    color: hsl(0, 0%, 100%);
-    max-width: 600px;
-    margin: 0 auto;
-    font-weight: 600;
-    text-align: center;
+    margin: 0 0 0.7rem;
+  }
+
+  ul,
+  ol {
+    padding-left: 1.4rem;
+    margin: 0 0 0.7rem;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: v.$radius-sm;
+    margin: 0.6rem 0;
+  }
+
+  blockquote {
+    margin: 0.8rem 0;
+    padding: 0.6rem 1rem;
+    border-left: 3px solid v.$honey;
+    font-family: v.$font-script;
+    font-size: 1.1rem;
+    background: rgba(v.$honey, 0.07);
+    border-radius: 0 v.$radius-sm v.$radius-sm 0;
+  }
+
+  a {
+    color: v.$moss;
+    text-decoration: underline;
   }
 }
 
-/* Section Ateliers */
-#workshop-list {
-  padding: 2rem 1rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-
-  .workshop-card {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    padding: 1rem;
-
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-    }
-
-    h3 {
-      font-size: 1.3rem;
-      color: #4caf50;
-      margin-bottom: 0.5rem;
-    }
-
-    p {
-      font-size: 0.9rem;
-      color: #555;
-      margin: 0.5rem 0;
-    }
-
-    .profiles {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-top: 1rem;
-    }
-  }
-}
-
-/* Profils */
-/* Profils */
-.profiles {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-top: 1rem;
-
-  .profile-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 80px;
-    height: 80px;
-
-    img {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%; // Cercle parfait
-      object-fit: cover;
-      aspect-ratio: 1 / 1; // Assure un carré parfait
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease;
-      cursor: pointer;
-
-      &:hover {
-        transform: scale(1.1); // Effet de zoom au survol
-      }
-    }
-
-    .profile-details {
-      position: absolute;
-      bottom: 110%; /* Positionne au-dessus de l'image */
-      left: 50%;
-      transform: translateX(-50%) scale(0); /* Centré horizontalement */
-      opacity: 0;
-      background: rgba(255, 255, 255, 0.95);
-      color: #333;
-      padding: 1rem;
-      border-radius: 8px;
-      text-align: center;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      z-index: 10;
-      width: 200px;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-
-      h5 {
-        font-size: 1rem;
-        margin-bottom: 0.5rem;
-        color: #4caf50;
-      }
-
-      p {
-        font-size: 0.9rem;
-        margin: 0.3rem 0;
-        line-height: 1.4;
-      }
-
-      a {
-        color: #4caf50;
-        text-decoration: none;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
-
-    &:hover .profile-details {
-      transform: translateX(-50%) scale(1); /* Rentre en vue */
-      opacity: 1;
-    }
-  }
-}
-
-
-/* Grille des Profils */
-#profile-details {
-  padding: 1.5rem;
-
-  .profile-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
-
-    .profile-card {
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-      &:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-      }
-
-      img {
-        width: 100%;
-        height: 120px;
-        object-fit: cover;
-      }
-
-      h5 {
-        font-size: 1rem;
-        margin: 0.5rem 0;
-        color: #4caf50;
-      }
-
-      p {
-        font-size: 0.8rem;
-        color: #555;
-        margin: 0 0.5rem 0.5rem;
-      }
-    }
-  }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  #hero h2 {
-    font-size: 1.5rem;
-  }
-
-  #hero p {
-    font-size: 0.9rem;
-  }
-
-  #workshop-list {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  }
-
-  .profile-grid {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  }
-
-  .workshop-card img {
-    height: 120px;
-  }
-
-  .profile-card img {
-    height: 100px;
-  }
-
-  .profile-container {
-    width: 70px;
-    height: 70px;
-
-    .profile-details {
-      width: 180px;
-      bottom: 120%; /* Ajuste la hauteur au-dessus de l'image */
-    }
-  }
+.workshop-modal__cta {
+  align-self: flex-start;
+  margin-top: 0.6rem;
 }

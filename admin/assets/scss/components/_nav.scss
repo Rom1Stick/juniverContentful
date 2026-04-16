@@ -1,0 +1,124 @@
+@use "../abstracts/tokens" as v;
+
+/* Topbar admin — équivalent du header public mais orienté atelier */
+.admin-shell .admin-topbar,
+.admin-shell header.header,
+.admin-shell header.admin-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px clamp(16px, 4vw, 40px);
+  background: rgba(247, 241, 224, 90%);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid v.$rule;
+  flex-wrap: wrap;
+}
+
+.admin-shell .admin-brand,
+.admin-shell .admin-topbar h1,
+.admin-shell header.header h1,
+.admin-shell header.admin-header h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: v.$font-display;
+  font-size: clamp(18px, 2.6vw, 22px);
+  color: v.$moss-deep;
+  text-decoration: none;
+  margin: 0;
+  font-weight: 400;
+}
+
+.admin-shell .admin-brand .mark,
+.admin-shell .admin-brand svg {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+}
+
+.admin-shell .header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.admin-shell .admin-nav,
+.admin-shell .nav-menu {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.admin-shell .admin-nav a,
+.admin-shell .nav-menu a,
+.admin-shell .nav-menu li a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  color: v.$moss;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: v.$radius-pill;
+  transition:
+    background 0.25s v.$ease,
+    color 0.25s v.$ease;
+}
+
+.admin-shell .admin-nav a:hover,
+.admin-shell .nav-menu a:hover {
+  background: v.$cream-warm;
+  color: v.$moss-deep;
+}
+
+.admin-shell .admin-nav a.cta {
+  background: v.$moss;
+  color: v.$cream;
+}
+
+.admin-shell .admin-nav a.cta:hover {
+  background: v.$moss-deep;
+  color: v.$cream;
+}
+
+/* Breadcrumb */
+.admin-shell .admin-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: v.$ink-soft;
+}
+
+.admin-shell .admin-breadcrumb a {
+  color: v.$moss;
+}
+
+.admin-shell .admin-breadcrumb .sep {
+  color: v.$rule;
+}
+
+/* Footer admin minimal */
+.admin-shell .admin-foot,
+.admin-shell footer.admin-footer,
+.admin-shell main + footer {
+  padding: 20px clamp(16px, 4vw, 40px);
+  margin-top: 40px;
+  border-top: 1px solid v.$rule;
+  background: rgba(247, 241, 224, 50%);
+  text-align: center;
+  font-size: 13px;
+  color: v.$ink-soft;
+}

@@ -8,7 +8,8 @@ Static site — no bundler, no framework. Vanilla ES modules in the browser, SCS
 
 ## Commands
 
-- `npm run dev` — runs SCSS watch + `live-server` in parallel on port 3000. The server mounts `/public`, `/admin`, `/config`, `/assets` as separate URL prefixes (see `package.json:10`); opens at `/public/index.html`.
+- `npm run dev` — runs SCSS watch + `live-server` in parallel on port 3000. The server mounts `/public`, `/admin`, `/config`, `/assets` as separate URL prefixes (see `package.json`); opens at `/public/index.html`.
+- `npm run dev:api` — `netlify dev` on port 8888. Mounts the front + les Netlify Functions (`netlify/functions/*`). **Obligatoire** pour que l'admin fonctionne (auth + CMA proxy).
 - `npm run build` / `npm run build:scss` — one-shot compile of `public/scss/main.scss` → `public/assets/styles/main.min.css` (compressed + sourcemap). No JS build step exists.
 - `npm run lint` — runs ESLint (JS), Stylelint (SCSS), HTMLHint in parallel. Lint scopes are globs: `public/js/**/*.js`, `admin/assets/js/**/*.js`, `public/scss/**/*.scss`, `public/**/*.html`, `admin/**/*.html`.
 - `npm run format` / `format:check` — Prettier over `**/*.{js,scss,css,html,json,md}`.
@@ -30,14 +31,32 @@ They share no code but share the Contentful space.
 
 ### Contentful integration
 
-Two clients, intentionally separate:
+Deux clients, intentionnellement séparés :
 
-- `public/js/contentful.js` — uses the Contentful **Delivery API** (`cdn.contentful.com`). Read-only. Fields are returned unwrapped (no locale key).
-- `admin/assets/js/contentful_admin.js` — uses the Contentful **Management API** (`api.contentful.com`). Read/write. Fields are wrapped in `{ 'en-US': value }` — always locale-keyed.
+- `public/js/contentful.js` — Contentful **Delivery API** (`cdn.contentful.com`). Read-only. Fields unwrapped (pas de clé locale). Le token CDA est volontairement en clair côté client (pattern Contentful standard). Helper `asText(v)` à utiliser pour tout champ qui doit être une string (évite les crashes si Contentful retourne un Number).
+- `admin/assets/js/contentful_admin.js` — proxy `/api/cma/*` via Netlify Functions. **Aucun token CMA côté client.** Le front envoie un JWT dans `x-admin-token`, le serveur forwarde avec `Authorization: Bearer $CONTENTFUL_CMA_TOKEN` (env var). Fields wrappés `{ 'en-US': value }` (exigence CMA).
 
-When editing either file, do not cross-port code between them without adjusting for the locale wrapper and auth header differences.
+### Auth admin
 
-**Secret handling**: Space ID and tokens are currently hardcoded in both `contentful.js` files. `.env.example` documents intent but no build-time env substitution is wired up — touching these files is the only way to change credentials today.
+Backend-gated via `netlify/functions/auth.js` (bcrypt + JWT). Aucun identifiant côté client. Pour poser les env vars en local :
+
+```bash
+cp .env.example .env
+node scripts/hash-password.js "<mot-de-passe>"   # copier le hash dans ADMIN_PASSWORD_HASH
+```
+
+Variables requises : `CONTENTFUL_SPACE_ID`, `CONTENTFUL_CMA_TOKEN`, `JWT_SECRET`, `ADMIN_ID`, `ADMIN_PASSWORD_HASH`. Sur Netlify : onglet Site settings → Environment variables.
+
+### Netlify Functions
+
+- `netlify/functions/cma.js` → `/api/cma/*` — proxy Contentful CMA (entries/assets/uploads). JWT requis.
+- `netlify/functions/auth.js` → `/api/auth/login` + `/api/auth/me` — login bcrypt → JWT.
+
+En dev, **obligatoire de lancer `npm run dev:api`** (netlify dev :8888) pour que l'admin fonctionne. Sans lui, les fetch `/api/cma` retournent 404 et les pages admin affichent des listes vides. Les tests E2E (`audit/click-test.mjs`, `auth-flow-test.mjs`) détectent cette situation et skippent proprement les cas qui en dépendent.
+
+### Cache-busting
+
+Les tags `?v=symbiose-N` sur les scripts/CSS sont uniformisés à chaque release (actuellement `symbiose-7`). Ne plus bumper manuellement sauf release majeure — Ctrl+Shift+R suffit en dev.
 
 ### SCSS: 7-1 pattern
 
@@ -49,7 +68,7 @@ Netlify routing is defined in `_redirects` and `netlify.toml` — `/` rewrites t
 
 ### JS module layout
 
-No bundler — every `<script type="module">` loads directly. `public/js/*.js` are shared modules (articles, carousel, categories, contentful, presentation, main, details); `public/js/views/*.js` are page-specific entry points (about, calendar, workshop); `public/js/style/` contains WebGL shader effects (`fragmentShader.glsl`, `vertexShader.glsl` loaded by `styleScript.js`). Imports are relative paths — no path aliases.
+No bundler — every `<script type="module">` loads directly. `public/js/*.js` are shared modules (articles, carousel, categories, contentful, presentation, main, details, publicModal, contentSanitize, homeUpcoming, articleVisuals, mycel, chrome, siteCopy, editMode); `public/js/views/*.js` are page-specific entry points (about, calendar, workshop). Imports are relative paths — no path aliases. Le sanitizer HTML est **unique** (`public/js/contentSanitize.js`) et importé par le rich editor admin via `/public/js/contentSanitize.js` pour éviter la duplication.
 
 ## Conventions
 

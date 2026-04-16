@@ -1,0 +1,94 @@
+@use "../abstracts/tokens" as v;
+
+// Toasts ---------------------------------------------------------------------
+body.admin-shell .admin-toast-layer {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+  max-width: min(380px, calc(100vw - 2rem));
+}
+
+body.admin-shell .admin-toast {
+  pointer-events: auto;
+  padding: 0.85rem 1.1rem;
+  border-radius: 12px;
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: v.$cream;
+  background: v.$moss;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 18%);
+  border-left: 4px solid v.$leaf;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+
+  &.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &--success {
+    background: v.$moss;
+    border-left-color: v.$leaf;
+  }
+
+  &--error {
+    background: v.$clay;
+    border-left-color: rgba(0, 0, 0, 35%);
+  }
+
+  &--info {
+    background: v.$sky;
+    border-left-color: v.$honey;
+    color: v.$ink;
+  }
+}
+
+// État vide ------------------------------------------------------------------
+body.admin-shell .admin-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1.25rem;
+  margin: 1rem auto;
+  max-width: 480px;
+  background: rgba(v.$cream, 0.55);
+  border: 1px dashed rgba(v.$moss, 0.4);
+  border-radius: 16px;
+  color: v.$ink;
+
+  &__icon {
+    font-size: 2.5rem;
+    line-height: 1;
+    margin-bottom: 0.75rem;
+    filter: grayscale(0.2);
+  }
+
+  &__title {
+    font-family: "Young Serif", Georgia, serif;
+    font-size: 1.35rem;
+    margin: 0 0 0.5rem;
+    color: v.$moss;
+  }
+
+  &__desc {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 0.95rem;
+    margin: 0 0 1.25rem;
+    color: rgba(v.$ink, 0.75);
+  }
+
+  &__cta {
+    margin: 0;
+  }
+}
