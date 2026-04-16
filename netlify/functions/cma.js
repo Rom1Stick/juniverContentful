@@ -60,8 +60,12 @@ export default async function handler(req) {
     }
     return await proxyManagement(req, sub, url.search);
   } catch (err) {
-    console.error('[cma proxy] unhandled error', err);
-    return json(502, { error: 'Proxy CMA : erreur inattendue.', detail: err.message });
+    console.error('[cma proxy] unhandled error', { sub, method: req.method, err });
+    return json(502, {
+      error: 'Proxy CMA : erreur inattendue.',
+      message: err.message,
+      detail: err.message,
+    });
   }
 }
 
@@ -83,7 +87,10 @@ async function proxyManagement(req, sub, search) {
     headers: forwardHeaders,
   };
   if (req.method !== 'GET' && req.method !== 'HEAD' && req.method !== 'DELETE') {
-    init.body = await req.text();
+    const body = await req.text();
+    // Ne pas passer body:"" sur PUT/POST vides (ex : /files/:locale/process) —
+    // Undici peut throw et certains endpoints Contentful rejettent un Content-Length: 0 inattendu.
+    if (body) init.body = body;
   }
 
   const resp = await fetch(target, init);
