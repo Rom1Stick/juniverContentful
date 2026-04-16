@@ -3,7 +3,8 @@ import { brandMark } from './brandMark.js';
 
 const NAV_LINKS = [
   { href: '/public/index.html', label: 'Accueil' },
-  { href: '/public/views/about.html', label: 'Le cercle' },
+  { href: '/public/views/about.html', label: 'Le cercle des thérapeutes' },
+  { href: '/public/views/cycle.html', label: 'Le cycle' },
   { href: '/public/views/calendar.html', label: 'Calendrier' },
   { href: '/public/views/workshop.html', label: 'Ateliers' },
   { href: '/public/views/contact.html', label: 'Contact', cta: true },

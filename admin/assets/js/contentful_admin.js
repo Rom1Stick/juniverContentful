@@ -606,3 +606,75 @@ export async function deleteWorkshop(workshopId) {
   if (!resp.ok) throw new Error(`Suppression atelier : ${resp.status}`);
   return true;
 }
+
+/* ─────────────────────── Cycle Dates ─────────────────────── */
+// Content type Contentful : `cycleDate` — étape du cycle "Trouver son chemin de santé".
+// Champs : title (Short text), order (Integer), date (Date), label (Short text, optional),
+//          description (Long text), modules (Long text — une par ligne),
+//          intervenants (References, many → profile), content (Long text).
+
+export async function fetchCycleDatesAdmin() {
+  const data = await cmaJson('entries?content_type=cycleDate&limit=100&order=fields.order');
+  return data.items.map((item) => ({
+    id: item.sys.id,
+    title: item.fields.title?.['en-US'] || 'Sans titre',
+    order: Number(item.fields.order?.['en-US'] ?? 0),
+    date: item.fields.date?.['en-US'] || '',
+    label: item.fields.label?.['en-US'] || '',
+    description: item.fields.description?.['en-US'] || '',
+    modules: item.fields.modules?.['en-US'] || '',
+    content: item.fields.content?.['en-US'] || '',
+    intervenants: item.fields.intervenants?.['en-US']?.map((p) => p.sys.id) || [],
+    version: item.sys.version,
+  }));
+}
+
+function buildCycleDateFields(data) {
+  const fields = {
+    title: { 'en-US': data.title },
+    order: { 'en-US': Number(data.order) || 0 },
+    description: { 'en-US': data.description || '' },
+    modules: { 'en-US': data.modules || '' },
+    content: { 'en-US': data.content || '' },
+    intervenants: {
+      'en-US': (data.intervenants || []).map((id) => ({
+        sys: { type: 'Link', linkType: 'Entry', id },
+      })),
+    },
+  };
+  if (data.date) fields.date = { 'en-US': data.date };
+  if (data.label) fields.label = { 'en-US': data.label };
+  return fields;
+}
+
+export async function createCycleDate(data) {
+  const created = await cmaJson('entries', {
+    method: 'POST',
+    headers: { 'X-Contentful-Content-Type': 'cycleDate' },
+    body: JSON.stringify({ fields: buildCycleDateFields(data) }),
+  });
+  await publishEntry(created.sys.id);
+  return created;
+}
+
+export async function updateCycleDate(id, data) {
+  const entry = await cmaJson(`entries/${id}`);
+  const resp = await cmaFetch(`entries/${id}`, {
+    method: 'PUT',
+    headers: { 'X-Contentful-Version': String(entry.sys.version) },
+    body: JSON.stringify({ fields: buildCycleDateFields(data) }),
+  });
+  if (!resp.ok) {
+    const detail = await safeErrorDetail(resp);
+    throw new Error(`Maj date : ${resp.status} ${detail}`);
+  }
+  await publishEntry(id);
+  return resp.json();
+}
+
+export async function deleteCycleDate(id) {
+  await cmaFetch(`entries/${id}/published`, { method: 'DELETE' }).catch(() => {});
+  const resp = await cmaFetch(`entries/${id}`, { method: 'DELETE' });
+  if (!resp.ok) throw new Error(`Suppression date : ${resp.status}`);
+  return true;
+}

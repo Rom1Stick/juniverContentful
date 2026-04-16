@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JuniverSanté — Le cycle Trouver son chemin de santé</title>
+    <meta
+      name="description"
+      content="Le cycle Trouver son chemin de santé : sept rencontres pour explorer avec le cercle JuniverSanté un cheminement de santé complet."
+    />
+    <link rel="stylesheet" href="/public/assets/styles/main.min.css" />
+  </head>
+  <body class="cycle-page">
+    <div data-slot="ambient"></div>
+    <div class="wrap">
+      <div data-slot="header"></div>
+
+      <main class="cycle-main">
+        <section class="cycle-hero">
+          <span class="sec-eyebrow" data-editable="cycle-page.eyebrow">Cycle saisonnier</span>
+          <h1>
+            <span data-editable="cycle-page.title.before">Le cycle</span>
+            <span class="hand" data-editable="cycle-page.title.hand">Trouver son chemin</span><br />
+            <span data-editable="cycle-page.title.after">de santé.</span>
+          </h1>
+          <p data-editable="cycle-page.lede">
+            Sept rencontres qui se déploient au fil des saisons. À chaque étape, un thème, un·e thérapeute, des modules
+            à explorer ensemble. Avancez à votre rythme, revenez quand vous voulez.
+          </p>
+        </section>
+
+        <section class="cycle-timeline" aria-label="Sept étapes du cycle">
+          <div id="cycle-list" class="cycle-list"></div>
+        </section>
+      </main>
+
+      <div data-slot="footer"></div>
+    </div>
+
+    <script type="module" src="/public/js/views/cycle.js?v=symbiose-7"></script>
+  </body>
+</html>

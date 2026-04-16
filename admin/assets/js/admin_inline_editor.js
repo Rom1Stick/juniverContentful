@@ -57,15 +57,24 @@ window.addEventListener('message', (e) => {
   const msg = e.data || {};
   if (msg.type === 'siteCopy:list') {
     detected = msg.items || [];
-    hydrateFromFrame(detected);
-    render();
+    const changed = hydrateFromFrame(detected);
+    if (changed) render();
+    else refreshSaveBtn();
   }
   if (msg.type === 'siteCopy:change') {
-    const entry = state.get(msg.key);
-    if (!entry) return;
-    entry.value = msg.value;
-    updateDirtyFlag(msg.key);
-    refreshItem(msg.key);
+    let entry = state.get(msg.key);
+    if (!entry) {
+      // Cas défensif : l'iframe a émis un changement pour une clé qu'on n'avait pas
+      // encore enregistrée (race au chargement, ou élément injecté tardivement).
+      // On crée l'entrée avec original vide pour marquer dirty et déverrouiller "Enregistrer".
+      entry = { value: msg.value, original: '', kind: 'text' };
+      state.set(msg.key, entry);
+      render();
+    } else {
+      entry.value = msg.value;
+      updateDirtyFlag(msg.key);
+      refreshItem(msg.key);
+    }
     refreshSaveBtn();
   }
   if (msg.type === 'siteCopy:focus') {
@@ -148,19 +157,37 @@ function clearState() {
 }
 
 function hydrateFromFrame(items) {
-  const next = new Map();
+  // Retourne true si l'ensemble des clés a changé (ajout/suppression) — sinon inutile
+  // de re-rendre le panneau et on évite de perdre le focus/scroll du textarea actif.
+  // On préserve IN PLACE les objets state existants (pas de nouvelle référence)
+  // pour que les closures des textareas du panneau pointent toujours sur le bon entry.
+  const incomingKeys = new Set();
+  let keysChanged = false;
+
   items.forEach(({ key, value, kind = 'text' }) => {
+    incomingKeys.add(key);
     const existing = state.get(key);
     if (existing) {
-      next.set(key, { ...existing, kind });
+      // Met à jour le kind si nécessaire, garde value/original intacts.
+      if (existing.kind !== kind) existing.kind = kind;
     } else {
-      next.set(key, { value, original: value, kind });
+      state.set(key, { value, original: value, kind });
+      keysChanged = true;
     }
   });
-  state.clear();
-  items.forEach(({ key }) => {
-    state.set(key, next.get(key));
-  });
+
+  // Supprimer les clés qui ne sont plus dans la page — en conservant celles dirty
+  // (l'utilisateur a peut-être édité puis le DOM s'est remanié, on ne perd pas son travail).
+  for (const key of Array.from(state.keys())) {
+    if (!incomingKeys.has(key)) {
+      const entry = state.get(key);
+      if (entry && entry.value === entry.original) {
+        state.delete(key);
+        keysChanged = true;
+      }
+    }
+  }
+  return keysChanged;
 }
 
 function render() {

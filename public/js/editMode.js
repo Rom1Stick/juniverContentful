@@ -157,11 +157,36 @@ function setupEditing() {
     postEditables();
   };
 
-  // Certains éléments data-editable sont injectés tardivement par le chrome.js / les vues
-  const observer = new MutationObserver(() => {
-    activate();
+  // Certains éléments data-editable sont injectés tardivement par le chrome.js / les vues.
+  // On filtre pour ne réagir qu'aux ajouts/retraits d'éléments éditables réels —
+  // sinon chaque frappe clavier dans un contenteditable (qui crée/retire des nœuds texte)
+  // déclenche inutilement postEditables et spamme le parent.
+  const observer = new MutationObserver((mutations) => {
+    for (const m of mutations) {
+      for (const node of m.addedNodes) {
+        if (node.nodeType !== 1) continue;
+        if (
+          node.matches?.('[data-editable], [data-editable-image]') ||
+          node.querySelector?.('[data-editable], [data-editable-image]')
+        ) {
+          scheduleActivate();
+          return;
+        }
+      }
+    }
   });
   observer.observe(document.body, { childList: true, subtree: true });
+
+  let activateScheduled = false;
+  function scheduleActivate() {
+    if (activateScheduled) return;
+    activateScheduled = true;
+    // Un microtask suffit : on regroupe toutes les mutations d'un même tick
+    queueMicrotask(() => {
+      activateScheduled = false;
+      activate();
+    });
+  }
 
   activate();
 

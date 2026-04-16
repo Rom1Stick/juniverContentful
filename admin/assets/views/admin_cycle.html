@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cycle Trouver son chemin de santé — Administration JuniverSanté</title>
+    <link rel="stylesheet" href="/admin/assets/styles/admin.min.css?v=symbiose-7" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%237BA05B'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%23E3B84F'/%3E%3C/svg%3E"
+    />
+  </head>
+  <body class="admin-shell cycle-page">
+    <div class="loading-overlay" id="loading"><div class="spinner"></div></div>
+
+    <div data-slot="admin-ambient"></div>
+    <div data-slot="admin-header"></div>
+
+    <main class="admin-main">
+      <div class="section-head">
+        <span class="sec-eyebrow">Cycle · gestion</span>
+        <h1>Cycle Trouver son chemin de santé</h1>
+        <p class="section-lead">
+          Sept rencontres chronologiques. Ajoutez, modifiez ou retirez une date : titre, description, modules abordés et
+          intervenant·es.
+        </p>
+      </div>
+
+      <div class="page-actions">
+        <button class="btn btn-primary" id="add-cycle-date"><i class="fas fa-plus"></i> Nouvelle date</button>
+      </div>
+
+      <div id="cycle-dates-container" class="cycle-dates-list"></div>
+    </main>
+
+    <div data-slot="admin-footer"></div>
+
+    <script src="/admin/assets/js/admin.js?v=symbiose-7"></script>
+    <script type="module" src="/admin/assets/js/adminChrome.js?v=symbiose-7"></script>
+    <script type="module" src="/admin/assets/js/admin_cycle.js?v=symbiose-7"></script>
+  </body>
+</html>
