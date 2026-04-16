@@ -94,14 +94,7 @@ async function proxyManagement(req, sub, search) {
   }
 
   const resp = await fetch(target, init);
-  const body = await resp.text();
-  return new Response(body, {
-    status: resp.status,
-    headers: {
-      ...corsHeaders(),
-      'content-type': resp.headers.get('content-type') || 'application/json',
-    },
-  });
+  return await forwardResponse(resp);
 }
 
 /**
@@ -129,7 +122,15 @@ async function proxyUpload(req, sub) {
     },
     body: buffer,
   });
-  const body = await resp.text();
+  return await forwardResponse(resp);
+}
+
+// Statuts "null body" selon le Fetch spec — Undici throw si on passe un body (même "").
+const NULL_BODY_STATUSES = new Set([101, 103, 204, 205, 304]);
+
+async function forwardResponse(resp) {
+  const isNullBody = NULL_BODY_STATUSES.has(resp.status);
+  const body = isNullBody ? null : await resp.text();
   return new Response(body, {
     status: resp.status,
     headers: {
