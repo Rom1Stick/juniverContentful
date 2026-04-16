@@ -133,7 +133,7 @@ header.site-nav {
 /* Desktop nav */
 nav.primary {
   display: none;
-  gap: 26px;
+  gap: 0;
   align-items: center;
   font-size: 14px;
   font-family: v.$font-body;
@@ -143,6 +143,22 @@ nav.primary a {
   color: v.$ink;
   text-decoration: none;
   transition: color 0.25s;
+  padding: 0 18px;
+  position: relative;
+}
+
+/* Séparateur entre chaque lien non-CTA — petit point moss */
+nav.primary a + a:not(.cta)::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: v.$leaf;
+  opacity: 0.55;
 }
 
 nav.primary a:hover {

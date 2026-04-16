@@ -77,6 +77,16 @@ section {
   position: relative;
 }
 
+/* Pages internes (autres que la home) : réduit l'espace entre le header et le
+   premier titre de page pour que le titre arrive plus haut. */
+.about-main > section:first-child,
+.workshop-main > section:first-child,
+.calendar-main > section:first-child,
+.contact-main > section:first-child {
+  padding-top: clamp(18px, 3vh, 40px);
+  padding-bottom: clamp(28px, 5vh, 56px);
+}
+
 @media (width <= 640px) {
   .wrap {
     padding: 0 18px;
@@ -84,6 +94,14 @@ section {
 
   section {
     padding: 56px 0;
+  }
+
+  .about-main > section:first-child,
+  .workshop-main > section:first-child,
+  .calendar-main > section:first-child,
+  .contact-main > section:first-child {
+    padding-top: 14px;
+    padding-bottom: 28px;
   }
 }
 
