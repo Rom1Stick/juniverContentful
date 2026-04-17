@@ -29,6 +29,23 @@ reloadBtn.addEventListener('click', () => {
   clearState();
 });
 
+// Quand l'iframe charge une page, editMode.js envoie siteCopy:list.
+// En cas de race (modules chargés après DOMContentLoaded, ou message perdu),
+// on renvoie une requête explicite après un court délai.
+frame.addEventListener('load', () => {
+  setTimeout(() => {
+    if (state.size === 0) {
+      frame.contentWindow?.postMessage({ type: 'siteCopy:list' }, '*');
+    }
+  }, 500);
+  // Second essai si le premier échoue (modules ES chargés tardivement)
+  setTimeout(() => {
+    if (state.size === 0) {
+      frame.contentWindow?.postMessage({ type: 'siteCopy:list' }, '*');
+    }
+  }, 1500);
+});
+
 saveBtn.addEventListener('click', () => {
   save().catch((e) => setStatus(`Erreur : ${e.message}`, 'error'));
 });
