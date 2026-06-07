@@ -7,6 +7,7 @@ import {
 } from './contentful_admin.js';
 import { toastSuccess, toastError, renderEmptyState } from './adminToast.js';
 import { openModal } from './adminModal.js';
+import { createRichEditor, sanitizeHTML } from './richEditor.js';
 
 let currentProfiles = [];
 
@@ -37,7 +38,8 @@ async function loadProfiles() {
 
 function profileCard(p) {
   const diplomas = Array.isArray(p.diplomas) ? p.diplomas.join(', ') : p.diplomas || '';
-  const shortBio = (p.description || '').slice(0, 140);
+  const bioText = stripHTML(p.description || '');
+  const shortBio = bioText.slice(0, 140);
   return `
     <article class="profile-card" data-id="${p.id}">
       <div class="profile-header">
@@ -53,7 +55,7 @@ function profileCard(p) {
         ${p.phone && p.phone !== 'Non spécifié' ? `<div class="profile-field"><label>Téléphone</label><span>${escapeHTML(p.phone)}</span></div>` : ''}
         ${p.website && p.website !== 'Non spécifié' ? `<div class="profile-field"><label>Site web</label><span>${escapeHTML(p.website)}</span></div>` : ''}
         ${diplomas ? `<div class="profile-field"><label>Diplômes</label><span>${escapeHTML(diplomas)}</span></div>` : ''}
-        ${shortBio ? `<div class="profile-field"><label>Description</label><span class="profile-bio">${escapeHTML(shortBio)}${p.description.length > 140 ? '…' : ''}</span></div>` : ''}
+        ${shortBio ? `<div class="profile-field"><label>Description</label><span class="profile-bio">${escapeHTML(shortBio)}${bioText.length > 140 ? '…' : ''}</span></div>` : ''}
       </div>
 
       <div class="card-actions">
@@ -136,8 +138,8 @@ function openProfileModal(profileId = null) {
     </div>
 
     <div>
-      <label for="profile-description">Description</label>
-      <textarea id="profile-description" rows="4" placeholder="Parcours, approche, spécialisation…"></textarea>
+      <label>Description</label>
+      <div id="profile-description-host"></div>
     </div>
 
     <div class="admin-modal__actions">
@@ -157,8 +159,14 @@ function openProfileModal(profileId = null) {
     form.querySelector('#profile-diplomas').value = Array.isArray(profile.diplomas)
       ? profile.diplomas.join(', ')
       : profile.diplomas || '';
-    form.querySelector('#profile-description').value = profile.description || '';
   }
+
+  const descriptionEditor = createRichEditor({
+    initialHTML: profile?.description || '',
+    placeholder: 'Parcours, approche, spécialisation…',
+  });
+  descriptionEditor.setAssetUploader(async (file) => uploadAsset(file));
+  form.querySelector('#profile-description-host').appendChild(descriptionEditor.root);
 
   const modal = openModal({
     title: profile ? 'Modifier le profil' : 'Nouveau profil',
@@ -212,7 +220,7 @@ function openProfileModal(profileId = null) {
       phone: form.querySelector('#profile-phone').value.trim(),
       website: form.querySelector('#profile-website').value.trim(),
       diplomas: form.querySelector('#profile-diplomas').value.trim(),
-      description: form.querySelector('#profile-description').value.trim(),
+      description: sanitizeHTML(descriptionEditor.getHTML()),
       imageId: pendingImageId,
     };
     if (!data.name || !data.job || !data.email) {
@@ -266,6 +274,12 @@ function escapeHTML(s) {
   div.textContent = s ?? '';
   return div.innerHTML;
 }
-function escapeAttr(s) {
-  return escapeHTML(s).replace(/"/g, '&quot;');
+function escapeAttr(str) {
+  return escapeHTML(str).replace(/"/g, '&quot;');
+}
+
+function stripHTML(html) {
+  const div = document.createElement('div');
+  div.innerHTML = sanitizeHTML(html || '');
+  return (div.textContent || div.innerText || '').replace(/\s+/g, ' ').trim();
 }

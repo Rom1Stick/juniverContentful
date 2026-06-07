@@ -2,6 +2,7 @@ import '../chrome.js';
 import '../mycel.js';
 import '../siteCopy.js';
 import { fetchProfilesWithAssets, asText } from '../contentful.js';
+import { sanitizeRichHTML, escapeText } from '../contentSanitize.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
@@ -23,6 +24,12 @@ function truncate(str, n) {
   return `${str.slice(0, n)}…`;
 }
 
+function stripHTML(html) {
+  const div = document.createElement('div');
+  div.innerHTML = sanitizeRichHTML(html || '');
+  return (div.textContent || div.innerText || '').replace(/\s+/g, ' ').trim();
+}
+
 function renderProfiles(container, profiles) {
   container.innerHTML = profiles
     .map((p) => {
@@ -32,6 +39,8 @@ function renderProfiles(container, profiles) {
       const phone = asText(p.phone);
       const website = asText(p.website);
       const description = asText(p.description);
+      const plainDescription = stripHTML(description);
+      const richDescription = sanitizeRichHTML(description);
       const imageUrl = asText(p.imageUrl);
       const diplomas = Array.isArray(p.diplomas)
         ? p.diplomas.filter(Boolean)
@@ -55,12 +64,12 @@ function renderProfiles(container, profiles) {
         .filter(Boolean)
         .join('');
 
-      const descHtml = description
+      const descHtml = plainDescription
         ? `
           <div class="profile-description">
-            <p class="short-description">${truncate(description, 160)}</p>
-            <p class="full-description hidden">${description}</p>
-            ${description.length > 160 ? '<button class="toggle-description">Lire la suite</button>' : ''}
+            <p class="short-description">${escapeText(truncate(plainDescription, 160))}</p>
+            <div class="full-description hidden">${richDescription}</div>
+            ${plainDescription.length > 160 ? '<button class="toggle-description">Lire la suite</button>' : ''}
           </div>`
         : '';
 

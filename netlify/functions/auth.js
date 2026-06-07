@@ -14,7 +14,7 @@ import jwt from 'jsonwebtoken';
 const ADMIN_ID = process.env.ADMIN_ID;
 const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
 const JWT_SECRET = process.env.JWT_SECRET;
-const JWT_TTL_MINUTES = parseInt(process.env.JWT_TTL_MINUTES || '30', 10);
+const JWT_TTL_MINUTES = parseInt(process.env.JWT_TTL_MINUTES || '480', 10);
 
 export default async function handler(req) {
   if (req.method === 'OPTIONS') {

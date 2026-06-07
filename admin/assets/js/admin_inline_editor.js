@@ -33,6 +33,7 @@ reloadBtn.addEventListener('click', () => {
 // En cas de race (modules chargés après DOMContentLoaded, ou message perdu),
 // on renvoie une requête explicite après un court délai.
 frame.addEventListener('load', () => {
+  ensureFrameEditModeLoaded();
   setTimeout(() => {
     if (state.size === 0) {
       frame.contentWindow?.postMessage({ type: 'siteCopy:list' }, '*');
@@ -45,6 +46,20 @@ frame.addEventListener('load', () => {
     }
   }, 1500);
 });
+
+function ensureFrameEditModeLoaded() {
+  try {
+    const doc = frame.contentDocument;
+    if (!doc?.body || doc.querySelector('script[data-admin-edit-mode]')) return;
+    const script = doc.createElement('script');
+    script.type = 'module';
+    script.src = '/public/js/editMode.js?v=symbiose-7';
+    script.dataset.adminEditMode = 'true';
+    doc.body.appendChild(script);
+  } catch (err) {
+    console.warn('[siteCopy] impossible de charger le mode édition dans l’aperçu', err);
+  }
+}
 
 saveBtn.addEventListener('click', () => {
   save().catch((e) => setStatus(`Erreur : ${e.message}`, 'error'));

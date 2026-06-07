@@ -41,6 +41,12 @@ function postEditables() {
 }
 
 function setupEditing() {
+  if (window.__juniverEditModeActive) {
+    postEditables();
+    return;
+  }
+  window.__juniverEditModeActive = true;
+
   const plaintextOnly = supportsPlaintextOnly();
 
   const style = document.createElement('style');
