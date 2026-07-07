@@ -1,4 +1,4 @@
-// Whitelist HTML sanitizer partagé (détails article + modale évènement).
+// Whitelist HTML sanitizer partagé (détails article + modale évènement + textes éditables).
 // Ne conserve que les tags/attributs utiles à la mise en forme rédactionnelle.
 
 const ALLOWED_TAGS = new Set([
@@ -26,6 +26,11 @@ const ALLOWED_ATTRS = {
   IMG: ['src', 'alt'],
   SPAN: ['style'],
   P: ['style'],
+  STRONG: ['style'],
+  B: ['style'],
+  EM: ['style'],
+  I: ['style'],
+  U: ['style'],
   H2: ['style'],
   H3: ['style'],
   DIV: ['style'],
@@ -49,8 +54,10 @@ function walk(node) {
     if (child.nodeType === Node.ELEMENT_NODE) {
       const tag = child.tagName;
       if (!ALLOWED_TAGS.has(tag)) {
-        while (child.firstChild) child.parentNode.insertBefore(child.firstChild, child);
-        child.remove();
+        const fragment = document.createDocumentFragment();
+        while (child.firstChild) fragment.appendChild(child.firstChild);
+        walk(fragment);
+        child.replaceWith(fragment);
         return;
       }
       const allowed = ALLOWED_ATTRS[tag] || [];
@@ -68,11 +75,7 @@ function walk(node) {
           const v = attr.value.trim();
           if (!/^(https?:\/\/|data:image\/)/i.test(v)) child.removeAttribute('src');
         }
-        if (name === 'style') {
-          const m = attr.value.match(/color\s*:\s*(#[0-9a-fA-F]{3,6})/);
-          if (m) child.setAttribute('style', `color: ${m[1]}`);
-          else child.removeAttribute('style');
-        }
+        if (name === 'style') sanitizeStyle(child, attr.value);
         if (name === 'target' && attr.value !== '_blank') child.removeAttribute('target');
       });
       walk(child);
@@ -80,4 +83,34 @@ function walk(node) {
       child.remove();
     }
   });
+}
+
+function sanitizeStyle(el, value) {
+  const allowed = [];
+  value
+    .split(';')
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .forEach((rule) => {
+      const [rawProp, ...rawValueParts] = rule.split(':');
+      const prop = rawProp?.trim().toLowerCase();
+      const ruleValue = rawValueParts.join(':').trim().toLowerCase();
+      if (!prop || !ruleValue) return;
+
+      if (prop === 'color' && /^#[0-9a-f]{3,6}$/i.test(ruleValue)) {
+        allowed.push(`color: ${ruleValue}`);
+      }
+      if (
+        prop === 'font-size' &&
+        /^(0\.85rem|1rem|1\.15rem|1\.3rem|1\.5rem|12px|14px|16px|18px|20px|24px)$/i.test(ruleValue)
+      ) {
+        allowed.push(`font-size: ${ruleValue}`);
+      }
+      if (prop === 'text-align' && /^(left|center|right|justify)$/i.test(ruleValue)) {
+        allowed.push(`text-align: ${ruleValue}`);
+      }
+    });
+
+  if (allowed.length) el.setAttribute('style', allowed.join('; '));
+  else el.removeAttribute('style');
 }

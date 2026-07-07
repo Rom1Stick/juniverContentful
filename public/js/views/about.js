@@ -1,6 +1,6 @@
 import '../chrome.js';
 import '../mycel.js';
-import '../siteCopy.js';
+import { fetchSiteCopy, applySiteCopy } from '../siteCopy.js';
 import { fetchProfilesWithAssets, asText } from '../contentful.js';
 import { sanitizeRichHTML, escapeText } from '../contentSanitize.js';
 
@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const container = document.getElementById('profile-content');
     if (!container) return;
     if (!profiles?.length) {
-      container.innerHTML = '<p>Aucun profil disponible pour le moment.</p>';
+      container.innerHTML =
+        '<p data-editable="about-page.profiles.empty">Aucun profil disponible pour le moment.</p>';
       return;
     }
     renderProfiles(container, profiles);
@@ -69,7 +70,11 @@ function renderProfiles(container, profiles) {
           <div class="profile-description">
             <p class="short-description">${escapeText(truncate(plainDescription, 160))}</p>
             <div class="full-description hidden">${richDescription}</div>
-            ${plainDescription.length > 160 ? '<button class="toggle-description">Lire la suite</button>' : ''}
+            ${
+              plainDescription.length > 160
+                ? '<button class="toggle-description" data-editable="about-page.profile.more">Lire la suite</button>'
+                : ''
+            }
           </div>`
         : '';
 
@@ -99,12 +104,21 @@ function renderProfiles(container, profiles) {
       if (expanded) {
         shortEl.classList.remove('hidden');
         fullEl.classList.add('hidden');
-        e.target.textContent = 'Lire la suite';
+        setProfileToggleLabel(e.target, 'more');
       } else {
         shortEl.classList.add('hidden');
         fullEl.classList.remove('hidden');
-        e.target.textContent = 'Lire moins';
+        setProfileToggleLabel(e.target, 'less');
       }
     });
   });
+}
+
+function setProfileToggleLabel(btn, state) {
+  const key = state === 'less' ? 'about-page.profile.less' : 'about-page.profile.more';
+  btn.setAttribute('data-editable', key);
+  btn.textContent = state === 'less' ? 'Lire moins' : 'Lire la suite';
+  fetchSiteCopy()
+    .then((map) => applySiteCopy(map, btn.parentNode || document))
+    .catch(() => {});
 }

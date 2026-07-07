@@ -1,7 +1,8 @@
 import { fetchContent } from './contentful.js';
+import { sanitizeRichHTML } from './contentSanitize.js';
 
 // Récupère les entrées Contentful de type `siteCopy` (champs attendus : key, value)
-// et remplace le textContent des éléments [data-editable="<key>"] du DOM.
+// et remplace le contenu des éléments [data-editable="<key>"] du DOM.
 // Si le type n'existe pas encore côté Contentful (404), on garde le fallback HTML.
 //
 // Un MutationObserver applique les overrides aussi aux éléments injectés tardivement
@@ -36,7 +37,8 @@ export function applySiteCopy(map, root = document) {
     const key = el.getAttribute('data-editable');
     if (!key) return;
     if (Object.prototype.hasOwnProperty.call(map, key)) {
-      if (el.textContent !== map[key]) el.textContent = map[key];
+      const html = sanitizeRichHTML(map[key]);
+      if (el.innerHTML !== html) el.innerHTML = html;
     }
   });
   // Images éditables — on attend une URL (https:// ou /) dans la valeur siteCopy

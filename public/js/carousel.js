@@ -42,7 +42,7 @@ function cardMarkup(p, i) {
       <h4>${p.name || ''}</h4>
       <div class="role">${p.job || ''}</div>
       ${bio ? `<p class="bio">${bio}</p>` : ''}
-      <span class="see">Voir le profil →</span>
+      <span class="see" data-editable="profiles.card.see">Voir le profil →</span>
     </a>
   `;
 }
@@ -51,7 +51,8 @@ export function displayProfiles(profiles) {
   const container = document.querySelector('.carousel-container');
   if (!container) return;
   if (!profiles?.length) {
-    container.innerHTML = '<p class="carousel-empty">Aucun profil à afficher pour le moment.</p>';
+    container.innerHTML =
+      '<p class="carousel-empty" data-editable="profiles.empty">Aucun profil à afficher pour le moment.</p>';
     return;
   }
 

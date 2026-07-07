@@ -40,7 +40,7 @@ function displayFeaturedArticle(article, includes) {
   const container = document.getElementById('featured-article');
   if (!container) return;
   if (!article || !article.fields) {
-    container.innerHTML = '<p>Aucun article vedette disponible.</p>';
+    container.innerHTML = '<p data-editable="featured.empty">Aucun article vedette disponible.</p>';
     return;
   }
 
@@ -63,18 +63,18 @@ function displayFeaturedArticle(article, includes) {
   container.innerHTML = `
     <div class="featured-img${variantClass}" style="${bgStyle}">
       ${visualHtml}
-      <span class="badge">Journal du cercle</span>
-      <span class="cap">« Ce qu'on appelle <em>la santé</em>, au fond. »</span>
+      <span class="badge" data-editable="featured.dynamic.badge">Journal du cercle</span>
+      <span class="cap" data-editable="featured.dynamic.caption">« Ce qu'on appelle <em>la santé</em>, au fond. »</span>
     </div>
     <div class="featured-body">
       <h3>${title}</h3>
       <div class="meta">
-        <span>Par le cercle</span>
+        <span data-editable="featured.dynamic.author">Par le cercle</span>
         <span class="dot"></span>
-        <span>Lecture courte</span>
+        <span data-editable="featured.dynamic.reading">Lecture courte</span>
       </div>
       <p>${summary || content || ''}</p>
-      <a class="link" href="details.html?id=${article.sys.id}">Lire l'article complet →</a>
+      <a class="link" href="details.html?id=${article.sys.id}" data-editable="featured.dynamic.link">Lire l'article complet →</a>
     </div>
   `;
 }

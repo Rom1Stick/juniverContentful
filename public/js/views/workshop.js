@@ -48,7 +48,8 @@ function displayWorkshops(workshops) {
   const container = document.getElementById('workshop-list');
   if (!container) return;
   if (!workshops.length) {
-    container.innerHTML = '<p class="workshop-empty">Aucun atelier pour le moment.</p>';
+    container.innerHTML =
+      '<p class="workshop-empty" data-editable="workshop-page.empty">Aucun atelier pour le moment.</p>';
     return;
   }
   container.innerHTML = workshops
@@ -84,8 +85,8 @@ function displayWorkshops(workshops) {
           ${profilesHtml ? `<div class="profiles">${profilesHtml}</div>` : ''}
           ${
             hasMore
-              ? '<button type="button" class="workshop-open">Voir le détail →</button>'
-              : '<button type="button" class="workshop-open workshop-open--compact">Voir le détail →</button>'
+              ? '<button type="button" class="workshop-open" data-editable="workshop.card.detail">Voir le détail →</button>'
+              : '<button type="button" class="workshop-open workshop-open--compact" data-editable="workshop.card.detail">Voir le détail →</button>'
           }
         </article>
       `;
@@ -132,9 +133,13 @@ function openWorkshopDetail(w) {
       <p class="workshop-modal__rec">🔁 ${escapeText(w.recurrence)}</p>
       ${profilesHtml}
       <div class="workshop-modal__body">
-        ${sanitizeRichHTML(w.description || '<p><em>Pas de description pour le moment.</em></p>')}
+        ${
+          w.description
+            ? sanitizeRichHTML(w.description)
+            : '<p data-editable="workshop.modal.empty"><em>Pas de description pour le moment.</em></p>'
+        }
       </div>
-      <a class="btn-primary workshop-modal__cta" href="/public/views/contact.html?workshop=${encodeURIComponent(w.title)}">
+      <a class="btn-primary workshop-modal__cta" href="/public/views/contact.html?workshop=${encodeURIComponent(w.title)}" data-editable="workshop.modal.cta">
         S'inscrire à cet atelier →
       </a>
     </div>

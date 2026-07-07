@@ -50,7 +50,7 @@ function render(dates, profiles) {
   if (!list) return;
   if (!dates.length) {
     list.innerHTML =
-      '<p class="cycle-empty">Le programme du cycle se dessine — revenez bientôt.</p>';
+      '<p class="cycle-empty" data-editable="cycle-page.empty">Le programme du cycle se dessine — revenez bientôt.</p>';
     return;
   }
 
@@ -79,7 +79,7 @@ function render(dates, profiles) {
             <h3 class="cycle-step__title">${escapeText(d.title)}</h3>
             ${d.description ? `<p class="cycle-step__desc">${escapeText(d.description)}</p>` : ''}
             ${peopleChips}
-            <button type="button" class="cycle-step__cta" data-idx="${idx}">
+            <button type="button" class="cycle-step__cta" data-idx="${idx}" data-editable="cycle.card.cta">
               Voir les informations →
             </button>
           </div>
@@ -102,7 +102,7 @@ function openDetail(d, profiles) {
 
   const modulesHtml = d.modules
     ? `<div class="cycle-modal__modules">
-         <h4>Modules abordés</h4>
+         <h4 data-editable="cycle.modal.modules-title">Modules abordés</h4>
          <ul>${d.modules
            .split('\n')
            .map((m) => m.trim())
@@ -114,7 +114,7 @@ function openDetail(d, profiles) {
 
   const peopleHtml = intervenants.length
     ? `<div class="cycle-modal__people">
-         <h4>Avec</h4>
+         <h4 data-editable="cycle.modal.people-title">Avec</h4>
          ${intervenants
            .map(
              (p) => `
@@ -139,7 +139,7 @@ function openDetail(d, profiles) {
       ${modulesHtml}
       ${peopleHtml}
       ${d.content ? `<div class="cycle-modal__body">${sanitizeRichHTML(d.content)}</div>` : ''}
-      <a class="btn-primary cycle-modal__cta" href="/public/views/contact.html?cycle=${encodeURIComponent(d.title)}">
+      <a class="btn-primary cycle-modal__cta" href="/public/views/contact.html?cycle=${encodeURIComponent(d.title)}" data-editable="cycle.modal.cta">
         S'inscrire à cette étape →
       </a>
     </div>`;

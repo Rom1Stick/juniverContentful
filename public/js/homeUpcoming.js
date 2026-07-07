@@ -54,7 +54,7 @@ export async function renderHomeUpcoming() {
   }
 
   if (!events.length) {
-    list.innerHTML = `<li class="home-upcoming__empty">Pas de rendez-vous programmé pour le moment. Revenez bientôt.</li>`;
+    list.innerHTML = `<li class="home-upcoming__empty" data-editable="upcoming.empty">Pas de rendez-vous programmé pour le moment. Revenez bientôt.</li>`;
     return;
   }
 
@@ -99,8 +99,8 @@ function openEventDetailModal(ev) {
       ${ev.imageUrl ? `<img class="event-detail__cover" src="${ev.imageUrl}" alt="${escapeText(ev.title)}">` : ''}
       <p class="event-detail__when">📅 ${escapeText(dateStr)}</p>
       <p class="event-detail__where">📍 ${escapeText(ev.location || 'Lieu à préciser')}</p>
-      ${ev.description ? `<div class="event-detail__body">${sanitizeRichHTML(ev.description)}</div>` : '<p class="event-detail__empty">Plus de détails bientôt disponibles.</p>'}
-      <a class="btn-primary event-detail__cta" href="/public/views/contact.html?event=${encodeURIComponent(ev.title)}">
+      ${ev.description ? `<div class="event-detail__body">${sanitizeRichHTML(ev.description)}</div>` : '<p class="event-detail__empty" data-editable="event-detail.empty">Plus de détails bientôt disponibles.</p>'}
+      <a class="btn-primary event-detail__cta" href="/public/views/contact.html?event=${encodeURIComponent(ev.title)}" data-editable="event-detail.cta">
         Je souhaite m'inscrire →
       </a>
     </div>

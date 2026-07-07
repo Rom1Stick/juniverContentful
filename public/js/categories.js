@@ -21,6 +21,7 @@ export async function displayCategories(articles, containerId = 'category-list',
   const allBtn = document.createElement('button');
   allBtn.type = 'button';
   allBtn.className = 'active';
+  allBtn.setAttribute('data-editable', 'journal.filter.all');
   allBtn.textContent = 'Tous';
   allBtn.addEventListener('click', () => {
     setActive(allBtn);

@@ -1,4 +1,5 @@
 import { uploadAsset, cmaFetch } from './contentful_admin.js';
+import { sanitizeRichHTML } from '/public/js/contentSanitize.js';
 
 const CONTENT_TYPE_ID = 'siteCopy';
 
@@ -18,6 +19,11 @@ const viewMobileBtn = document.getElementById('ie-view-mobile');
 // État courant : map { key: { value, original, entryId?, version? } }
 const state = new Map();
 let detected = [];
+let activePanelField = null;
+
+document.addEventListener('selectionchange', () => {
+  if (activePanelField) rememberPanelSelection(activePanelField);
+});
 
 pageSelect.addEventListener('change', () => {
   frame.src = `${pageSelect.value}?edit=1`;
@@ -94,16 +100,17 @@ window.addEventListener('message', (e) => {
     else refreshSaveBtn();
   }
   if (msg.type === 'siteCopy:change') {
+    const value = sanitizeRichHTML(msg.value);
     let entry = state.get(msg.key);
     if (!entry) {
       // Cas défensif : l'iframe a émis un changement pour une clé qu'on n'avait pas
       // encore enregistrée (race au chargement, ou élément injecté tardivement).
       // On crée l'entrée avec original vide pour marquer dirty et déverrouiller "Enregistrer".
-      entry = { value: msg.value, original: '', kind: 'text' };
+      entry = { value, original: '', kind: 'text' };
       state.set(msg.key, entry);
       render();
     } else {
-      entry.value = msg.value;
+      entry.value = value;
       updateDirtyFlag(msg.key);
       refreshItem(msg.key);
     }
@@ -198,12 +205,13 @@ function hydrateFromFrame(items) {
 
   items.forEach(({ key, value, kind = 'text' }) => {
     incomingKeys.add(key);
+    const safeValue = kind === 'text' ? sanitizeRichHTML(value) : value;
     const existing = state.get(key);
     if (existing) {
       // Met à jour le kind si nécessaire, garde value/original intacts.
       if (existing.kind !== kind) existing.kind = kind;
     } else {
-      state.set(key, { value, original: value, kind });
+      state.set(key, { value: safeValue, original: safeValue, kind });
       keysChanged = true;
     }
   });
@@ -243,19 +251,50 @@ function render() {
     } else {
       item.innerHTML = `
         <label for="ie-field-${cssEscape(key)}">${key}</label>
-        <textarea id="ie-field-${cssEscape(key)}" rows="2"></textarea>
+        <div class="ie-field-toolbar" role="toolbar" aria-label="Mise en forme du texte">
+          <button type="button" data-panel-command="bold" title="Gras"><b>G</b></button>
+          <button type="button" data-panel-command="italic" title="Italique"><i>I</i></button>
+          <button type="button" data-panel-command="underline" title="Souligné"><u>U</u></button>
+          <button type="button" data-panel-command="insertLineBreak" title="Retour à la ligne">↵</button>
+          <select data-panel-command="fontSize" title="Taille du texte" aria-label="Taille du texte">
+            <option value="">Taille</option>
+            <option value="0.85rem">Petit</option>
+            <option value="1rem">Normal</option>
+            <option value="1.15rem">Moyen</option>
+            <option value="1.3rem">Grand</option>
+            <option value="1.5rem">Très grand</option>
+          </select>
+          <button type="button" data-panel-command="justifyLeft" title="Aligner à gauche">☰</button>
+          <button type="button" data-panel-command="justifyCenter" title="Centrer">≡</button>
+          <button type="button" data-panel-command="justifyRight" title="Aligner à droite">☷</button>
+          <button type="button" data-panel-command="removeFormat" title="Retirer la mise en forme">⌫</button>
+        </div>
+        <div id="ie-field-${cssEscape(key)}" class="ie-rich-field" contenteditable="true" spellcheck="true"></div>
       `;
-      const ta = item.querySelector('textarea');
-      ta.value = entry.value;
-      ta.addEventListener('focus', () => {
+      const field = item.querySelector('.ie-rich-field');
+      const toolbar = item.querySelector('.ie-field-toolbar');
+      field.innerHTML = sanitizeRichHTML(entry.value);
+      field.addEventListener('focus', () => {
+        activePanelField = field;
         markFocused(key);
       });
-      ta.addEventListener('input', () => {
-        entry.value = ta.value;
+      field.addEventListener('mouseup', () => rememberPanelSelection(field));
+      field.addEventListener('keyup', () => rememberPanelSelection(field));
+      field.addEventListener('paste', (event) => {
+        event.preventDefault();
+        const data = event.clipboardData || window.clipboardData;
+        const html = data?.getData('text/html');
+        const text = data?.getData('text/plain') || '';
+        const safe = html ? sanitizeRichHTML(html) : plainTextToHTML(text);
+        document.execCommand('insertHTML', false, safe);
+      });
+      field.addEventListener('input', () => {
+        entry.value = sanitizeRichHTML(field.innerHTML);
         updateDirtyFlag(key);
-        syncToFrame(key, ta.value);
+        syncToFrame(key, entry.value);
         refreshSaveBtn();
       });
+      initPanelToolbar(toolbar, field, entry, key);
     }
     list.appendChild(item);
     updateDirtyFlag(key);
@@ -282,8 +321,9 @@ function refreshItem(key) {
       empty.replaceWith(img);
     }
   } else {
-    const ta = item.querySelector('textarea');
-    if (ta && ta.value !== entry.value) ta.value = entry.value;
+    const field = item.querySelector('.ie-rich-field');
+    const safe = sanitizeRichHTML(entry.value);
+    if (field && field.innerHTML !== safe) field.innerHTML = safe;
   }
 }
 
@@ -308,6 +348,94 @@ function syncToFrame(key, value) {
   frame.contentWindow?.postMessage({ type: 'siteCopy:apply', map: { [key]: value } }, '*');
 }
 
+function initPanelToolbar(toolbar, field, entry, key) {
+  let handledPointerCommand = false;
+  const applyFromButton = (event) => {
+    const button = event.target.closest('button[data-panel-command]');
+    if (!button) {
+      event.preventDefault();
+      return;
+    }
+    event.preventDefault();
+    if (handledPointerCommand) return;
+    handledPointerCommand = true;
+    applyPanelCommand(field, button.dataset.panelCommand, null, entry, key);
+  };
+
+  toolbar.addEventListener('pointerdown', applyFromButton);
+  toolbar.addEventListener('mousedown', applyFromButton);
+  toolbar.addEventListener('click', (event) => {
+    const button = event.target.closest('button[data-panel-command]');
+    if (!button) return;
+    event.preventDefault();
+    if (handledPointerCommand) {
+      handledPointerCommand = false;
+      return;
+    }
+    applyPanelCommand(field, button.dataset.panelCommand, null, entry, key);
+  });
+  toolbar
+    .querySelector('select[data-panel-command="fontSize"]')
+    .addEventListener('change', (event) => {
+      if (!event.target.value) return;
+      applyPanelCommand(field, 'fontSize', event.target.value, entry, key);
+      event.target.value = '';
+    });
+}
+
+function applyPanelCommand(field, command, value, entry, key) {
+  field.focus();
+  restorePanelSelection(field);
+  if (command === 'insertLineBreak') {
+    document.execCommand('insertHTML', false, '<br>');
+  } else if (command === 'fontSize') {
+    applyPanelFontSize(field, value);
+  } else {
+    document.execCommand(command, false, null);
+  }
+  entry.value = sanitizeRichHTML(field.innerHTML);
+  updateDirtyFlag(key);
+  syncToFrame(key, entry.value);
+  refreshSaveBtn();
+}
+
+function applyPanelFontSize(field, value) {
+  restorePanelSelection(field);
+  const selection = window.getSelection();
+  if (!selection || !selection.rangeCount || !field.contains(selection.anchorNode)) {
+    field.innerHTML = `<span style="font-size: ${value}">${sanitizeRichHTML(field.innerHTML)}</span>`;
+    return;
+  }
+  const range = selection.getRangeAt(0);
+  if (range.collapsed) {
+    field.innerHTML = `<span style="font-size: ${value}">${sanitizeRichHTML(field.innerHTML)}</span>`;
+    return;
+  }
+  const span = document.createElement('span');
+  span.setAttribute('style', `font-size: ${value}`);
+  span.appendChild(range.extractContents());
+  range.insertNode(span);
+  selection.removeAllRanges();
+  const nextRange = document.createRange();
+  nextRange.selectNodeContents(span);
+  nextRange.collapse(false);
+  selection.addRange(nextRange);
+  rememberPanelSelection(field);
+}
+
+function rememberPanelSelection(field) {
+  const selection = window.getSelection();
+  if (!selection || !selection.rangeCount || !field.contains(selection.anchorNode)) return;
+  field._ieSavedRange = selection.getRangeAt(0).cloneRange();
+}
+
+function restorePanelSelection(field) {
+  if (!field._ieSavedRange) return;
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(field._ieSavedRange);
+}
+
 function refreshSaveBtn() {
   let dirtyCount = 0;
   state.forEach((entry) => {
@@ -328,7 +456,12 @@ async function save() {
   setStatus('Sauvegarde en cours…');
   const dirty = [];
   state.forEach((entry, key) => {
-    if (entry.value !== entry.original) dirty.push({ key, value: entry.value });
+    if (entry.value !== entry.original) {
+      dirty.push({
+        key,
+        value: entry.kind === 'text' ? sanitizeRichHTML(entry.value) : entry.value,
+      });
+    }
   });
   if (!dirty.length) return;
 
@@ -452,4 +585,10 @@ function cssEscape(s) {
 }
 function cssEscapeAttr(s) {
   return s.replace(/"/g, '\\"');
+}
+
+function plainTextToHTML(text) {
+  const div = document.createElement('div');
+  div.textContent = text || '';
+  return div.innerHTML.replace(/\r?\n/g, '<br>');
 }

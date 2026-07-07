@@ -9,7 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!contentDiv) return;
 
   if (!articleId) {
-    contentDiv.innerHTML = '<p>Article introuvable ou non spécifié.</p>';
+    contentDiv.innerHTML =
+      '<p data-editable="details.not-found">Article introuvable ou non spécifié.</p>';
     return;
   }
   fetchArticleDetails(articleId);
@@ -36,7 +37,7 @@ async function fetchArticleDetails(id) {
 
     const contentDiv = document.getElementById('article-content');
     contentDiv.innerHTML = `
-      <span class="sec-eyebrow">Journal du cercle</span>
+      <span class="sec-eyebrow" data-editable="details.eyebrow">Journal du cercle</span>
       <h2>${escapeText(title)}</h2>
       ${summary ? `<p class="article-lead">${escapeText(summary)}</p>` : ''}
       ${imageUrl ? `<img src="${sanitizeURL(imageUrl)}" alt="${escapeText(title)}">` : ''}
@@ -45,7 +46,10 @@ async function fetchArticleDetails(id) {
   } catch (err) {
     console.error('Erreur détails article :', err);
     const contentDiv = document.getElementById('article-content');
-    if (contentDiv) contentDiv.innerHTML = "<p>Impossible de charger l'article.</p>";
+    if (contentDiv) {
+      contentDiv.innerHTML =
+        '<p data-editable="details.error">Impossible de charger l&rsquo;article.</p>';
+    }
   }
 }
 

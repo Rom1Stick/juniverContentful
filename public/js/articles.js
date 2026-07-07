@@ -28,7 +28,7 @@ export function displayArticles(articles, containerId = 'content', includes = nu
   contentDiv.innerHTML = '';
 
   if (!articles || articles.length === 0) {
-    contentDiv.innerHTML = '<p>Aucun article disponible.</p>';
+    contentDiv.innerHTML = '<p data-editable="journal.empty">Aucun article disponible.</p>';
     return;
   }
 
@@ -56,8 +56,8 @@ export function displayArticles(articles, containerId = 'content', includes = nu
         <h5>${title}</h5>
         <p class="sum">${summary || ''}</p>
         <div class="foot">
-          <span>Juniver · lecture courte</span>
-          <span class="read">Lire →</span>
+          <span data-editable="journal.card.meta">Juniver · lecture courte</span>
+          <span class="read" data-editable="journal.card.read">Lire →</span>
         </div>
       </div>
     `;

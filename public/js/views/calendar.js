@@ -1,6 +1,6 @@
 import '../chrome.js';
 import '../mycel.js';
-import '../siteCopy.js';
+import { fetchSiteCopy, applySiteCopy } from '../siteCopy.js';
 import { fetchContent } from '../contentful.js';
 import { openPublicModal } from '../publicModal.js';
 import { sanitizeRichHTML, escapeText } from '../contentSanitize.js';
@@ -63,7 +63,7 @@ function renderEvents(events, containerId) {
   if (!list) return;
   list.innerHTML = '';
   if (!events.length) {
-    list.innerHTML = '<li><p>Aucun événement.</p></li>';
+    list.innerHTML = '<li><p data-editable="calendar.events.empty">Aucun événement.</p></li>';
     return;
   }
   events.forEach((ev) => {
@@ -79,9 +79,9 @@ function renderEvents(events, containerId) {
         <div class="info">
           <h5>${escapeText(ev.title)}</h5>
           <div class="loc">${escapeText(ev.location)}</div>
-          <div class="see-details">Voir les détails →</div>
+          <div class="see-details" data-editable="calendar.card.details">Voir les détails →</div>
         </div>
-        <a class="cta" href="/public/views/contact.html?event=${encodeURIComponent(ev.title)}" onclick="event.stopPropagation()">S'inscrire</a>
+        <a class="cta" href="/public/views/contact.html?event=${encodeURIComponent(ev.title)}" onclick="event.stopPropagation()" data-editable="calendar.card.signup">S'inscrire</a>
       </article>
     `;
     const article = li.querySelector('.ev');
@@ -110,8 +110,8 @@ export function openEventDetail(ev) {
       ${ev.imageUrl ? `<img class="event-detail__cover" src="${ev.imageUrl}" alt="${escapeText(ev.title)}">` : ''}
       <p class="event-detail__when">📅 ${escapeText(dateStr)}</p>
       <p class="event-detail__where">📍 ${escapeText(ev.location || 'Lieu à préciser')}</p>
-      ${ev.description ? `<div class="event-detail__body">${sanitizeRichHTML(ev.description)}</div>` : '<p class="event-detail__empty">Plus de détails bientôt disponibles.</p>'}
-      <a class="btn-primary event-detail__cta" href="/public/views/contact.html?event=${encodeURIComponent(ev.title)}">
+      ${ev.description ? `<div class="event-detail__body">${sanitizeRichHTML(ev.description)}</div>` : '<p class="event-detail__empty" data-editable="event-detail.empty">Plus de détails bientôt disponibles.</p>'}
+      <a class="btn-primary event-detail__cta" href="/public/views/contact.html?event=${encodeURIComponent(ev.title)}" data-editable="event-detail.cta">
         Je souhaite m'inscrire →
       </a>
     </div>
@@ -130,17 +130,30 @@ function setupPastToggle() {
   }
   section.style.display = 'none';
   btn.style.display = 'inline-flex';
+  setPastToggleLabel(btn, 'show');
   btn.addEventListener('click', () => {
     const visible = section.style.display !== 'none';
     if (visible) {
       section.style.display = 'none';
-      btn.textContent = '← Afficher les événements passés';
+      setPastToggleLabel(btn, 'show');
     } else {
       section.style.display = 'block';
       renderEvents(pastEvents, 'past-event-list');
-      btn.textContent = 'Masquer les événements passés';
+      setPastToggleLabel(btn, 'hide');
     }
   });
+}
+
+function setPastToggleLabel(btn, state) {
+  const key =
+    state === 'hide' ? 'calendar-page.toggle-past.hide' : 'calendar-page.toggle-past.show';
+  const fallback =
+    state === 'hide' ? 'Masquer les événements passés' : '← Afficher les événements passés';
+  btn.setAttribute('data-editable', key);
+  btn.textContent = fallback;
+  fetchSiteCopy()
+    .then((map) => applySiteCopy(map, btn.parentNode || document))
+    .catch(() => {});
 }
 
 function renderCalendar(date) {
